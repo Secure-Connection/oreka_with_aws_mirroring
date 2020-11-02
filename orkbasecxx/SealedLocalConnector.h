@@ -4,13 +4,20 @@
 
 #ifndef OREKA_SEALEDLOCALCONNECTOR_H
 #define OREKA_SEALEDLOCALCONNECTOR_H
-
-#include "OrkClient.h"
+#include <StdString.h>
+#include <curl/curl.h>
 
 class DLL_IMPORT_EXPORT_ORKBASE SealedLocalConnector : public OrkHttpClient{
     static SealedLocalConnector * s_instance;
     static SealedLocalConnector * instance();
-    virtual bool Execute(SyncMessage&, AsyncMessage&, const CStdString&, int, const CStdString&, int, bool) {}
+    CURL *curl;
+    SealedLocalConnector();
+
+    ~SealedLocalConnector();
+    void CallServer(CStdString & path, CStdString & data)
+    void SendStartCall(CStdString & jsonMessage);
+    void SendEndCall(CStdString & jsonMessage);
+    void SendTranscription(CStdString & jsonMessage);
 };
 
 
