@@ -14,7 +14,7 @@ liborkbase_la_SOURCES = Filter.cpp g711.c \
 			MemUtils.cpp BatchProcessing.cpp \
 			CapturePluginProxy.cpp CapturePort.cpp \
 			Daemon.cpp ImmediateProcessing.cpp \
-			Reporting.cpp TapeFileNaming.cpp \
+			Reporting.cpp SealedLocalConnector.cpp TapeFileNaming.cpp \
 			PartyFilter.cpp EventStreaming.cpp \
 			OrkTrack.cpp SocketStreamer.cpp	\
 			SizedBuffer.cpp DirectionSelector.cpp \
