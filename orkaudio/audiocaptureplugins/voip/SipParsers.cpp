@@ -1064,11 +1064,11 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
 
 		if(fromField)
 		{
-			if(s_sipExtractionLog->isDebugEnabled())
+			//if(s_sipExtractionLog->isDebugEnabled())
 			{
 				CStdString from;
 				GrabLine(fromField, sipEnd, from);
-				LOG4CXX_DEBUG(s_sipExtractionLog, "from: " + from);
+				LOG4CXX_INFO(s_sipExtractionLog, "from: " + from);
 			}
 
 			char* fromFieldEnd = memFindEOL(fromField, sipEnd);
@@ -1105,7 +1105,7 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
 		{
 			CStdString to;
 			char* toFieldEnd = GrabLine(toField, sipEnd, to);
-			LOG4CXX_DEBUG(s_sipExtractionLog, "to: " + to);
+			LOG4CXX_INFO(s_sipExtractionLog, "to: " + to);
 
 			GrabSipName(toField, toFieldEnd, info->m_toName);
 
