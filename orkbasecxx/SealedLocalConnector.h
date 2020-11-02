@@ -9,7 +9,8 @@
 
 class DLL_IMPORT_EXPORT_ORKBASE SealedLocalConnector : public OrkHttpClient{
     static SealedLocalConnector * s_instance;
-    static SealedLocalConnector * SealedLocalConnector::instance();
+    static SealedLocalConnector * instance();
+    virtual bool Execute(SyncMessage&, AsyncMessage&, const CStdString&, int, const CStdString&, int, bool) {}
 };
 
 

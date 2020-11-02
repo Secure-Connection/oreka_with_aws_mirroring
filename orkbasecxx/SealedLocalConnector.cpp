@@ -6,7 +6,7 @@
 
 SealedLocalConnector * SealedLocalConnector::s_instance;
 
-SaledLocalConnector * SealedLocalConnector::instance() {
+SealedLocalConnector * SealedLocalConnector::instance() {
     if(!SealedLocalConnector::s_instance) {
         SealedLocalConnector::s_instance = new SealedLocalConnector();
     }
