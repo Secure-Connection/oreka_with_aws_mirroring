@@ -498,26 +498,45 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 
 		MutexSentinel mutexSentinel(s_mutex); // serialize access for competing pcap threads
 
+
 		detectedUsefulPacket = TryRtp(ethernetHeader, ipHeader, udpHeader, udpPayload);
+
+		if(detectedUsefulPacket) {
+                    LOG4CXX_INFO(s_packetStatsLog, "Found RTP");
+		}
+		
 
 		if(!detectedUsefulPacket) {
 			detectedUsefulPacket= TrySipInvite(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
+			if(detectedUsefulPacket) {
+				 LOG4CXX_INFO(s_packetStatsLog, "Found invite");
+			}
 		}
 
 		if(!detectedUsefulPacket) {
 			detectedUsefulPacket= TrySip200Ok(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
+			if(detectedUsefulPacket) {
+			   LOG4CXX_INFO(s_packetStatsLog, "Found 200OK");
+			}
 		}
 
 
 		if(DLLCONFIG.m_sipNotifySupport == true){
 			if(!detectedUsefulPacket) {
 				detectedUsefulPacket= TrySipNotify(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
+				if(detectedUsefulPacket) {
+				   LOG4CXX_INFO(s_packetStatsLog, "found notify");
+				}
 			}
 		}
 		if(!detectedUsefulPacket) {
 			if(DLLCONFIG.m_sipDetectSessionProgress == true)
 			{
-				detectedUsefulPacket = TrySipSessionProgress(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
+			      detectedUsefulPacket = TrySipSessionProgress(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
+			      if(detectedUsefulPacket) {
+                                   LOG4CXX_INFO(s_packetStatsLog, "found 183");
+                                }
+
 			}
 		}
 
@@ -530,6 +549,9 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 
 		if(!detectedUsefulPacket) {
 			detectedUsefulPacket = TrySipBye(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
+			      if(detectedUsefulPacket) {
+                                   LOG4CXX_INFO(s_packetStatsLog, "found BYE");
+                                }
 		}
 
 		if(!detectedUsefulPacket) {
@@ -554,6 +576,8 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 		if(!detectedUsefulPacket) {
 			if(DLLCONFIG.m_rtcpDetect == true)
 			{
+			   LOG4CXX_INFO(s_packetStatsLog, "Trying RTCP");
+
 				detectedUsefulPacket = TryRtcp(ethernetHeader, ipHeader, udpHeader, udpPayload);
 			}
 		}
@@ -831,10 +855,13 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 		ethernetHeader = (EthernetHeaderStruct *)(pkt_data + 2);
 		if(ntohs(ethernetHeader->type) == ETHER_TYPE_IEEE8021Q)
 		{
+			LOG4CXX_INFO(s_packetStatsLog,"ETHER_TYPE_IEEE8021Q");
 			ipHeader = (IpHeaderStruct*)((char*)ethernetHeader + sizeof(EthernetHeaderStruct) + 4);
 		}
 		else if(ntohs(ethernetHeader->type) == ETHER_TYPE_IPV6)
 		{
+			LOG4CXX_INFO(s_packetStatsLog,"ETHER_TYPE_IPV6");
+
 			return;
 		}
 		else
@@ -845,14 +872,25 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 
 	if(TryIpPacketV4(ipHeader) != true)
 	{
+		LOG4CXX_INFO(s_packetStatsLog,"Not IP Packet");
+
 		return;
 	}
+
+	UdpHeaderStruct* udpHeader = (UdpHeaderStruct*)((char *)ipHeader + sizeof(IpHeaderStruct));
+
+	if(ntohs(udpHeader->dest) == 4789) {
+	    ipHeader = (IpHeaderStruct*)((char*)ethernetHeader + sizeof(EthernetHeaderStruct) * 2  + +sizeof(UdpHeaderStruct) + sizeof(IpHeaderStruct) + 8 /*VXLAN Size */);
+	}
+
 	int ipHeaderLength = ipHeader->ip_hl*4;
 	u_char* ipPacketEnd = (u_char*)ipHeader + ntohs(ipHeader->ip_len);
 	u_char* captureEnd = (u_char*)pkt_data + header->caplen;
 	if( captureEnd < (u_char*)ipPacketEnd  || (u_char*)ipPacketEnd <= ((u_char*)ipHeader + ipHeaderLength + TCP_HEADER_LENGTH))
 	{
 		// The packet has been snipped or has not enough payload, drop it,
+		LOG4CXX_INFO(s_packetStatsLog,"Dropping - not enough payload");
+
 		return;
 	}
 
@@ -1016,6 +1054,8 @@ void SingleDeviceCaptureThreadHandler(pcap_t* pcapHandle)
 void UdpListenerThread()
 {
 	OrkAprSubPool locPool;
+
+        LOG4CXX_INFO(s_packetStatsLog,"Udplistenerthread starting");
 
 	SetThreadName("orka:v:udpl");
 
@@ -1478,7 +1518,7 @@ pcap_t* VoIp::OpenDevice(CStdString& name)
 	}
 	else
 	{
-		logMsg.Format("Successfully opened device. pcap handle:%x message:%s", pcapHandle, error);
+		logMsg.Format("11.Successfully opened device. pcap handle:%x message:%s", pcapHandle, error);
 		LOG4CXX_INFO(s_packetLog, logMsg);
 	}
 
@@ -1513,7 +1553,7 @@ void VoIp::OpenDevices()
 	{
 		if(devices)
 		{
-			LOG4CXX_INFO(s_packetLog, CStdString("Available pcap devices:"));
+			LOG4CXX_INFO(s_packetLog, CStdString(":Available pcap devices:"));
 
 			for (pcap_if_t* device = devices; device != NULL; device = device->next)
 			{
@@ -1523,9 +1563,11 @@ void VoIp::OpenDevices()
 				LOG4CXX_INFO(s_packetLog, CStdString("* ") + device->name + " - " + description);
 				CStdString deviceName(device->name);
 				deviceName.ToLower();
-				if(	deviceName.Find("dialup") == -1		&&			// Don't want Windows dialup devices (still possible to force them using the configuration file)
-					deviceName.Find("lo") == -1			&&			// Don't want Unix loopback device
-					deviceName.Find("any") == -1			)		// Don't want Unix "any" device
+		//		if(	deviceName.Find("dialup") == -1		&&			// Don't want Windows dialup devices (still possible to force them using the configuration file)
+	//			deviceName.Find("lo") == -1			&&			// Don't want Unix loopback device
+		//			deviceName.Find("any") == -1			)		// Don't want Unix "any" device
+                        
+				if(deviceName.find("eth0")!=-1)        		
 				{
 					defaultDevice =  device;
 				}
@@ -1560,7 +1602,7 @@ void VoIp::OpenDevices()
 						CStdString logMsg, deviceName;
 
 						deviceName = device->name;
-						logMsg.Format("Successfully opened device. pcap handle:%x message:%s", pcapHandle, error);
+						logMsg.Format("1. Successfully opened device. pcap handle:%x message:%s", pcapHandle, error);
 						LOG4CXX_INFO(s_packetLog, logMsg);
 						SetPcapSocketBufferSize(pcapHandle);
 #endif
@@ -1608,7 +1650,7 @@ void VoIp::OpenDevices()
 					{
 						CStdString deviceName;
 
-						logMsg.Format("Successfully opened default device:%s pcap handle:%x message:%s", defaultDevice->name, pcapHandle, error);
+						logMsg.Format("1. Successfully opened default device:%s pcap handle:%x message:%s", defaultDevice->name, pcapHandle, error);
 						LOG4CXX_INFO(s_packetLog, logMsg);
 #ifdef CENTOS_5
 						SetPcapSocketBufferSize(pcapHandle);
