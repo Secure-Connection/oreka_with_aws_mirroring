@@ -501,11 +501,6 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 
 		detectedUsefulPacket = TryRtp(ethernetHeader, ipHeader, udpHeader, udpPayload);
 
-		if(detectedUsefulPacket) {
-                    LOG4CXX_INFO(s_packetStatsLog, "Found RTP");
-		}
-		
-
 		if(!detectedUsefulPacket) {
 			detectedUsefulPacket= TrySipInvite(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 			if(detectedUsefulPacket) {
