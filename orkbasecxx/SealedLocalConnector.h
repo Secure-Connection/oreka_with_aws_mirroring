@@ -8,7 +8,7 @@
 #include "OrkClient.h"
 
 class DLL_IMPORT_EXPORT_ORKBASE SealedLocalConnector : public OrkHttpClient{
-    static SealedLocalConnector * instance;
+    static SealedLocalConnector * s_instance;
     static SealedLocalConnector * SealedLocalConnector::instance();
 };
 

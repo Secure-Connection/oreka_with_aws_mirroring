@@ -4,11 +4,11 @@
 
 #include "SealedLocalConnector.h"
 
-SealedLocalConnector * SealedLocalConnector::instance;
+SealedLocalConnector * SealedLocalConnector::s_instance;
 
 SaledLocalConnector * SealedLocalConnector::instance() {
-    if(!SealedLocalConnector::instance) {
-        SealedLocalConnector::instance = new SealedLocalConnector();
+    if(!SealedLocalConnector::s_instance) {
+        SealedLocalConnector::s_instance = new SealedLocalConnector();
     }
-    return instance;
+    return s_instance;
 }
