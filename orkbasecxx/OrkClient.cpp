@@ -191,8 +191,6 @@ bool OrkHttpClient::ExecuteUrl(const CStdString& request, CStdString& response, 
 {
 	OrkAprSubPool locPool;
 
-	LogError("ExecuteUrl Entry");
-
 	CStdString logMsg;
 	response = "";
 	CStdString requestDetails;
@@ -326,6 +324,8 @@ bool OrkHttpClient::ExecuteUrl(const CStdString& request, CStdString& response, 
 bool OrkHttpSingleLineClient::Execute(SyncMessage& request, AsyncMessage& response, const CStdString& hostname,const int tcpPort, const CStdString& serviceName, const int timeout, const bool useHttps)
 {
 	CStdString requestString = "/" + serviceName + "/command?";
+
+    LOG4CXX_ERROR(m_log, "Calling URL:" + requestString);
 	requestString += request.SerializeUrl();
 	CStdString responseString;
 
