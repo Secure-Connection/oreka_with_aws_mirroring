@@ -191,6 +191,8 @@ bool OrkHttpClient::ExecuteUrl(const CStdString& request, CStdString& response, 
 {
 	OrkAprSubPool locPool;
 
+	LogError("ExecuteUrl Entry");
+
 	CStdString logMsg;
 	response = "";
 	CStdString requestDetails;
