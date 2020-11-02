@@ -4,7 +4,7 @@
 
 #include "SealedLocalConnector.h"
 
-char *BASE_URL = "http://localhost:6000/pbx_controller/v1"
+const CStdString BASE_URL = CStdString("http://localhost:6000/pbx_controller/v1");
 
 SealedLocalConnector * SealedLocalConnector::s_instance;
 
@@ -40,6 +40,6 @@ SealedLocalConnector::~SealedLocalConnector() {
     curl_global_cleanup();
 }
 
-void SealedLocalConnector:SendStartCall(CStdString json &) {
+void SealedLocalConnector::SendStartCall(CStdString& json ) {
 
 };

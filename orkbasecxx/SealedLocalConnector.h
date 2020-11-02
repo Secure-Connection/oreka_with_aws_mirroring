@@ -6,18 +6,21 @@
 #define OREKA_SEALEDLOCALCONNECTOR_H
 #include <StdString.h>
 #include <curl/curl.h>
+#include <OrkBase.h>
 
-class DLL_IMPORT_EXPORT_ORKBASE SealedLocalConnector : public OrkHttpClient{
+class DLL_IMPORT_EXPORT_ORKBASE SealedLocalConnector{
     static SealedLocalConnector * s_instance;
-    static SealedLocalConnector * instance();
     CURL *curl;
-    SealedLocalConnector();
 
+  public:
+    SealedLocalConnector();
     ~SealedLocalConnector();
-    void CallServer(CStdString & path, CStdString & data)
+    void CallServer(CStdString & path, CStdString & data);
     void SendStartCall(CStdString & jsonMessage);
     void SendEndCall(CStdString & jsonMessage);
     void SendTranscription(CStdString & jsonMessage);
+    static SealedLocalConnector * instance();
+
 };
 
 
