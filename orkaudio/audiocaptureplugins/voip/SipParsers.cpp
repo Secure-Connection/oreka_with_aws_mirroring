@@ -152,6 +152,16 @@ bool TrySipBye(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, U
 		{
 			VoIpSessionsSingleton::instance()->ReportSipBye(info);
 		}
+
+        __int64_t current_time = get_time_from_epoch_micros();
+
+        CStdString call_stop_json = "{";
+        call_stop_json += "\"session_id\":\"" + info->m_callId + "\",\n";
+        call_stop_json += "\"recording_path\": "",\n";
+        call_stop_json += "\"end\":" + CStdString(std::to_string(current_time).c_str()) + " \n}";
+
+        LOG4CXX_INFO(s_sipPacketLog, "Stopping elvis");
+        SealedLocalConnector::instance()->SendStopCall(call_start_json);
 	}
 	return result;
 }
@@ -967,6 +977,11 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
 		drop = true;
 	}
 
+	//Drop invite for SRTP Sessions
+    if(NULL != memFindAfter("a=fingerprint:", (char*)udpPayload, sipEnd)) {
+        drop = true;
+    }
+
 	if (drop == false)
 	{
 		result = true;
@@ -1008,6 +1023,8 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
 		}
 
 		char* contactField = memFindAfter("Contact:", (char*)udpPayload, sipEnd);
+
+
 		if(!contactField)
 		{
 			contactField = memFindAfter("\nc:", (char*)udpPayload, sipEnd);
@@ -1030,6 +1047,7 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
 		char* localExtensionField = memFindAfter(DLLCONFIG.m_sipLocalPartyFieldName, (char*)udpPayload, sipEnd);
 		char* audioField = NULL;
 		char* connectionAddressField = NULL;
+
 		char* attribSendonly = memFindAfter("a=sendonly", (char*)audioSdpStart, audioSdpEnd);
 		char* attribInactive = memFindAfter("a=inactive", (char*)audioSdpStart, audioSdpEnd);
 		char* rtpmapAttribute = memFindAfter("\na=rtpmap:", (char*)audioSdpStart, audioSdpEnd);
