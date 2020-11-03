@@ -978,7 +978,8 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
 	}
 
 	//Drop invite for SRTP Sessions
-    if(NULL != memFindAfter("a=fingerprint:", (char*)udpPayload, sipEnd)) {
+    if(NULL != memFindAfter("fingerprint:", (char*)udpPayload, sipEnd)) {
+        LOG4CXX_DEBUG(s_sipExtractionLog, "TrySipInvite: Don't parse secure sessions");
         drop = true;
     }
 
