@@ -16,13 +16,21 @@
 #include "ParsingUtils.h"
 #include "LogManager.h"
 #include "VoIpConfig.h"
+#include "SealedLocalConnector.h"
 #include <boost/algorithm/string/predicate.hpp>
+
 
 static LoggerPtr s_parsersLog = Logger::getLogger("parsers.sip");
 static LoggerPtr s_sipPacketLog = Logger::getLogger("packet.sip");
 static LoggerPtr s_sipExtractionLog = Logger::getLogger("sipextraction");
 static LoggerPtr s_rtcpPacketLog = Logger::getLogger("packet.rtcp");
 static LoggerPtr s_sipparsersLog = Logger::getLogger("packet.sipparsers");
+
+
+__int64 get_time_from_epoch_micros() {
+    __int64 microseconds_since_epoch = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    return microseconds_since_epoch;
+}
 
 bool TrySipBye(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpHeaderStruct* udpHeader, u_char* udpPayload, u_char* packetEnd)
 {
@@ -665,6 +673,26 @@ bool TrySip200Ok(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader,
 
 		VoIpSessionsSingleton::instance()->ReportSip200Ok(info);
 	}
+
+
+	__int64 current_time = get_time_from_epoch_micros();
+
+	CStdString call_start_json = "{";
+
+    {"session_id": session_id,
+                "direction": direction,
+                "start": start,
+                "phone_number_from": phone_number_from,
+                "phone_number_to": phone_number_to}
+
+	call_start_json += "\"session_id:\"" + info->m_callId + ",\n";
+    call_start_json += "\"direction:\" 1\n";
+    call_stat_json += "\"phone_number_from\"" + info->m_from + ",\n";
+    call_stat_json += "\"phone_number_to\"" + info->m_to + ",\n";
+    call_stat_json += "\"start\"" + current_time+ " \n}";
+
+    SealedLocalConnector::instance()->SendStartCall(call_start_json);
+
 	return result;
 }
 

@@ -41,5 +41,14 @@ SealedLocalConnector::~SealedLocalConnector() {
 }
 
 void SealedLocalConnector::SendStartCall(CStdString& json ) {
-
+    CallServer("start_call",json);
 };
+
+void SealedLocalConnector::SendStopCall(CStdString& json ) {
+    CallServer("stop_call",json);
+};
+
+void SealedLocalConnector::SendTranscription(CStdString& json ) {
+    CallServer("add_transcription_line",json);
+};
+
