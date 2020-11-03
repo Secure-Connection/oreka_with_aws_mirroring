@@ -1387,22 +1387,6 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
 		{
 			info->m_senderIp = ipHeader->ip_dest;
 			info->m_receiverIp = ipHeader->ip_src;
-
-			__int64_t current_time = get_time_from_epoch_micros();
-
-			CStdString call_start_json = "{";
-
-
-			call_start_json += "\"session_id\":\"" + info->m_callId + "\",\n";
-			call_start_json += "\"direction\": 1,\n";
-        		call_start_json += "\"phone_number_from\":\"" + info->m_from + "\",\n";
-        		call_start_json += "\"phone_number_to\":\"" + info->m_to + "\",\n";
-        		call_start_json += "\"start\":" + CStdString(std::to_string(current_time).c_str()) + " \n}";
-
-
-                	LOG4CXX_INFO(s_sipPacketLog, "Calling elvis");
-	        	SealedLocalConnector::instance()->SendStartCall(call_start_json);
-
 		}
 		else
 		{
@@ -1429,6 +1413,22 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
 		}
 		else if(drop == false && info->m_fromRtpPort.size() && info->m_from.size() && info->m_to.size() && info->m_callId.size())
 		{
+            if(sipMethod == SIP_METHOD_200_OK) {
+                __int64_t current_time = get_time_from_epoch_micros();
+
+                CStdString call_start_json = "{";
+
+
+                call_start_json += "\"session_id\":\"" + info->m_callId + "\",\n";
+                call_start_json += "\"direction\": 1,\n";
+                call_start_json += "\"phone_number_from\":\"" + info->m_from + "\",\n";
+                call_start_json += "\"phone_number_to\":\"" + info->m_to + "\",\n";
+                call_start_json += "\"start\":" + CStdString(std::to_string(current_time).c_str()) + " \n}";
+
+                LOG4CXX_INFO(s_sipPacketLog, "Calling elvis");
+                SealedLocalConnector::instance()->SendStartCall(call_start_json);
+            }
+
 			VoIpSessionsSingleton::instance()->ReportSipInvite(info);
 		}
 	}
