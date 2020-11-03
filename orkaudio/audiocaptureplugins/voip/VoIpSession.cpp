@@ -1434,7 +1434,7 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 		details.m_timestamp = rtpPacket->m_timestamp;
 		details.m_sequenceNumber = rtpPacket->m_seqNum;
 		details.m_channel = channel;
-		details.m_encoding = AlawAudio;
+		details.m_encoding = PcmAudio;//AlawAudio;
 		details.m_numBytes = rtpPacket->m_payloadSize;
 		if(rtpPacket->m_payloadType >= 96)
 		{

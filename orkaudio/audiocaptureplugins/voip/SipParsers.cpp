@@ -389,7 +389,7 @@ bool TryLogFailedSip(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHea
 bool TrySipSessionProgress(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpHeaderStruct* udpHeader, u_char* udpPayload, u_char* packetEnd)
 {
 	bool result = false;
-
+    bool contineuParsing = false;
 	int sipLength = ntohs(udpHeader->len) - sizeof(UdpHeaderStruct);
 	char* sipEnd = (char*)udpPayload + sipLength;
 
@@ -397,9 +397,20 @@ bool TrySipSessionProgress(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 	{
 		;	// packet too short
 	}
-	else if(memcmp(SIP_RESPONSE_SESSION_PROGRESS, (void*)udpPayload, SIP_RESPONSE_SESSION_PROGRESS_SIZE) == 0)
-	{
+	else if(memcmp(SIP_RESPONSE_SESSION_PROGRESS, (void*)udpPayload, SIP_RESPONSE_SESSION_PROGRESS_SIZE) == 0) {
+        LOG4CXX_INFO(s_sipExtractionLog, "TrySipInvite: Checking secure session");
+        //Drop invite for SRTP Sessions
+        if (NULL != memFindAfter("fingerprint:", (char *) udpPayload, sipEnd)) {
+            LOG4CXX_INFO(s_sipExtractionLog, "TrySipSessionInProgress: Don't parse secure sessions");
+        } else {
+            continueParsins = true;
+            LOG4CXX_INFO(s_sipExtractionLog, "TrySipSessionInProgress: Allright");
+        }
+    }
+
+	if(continueParsing)
 		bool hasSdp = false;
+
 		SipSessionProgressInfoRef info(new SipSessionProgressInfo());
 
 		result = true;
@@ -977,12 +988,14 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
 		drop = true;
 	}
 
+	if(!drop) {
         LOG4CXX_INFO(s_sipExtractionLog, "TrySipInvite: Checking secure session");
-	//Drop invite for SRTP Sessions
-        if(NULL != memFindAfter("fingerprint:", (char*)udpPayload, sipEnd)) {
-           LOG4CXX_INFO(s_sipExtractionLog, "TrySipInvite: Don't parse secure sessions");
-          drop = true;
+        //Drop invite for SRTP Sessions
+        if (NULL != memFindAfter("fingerprint:", (char *) udpPayload, sipEnd)) {
+            LOG4CXX_INFO(s_sipExtractionLog, "TrySipInvite: Don't parse secure sessions");
+            drop = true;
         }
+    }
 
 	if (drop == false)
 	{
