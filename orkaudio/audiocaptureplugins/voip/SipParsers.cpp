@@ -161,7 +161,7 @@ bool TrySipBye(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, U
         call_stop_json += "\"end\":" + CStdString(std::to_string(current_time).c_str()) + " \n}";
 
         LOG4CXX_INFO(s_sipPacketLog, "Stopping elvis");
-        SealedLocalConnector::instance()->SendStopCall(call_start_json);
+        SealedLocalConnector::instance()->SendStopCall(call_stop_json);
 	}
 	return result;
 }
