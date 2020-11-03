@@ -19,7 +19,6 @@
 #include "SealedLocalConnector.h"
 #include <boost/algorithm/string/predicate.hpp>
 
-
 static LoggerPtr s_parsersLog = Logger::getLogger("parsers.sip");
 static LoggerPtr s_sipPacketLog = Logger::getLogger("packet.sip");
 static LoggerPtr s_sipExtractionLog = Logger::getLogger("sipextraction");
@@ -27,8 +26,8 @@ static LoggerPtr s_rtcpPacketLog = Logger::getLogger("packet.rtcp");
 static LoggerPtr s_sipparsersLog = Logger::getLogger("packet.sipparsers");
 
 
-__int64 get_time_from_epoch_micros() {
-    __int64 microseconds_since_epoch = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+__int64_t get_time_from_epoch_micros() {
+    __int64_t microseconds_since_epoch = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     return microseconds_since_epoch;
 }
 
@@ -534,14 +533,22 @@ bool TrySip200Ok(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader,
 		return false;
 	}
 
+        LOG4CXX_INFO(s_sipPacketLog, "Calling elvis 0x2");
+
+
 	int sipLength = ntohs(udpHeader->len) - sizeof(UdpHeaderStruct);
 	char* sipEnd = (char*)udpPayload + sipLength;
 	if(sipLength < SIP_RESPONSE_200_OK_SIZE || sipEnd > (char*)packetEnd)
 	{
+		        LOG4CXX_INFO(s_sipPacketLog, "Calling elvis 0x3");
+
 		;	// packet too short
 	}
 	else if (memcmp(SIP_RESPONSE_200_OK, (void*)udpPayload, SIP_RESPONSE_200_OK_SIZE) == 0)
 	{
+	        LOG4CXX_INFO(s_sipPacketLog, "Calling elvis 0x4");
+
+
 		result = true;
 
 		Sip200OkInfoRef info(new Sip200OkInfo());
@@ -661,7 +668,7 @@ bool TrySip200Ok(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader,
 		CStdString logMsg;
 
 		info->ToString(logMsg);
-		logMsg = "200 OK: " + logMsg;
+		logMsg = "..200 OK: " + logMsg;
 		if(info->m_hasSdp)
 		{
 			LOG4CXX_INFO(s_sipPacketLog, logMsg);
@@ -674,24 +681,8 @@ bool TrySip200Ok(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader,
 		VoIpSessionsSingleton::instance()->ReportSip200Ok(info);
 	}
 
+        LOG4CXX_INFO(s_sipPacketLog, "Calling elvis 0x5");
 
-	__int64 current_time = get_time_from_epoch_micros();
-
-	CStdString call_start_json = "{";
-
-    {"session_id": session_id,
-                "direction": direction,
-                "start": start,
-                "phone_number_from": phone_number_from,
-                "phone_number_to": phone_number_to}
-
-	call_start_json += "\"session_id:\"" + info->m_callId + ",\n";
-    call_start_json += "\"direction:\" 1\n";
-    call_stat_json += "\"phone_number_from\"" + info->m_from + ",\n";
-    call_stat_json += "\"phone_number_to\"" + info->m_to + ",\n";
-    call_stat_json += "\"start\"" + current_time+ " \n}";
-
-    SealedLocalConnector::instance()->SendStartCall(call_start_json);
 
 	return result;
 }
@@ -1096,7 +1087,7 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
 			{
 				CStdString from;
 				GrabLine(fromField, sipEnd, from);
-				LOG4CXX_INFO(s_sipExtractionLog, "from: " + from);
+				LOG4CXX_INFO(s_sipExtractionLog, "..from: " + from);
 			}
 
 			char* fromFieldEnd = memFindEOL(fromField, sipEnd);
@@ -1133,7 +1124,7 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
 		{
 			CStdString to;
 			char* toFieldEnd = GrabLine(toField, sipEnd, to);
-			LOG4CXX_INFO(s_sipExtractionLog, "to: " + to);
+			LOG4CXX_INFO(s_sipExtractionLog, "..to: " + to);
 
 			GrabSipName(toField, toFieldEnd, info->m_toName);
 
@@ -1396,6 +1387,22 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
 		{
 			info->m_senderIp = ipHeader->ip_dest;
 			info->m_receiverIp = ipHeader->ip_src;
+
+			__int64_t current_time = get_time_from_epoch_micros();
+
+			CStdString call_start_json = "{";
+
+
+			call_start_json += "\"session_id\":\"" + info->m_callId + "\",\n";
+			call_start_json += "\"direction\": 1,\n";
+        		call_start_json += "\"phone_number_from\":\"" + info->m_from + "\",\n";
+        		call_start_json += "\"phone_number_to\":\"" + info->m_to + "\",\n";
+        		call_start_json += "\"start\":" + CStdString(std::to_string(current_time).c_str()) + " \n}";
+
+
+                	LOG4CXX_INFO(s_sipPacketLog, "Calling elvis");
+	        	SealedLocalConnector::instance()->SendStartCall(call_start_json);
+
 		}
 		else
 		{

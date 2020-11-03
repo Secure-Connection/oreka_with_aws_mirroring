@@ -7,18 +7,21 @@
 #include <StdString.h>
 #include <curl/curl.h>
 #include <OrkBase.h>
+#include <log4cxx/logger.h>
+#include "LogManager.h"
 
 class DLL_IMPORT_EXPORT_ORKBASE SealedLocalConnector{
     static SealedLocalConnector * s_instance;
     CURL *curl;
+    log4cxx::LoggerPtr log;
 
   public:
     SealedLocalConnector();
     ~SealedLocalConnector();
-    void CallServer(CStdString & path, CStdString & data);
-    void SendStartCall(CStdString & jsonMessage);
-    void SendEndCall(CStdString & jsonMessage);
-    void SendTranscription(CStdString & jsonMessage);
+    void CallServer(CStdString path, CStdString data);
+    void SendStartCall(const CStdString jsonMessage);
+    void SendStopCall(const CStdString jsonMessage);
+    void SendTranscription(const CStdString jsonMessage);
     static SealedLocalConnector * instance();
 
 };

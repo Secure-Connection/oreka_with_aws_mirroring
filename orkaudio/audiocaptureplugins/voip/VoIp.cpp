@@ -504,14 +504,14 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 		if(!detectedUsefulPacket) {
 			detectedUsefulPacket= TrySipInvite(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 			if(detectedUsefulPacket) {
-				 LOG4CXX_INFO(s_packetStatsLog, "Found invite");
+				 LOG4CXX_INFO(s_packetStatsLog, "..Found invite");
 			}
 		}
 
 		if(!detectedUsefulPacket) {
 			detectedUsefulPacket= TrySip200Ok(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 			if(detectedUsefulPacket) {
-			   LOG4CXX_INFO(s_packetStatsLog, "Found 200OK");
+			   LOG4CXX_INFO(s_packetStatsLog, "..Found 200OK");
 			}
 		}
 
