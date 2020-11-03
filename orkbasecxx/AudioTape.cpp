@@ -285,9 +285,11 @@ void AudioTape::Write()
 					switch(chunkRef->GetEncoding())
 					{
 					case PcmAudio:
+                        LOG4CXX_INFO(LOG.tapeLog, "PCMAudio");
 						m_audioFileRef.reset(new LibSndFileFile(SF_FORMAT_PCM_16 | SF_FORMAT_WAV));
 						break;
-					default:					
+					default:
+                        LOG4CXX_INFO(LOG.tapeLog, "MediaChunkFile");
 						// All other encodings: output as a media chunk file
 						m_audioFileRef.reset(new MediaChunkFile());
 					}
