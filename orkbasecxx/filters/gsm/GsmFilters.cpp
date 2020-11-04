@@ -72,7 +72,7 @@ void GsmToPcmFilter::AudioChunkIn(AudioChunkRef& inputAudioChunk)
 
 void GsmToPcmFilter::AudioChunkOut(AudioChunkRef& chunk)
 {
-    LOG4CXX_INFO(m_log, "GSMToPcm To PCM - chunk out");
+    LOG4CXX_INFO(s_log, "GSMToPcm To PCM - chunk out");
 	chunk = m_outputAudioChunk;
 }
 
