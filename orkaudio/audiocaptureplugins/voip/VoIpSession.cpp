@@ -4084,7 +4084,7 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
         LOG4CXX_INFO(m_log, "ReportRtpPacket 0x28");
         CStdString rtpString;
         rtpPacket->ToString(rtpString);
-        LOG4CXX_INFO(m_log, "Could not find session for RTP packet:" + rtpString);
+        LOG4CXX_INFO(m_log, "MediaAddress Could not find session for RTP packet:" + rtpString);
 	}
 #if 0
 	else if((numSessionsFound == 0) && ((CONFIG.m_lookBackRecording == true) || DLLCONFIG.m_trackRawRtpSessionInNonLookBackMode == true))
