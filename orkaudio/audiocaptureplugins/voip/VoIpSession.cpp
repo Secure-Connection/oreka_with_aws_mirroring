@@ -3216,7 +3216,7 @@ void VoIpSessions::SetMediaAddress(VoIpSessionRef& session, struct in_addr media
 		CStdString logMsg;
 		inet_ntopV4(AF_INET, (void*)&mediaIp, szMediaIp, sizeof(szMediaIp));
 
-		logMsg.Format("[%s] %s,%d rejected by MediaAddressBlockedIpRanges", session->m_trackingId, szMediaIp, mediaPort);
+		logMsg.Format("MediaAddress [%s] %s,%d rejected by MediaAddressBlockedIpRanges", session->m_trackingId, szMediaIp, mediaPort);
 		LOG4CXX_INFO(m_log, logMsg);
 
 		return;
@@ -3230,7 +3230,7 @@ void VoIpSessions::SetMediaAddress(VoIpSessionRef& session, struct in_addr media
 			CStdString logMsg;
 			inet_ntopV4(AF_INET, (void*)&mediaIp, szMediaIp, sizeof(szMediaIp));
 
-			logMsg.Format("[%s] %s,%d is not allowed by MediaAddressAllowedIpRanges", session->m_trackingId, szMediaIp, mediaPort);
+			logMsg.Format("MediaAddress [%s] %s,%d is not allowed by MediaAddressAllowedIpRanges", session->m_trackingId, szMediaIp, mediaPort);
 			LOG4CXX_INFO(m_log, logMsg);
 			return;
 		}
@@ -3257,7 +3257,7 @@ void VoIpSessions::SetMediaAddress(VoIpSessionRef& session, struct in_addr media
 			(session->m_protocol == VoIpSession::ProtSkinny && DLLCONFIG.m_skinnyAllowMediaAddressTransfer)
 			|| (session->m_protocol == VoIpSession::ProtSip && DLLCONFIG.m_sipAllowMediaAddressTransfer))
 		{
-			logMsg.Format("[%s] on %s replaces [%s]",
+			logMsg.Format("MediaAddress [%s] on %s replaces [%s]",
 							session->m_trackingId, MediaAddressToString(mediaAddress), oldSession->m_trackingId);
 			LOG4CXX_INFO(m_log, logMsg);
 			if(oldSession->m_protocol == VoIpSession::ProtRawRtp)
@@ -3275,18 +3275,18 @@ void VoIpSessions::SetMediaAddress(VoIpSessionRef& session, struct in_addr media
 		else
 		{
 			doChangeMediaAddress = false;
-			logMsg.Format("[%s] on %s will not replace [%s]",
+			logMsg.Format("MediaAddress [%s] on %s will not replace [%s]",
 							session->m_trackingId, MediaAddressToString(mediaAddress), oldSession->m_trackingId);
 			LOG4CXX_INFO(m_log, logMsg);
 		}
 	}
 	if(doChangeMediaAddress)
 	{
-		if(m_log->isInfoEnabled())
+		//if(m_log->isInfoEnabled())
 		{
 			char szEndPointIp[16];
 			inet_ntopV4(AF_INET, (void*)&session->m_endPointIp, szEndPointIp, sizeof(szEndPointIp));
-			logMsg.Format("..[%s] media address:%s %s callId:%s endpoint:%s", session->m_trackingId, MediaAddressToString(mediaAddress), VoIpSession::ProtocolToString(session->m_protocol),session->m_callId, szEndPointIp);
+			logMsg.Format("MediaAddress [%s] media address:%s %s callId:%s endpoint:%s", session->m_trackingId, MediaAddressToString(mediaAddress), VoIpSession::ProtocolToString(session->m_protocol),session->m_callId, szEndPointIp);
 			LOG4CXX_INFO(m_log, logMsg);
 		}
 
@@ -3302,7 +3302,7 @@ void VoIpSessions::SetMediaAddress(VoIpSessionRef& session, struct in_addr media
 		m_byIpAndPort.insert(std::make_pair(session->m_ipAndPort, session));	// insert new mapping
 
 		CStdString numSessions = IntToString(m_byIpAndPort.size());
-		LOG4CXX_DEBUG(m_log, CStdString("ByIpAndPort: ") + numSessions);
+		LOG4CXX_DEBUG(m_log, CStdString("MediaAddress  ByIpAndPort: ") + numSessions);
 	}
 }
 
