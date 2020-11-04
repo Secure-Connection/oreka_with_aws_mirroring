@@ -3958,7 +3958,9 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 			}
 		}
 	} else {
-	    LOG4CXX_INFO(m_log,"Could not find session for RTP packet");
+
+        rtpPacket->ToString(rtpString);
+        LOG4CXX_INFO(m_log, "Could not find session for RTP packet:" + rtpString);
 	}
 #if 0
 	else if((numSessionsFound == 0) && ((CONFIG.m_lookBackRecording == true) || DLLCONFIG.m_trackRawRtpSessionInNonLookBackMode == true))
