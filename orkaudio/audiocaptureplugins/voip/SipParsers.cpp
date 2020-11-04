@@ -1459,7 +1459,7 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
                 call_start_json += "\"start\":" + CStdString(std::to_string(current_time).c_str()) + " \n}";
 
                 LOG4CXX_INFO(s_sipPacketLog, "Calling elvis");
-                SealedLocalConnector::instance()->SendStartCall(call_start_json);
+            //    SealedLocalConnector::instance()->SendStartCall(call_start_json);
             }
 
             VoIpSessionsSingleton::instance()->ReportSipInvite(info);
