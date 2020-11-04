@@ -197,7 +197,7 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 				decoder = m_decoders.at(details.m_rtpPayloadType);
 				if(decoder.get() != NULL)
 				{
-                    LOG4CXX_INFO(getLog(), "RTP Type:%d",details.m_rtpPayloadType );
+                    LOG4CXX_INFO(getLog(), "RTP Type:"+CStdString(details.m_rtpPayloadType ));
 					decoder->AudioChunkIn(chunk);
 					decoder->AudioChunkOut(tmpChunkRef);
 					if(tmpChunkRef.get())
