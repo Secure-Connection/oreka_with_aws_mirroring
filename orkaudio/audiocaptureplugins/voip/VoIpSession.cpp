@@ -1453,12 +1453,12 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 		}
 	}
 
-	if(m_log->isDebugEnabled())
+	//if(m_log->isDebugEnabled())
 	{
         LOG4CXX_INFO(m_log, "AddRtpPacket 0xD5");
 		CStdString debug;
 		debug.Format("[%s] %s: Add RTP packet srcPort:%u dstPort:%u seq:%u ts:%u  arrival:%u ch:%d", m_trackingId, m_capturePort, rtpPacket->m_sourcePort, rtpPacket->m_destPort, rtpPacket->m_seqNum, rtpPacket->m_timestamp, rtpPacket->m_arrivalTimestamp, channel);
-		LOG4CXX_DEBUG(m_log, debug);
+		LOG4CXX_INFO(m_log, debug);
 	}
 
 	if(		(m_protocol == ProtRawRtp && m_numRtpPackets == DLLCONFIG.m_rtpMinAmountOfPacketsBeforeStart)	||
@@ -1520,6 +1520,9 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
             LOG4CXX_INFO(m_log, "AddRtpPacket 0xE0");
 			details.m_rtpPayloadType = rtpPacket->m_payloadType;
 		}
+
+        CStdString logMsg1.Format("AddRtpPacket payloadtype=%d",rtpPacket->m_payload);
+        LOG4CXX_INFO(m_log, logMsg1);
 		AudioChunkRef chunk(new AudioChunk());
 		chunk->SetBuffer(rtpPacket->m_payload, details);
 		g_audioChunkCallBack(chunk, m_capturePort);
