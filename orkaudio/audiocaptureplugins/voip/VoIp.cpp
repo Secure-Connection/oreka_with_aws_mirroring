@@ -356,19 +356,27 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 	RtpHeaderStruct* rtpHeader = (RtpHeaderStruct*)udpPayload;
 	std::map<unsigned int, unsigned int>::iterator pair;
 
+    LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x1");
+
 	/* Ensure that the UDP payload is at least sizeof(RtpHeaderStruct) */
-	if(ntohs(udpHeader->len) < sizeof(RtpHeaderStruct))
-		return false;
+	if(ntohs(udpHeader->len) < sizeof(RtpHeaderStruct)) {
+        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x2");
+        return false;
+    }
 
 	if (rtpHeader->version == 2 && rtpHeader->cc == 0 && rtpHeader->p == 0)
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x3");
 		if((!(ntohs(udpHeader->source)%2) && !(ntohs(udpHeader->dest)%2)) || DLLCONFIG.m_rtpDetectOnOddPorts)	// udp ports usually even 
 		{
+            LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x4");
 			pair = DLLCONFIG.m_rtpPayloadTypeBlockList.find(rtpHeader->pt);
 			if(pair != DLLCONFIG.m_rtpPayloadTypeBlockList.end())
 			{
+                LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x5");
 				if(s_rtpPacketLog->isDebugEnabled())
 				{
+                    LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x6");
 					RtpPacketInfoRef rtpInfo(new RtpPacketInfo());
 					u_char* payload = (u_char *)rtpHeader + sizeof(RtpHeaderStruct);
 					u_char* packetEnd = (u_char *)ipHeader + ntohs(ipHeader->ip_len);
@@ -393,6 +401,7 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 					LOG4CXX_DEBUG(s_rtpPacketLog, "Dropped RTP packet with payload type:" + IntToString(rtpHeader->pt) + " " + logMsg);
 				}
 
+                LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x7");
 				return true;
 			}
 
@@ -402,10 +411,13 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 			// pt=97 is IAX2 iLBC payload
 			// pt > 98 is telephone-event in SIP
 			{
+                LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x8");
 				if(DLLCONFIG.m_rtpBlockedIpRanges.Matches(ipHeader->ip_src) || DLLCONFIG.m_rtpBlockedIpRanges.Matches(ipHeader->ip_dest))
 				{
+                    LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x9");
 					if(s_rtpPacketLog->isDebugEnabled())
 					{
+                        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xA");
 						CStdString logMsg;
 						char sourceIp[16];
 						inet_ntopV4(AF_INET, (void*)&ipHeader->ip_src, sourceIp, sizeof(sourceIp));
@@ -417,6 +429,7 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 				}
 				else
 				{
+                    LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xB");
 					result = true;
 					u_char* payload = (u_char *)rtpHeader + sizeof(RtpHeaderStruct);
 					u_char* packetEnd = (u_char *)ipHeader + ntohs(ipHeader->ip_len);
@@ -441,6 +454,7 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 					//Extension length x 4 bytes
 					if(rtpHeader->x == 1)
 					{
+                        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xC");
 						unsigned short profileFieldLen = 2;
 						unsigned short ExtLenFieldLen = 2;
 						unsigned short extLenFieldValue = (payload[2] << 8) | payload[3];
@@ -452,6 +466,7 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 					}
 					else
 					{
+                        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xD");
 						rtpInfo->m_payloadSize = payloadLength;
 						rtpInfo->m_payload = payload;
 					}
@@ -459,21 +474,25 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 
 					if(s_rtpPacketLog->isDebugEnabled())
 					{
+                        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xE");
 						CStdString logMsg;
 						rtpInfo->ToString(logMsg);
 						LOG4CXX_DEBUG(s_rtpPacketLog, logMsg);
 					}
 					if(payloadLength < 900)		// sanity check, speech RTP payload should always be smaller
 					{
+                        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xF");
 						VoIpSessionsSingleton::instance()->ReportRtpPacket(rtpInfo);
 					}
 				}
 			}
 			else
 			{
+                LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x10");
 				// unsupported CODEC
 				if(s_rtpPacketLog->isDebugEnabled())
 				{
+                    LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x11");
 					CStdString logMsg;
 					char sourceIp[16];
 					inet_ntopV4(AF_INET, (void*)&ipHeader->ip_src, sourceIp, sizeof(sourceIp));
@@ -485,6 +504,7 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 			}
 		}
 	}
+    LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x12");
 	return result;
 }
 
