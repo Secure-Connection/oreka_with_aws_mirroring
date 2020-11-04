@@ -3958,7 +3958,7 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 			}
 		}
 	} else {
-
+        CStdString rtpString;
         rtpPacket->ToString(rtpString);
         LOG4CXX_INFO(m_log, "Could not find session for RTP packet:" + rtpString);
 	}
