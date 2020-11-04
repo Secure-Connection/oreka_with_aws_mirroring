@@ -763,8 +763,10 @@ void ProcessTransportLayer(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 	size_t ipHeaderLength = ipHeader->headerLen();
 	u_char* ipPacketEnd    = reinterpret_cast<unsigned char*>(ipHeader) + ipHeader->packetLen();
 
+    LOG4CXX_INFO(s_rtpPacketLog, "Process transport layer entry");
 	if(ipHeader->ip_p == IPPROTO_UDP)
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "Calling DetectUsefulUdpPacket");
 		DetectUsefulUdpPacket(ethernetHeader, ipHeader, ipHeaderLength, ipPacketEnd);
 	}
 	else if(ipHeader->ip_p == IPPROTO_TCP)
