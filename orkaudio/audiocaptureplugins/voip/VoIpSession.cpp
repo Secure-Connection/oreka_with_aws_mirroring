@@ -1521,7 +1521,8 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 			details.m_rtpPayloadType = rtpPacket->m_payloadType;
 		}
 
-        CStdString logMsg1.Format("AddRtpPacket payloadtype=%d",rtpPacket->m_payload);
+        CStdString logMsg1;
+		logMsg1.Format("AddRtpPacket payloadtype=%d",rtpPacket->m_payload);
         LOG4CXX_INFO(m_log, logMsg1);
 		AudioChunkRef chunk(new AudioChunk());
 		chunk->SetBuffer(rtpPacket->m_payload, details);
