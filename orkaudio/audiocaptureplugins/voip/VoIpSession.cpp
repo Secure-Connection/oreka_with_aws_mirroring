@@ -3957,7 +3957,10 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 				SetMediaAddress(session, trackingIp, trackingPort);
 			}
 		}
+	} else {
+	    LOG4CXX_INFO(m_log,"Could not find session for RTP packet")
 	}
+#if 0
 	else if((numSessionsFound == 0) && ((CONFIG.m_lookBackRecording == true) || DLLCONFIG.m_trackRawRtpSessionInNonLookBackMode == true))
 	{
 		VoIpEndpointInfoRef endpoint;
@@ -4050,6 +4053,7 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 			return;
 		}
 	}
+#endif
 }
 
 void VoIpSessions::TrySessionCallPickUp(CStdString replacesCallId, bool& result)
