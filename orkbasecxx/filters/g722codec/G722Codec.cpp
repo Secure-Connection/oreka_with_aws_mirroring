@@ -41,6 +41,8 @@ void G722ToPcmFilter::AudioChunkIn(AudioChunkRef& inputAudioChunk)
 	short pcmdata[8000];
 	CStdString logMsg;
 
+    LOG4CXX_INFO(m_log, "G722 To PCM - chunk in");
+
 	memset(pcmdata, 0, sizeof(pcmdata));
 	m_outputAudioChunk.reset();
 
