@@ -13,8 +13,6 @@
 #pragma warning( disable: 4786 ) // disables truncated symbols in browse-info warning
 
 #include "GsmFilters.h"
-#include <log4cxx/logger.h>
-static log4cxx::LoggerPtr s_log = log4cxx::Logger::getLogger("codec.opus");
 
 
 GsmToPcmFilter::GsmToPcmFilter()
@@ -44,6 +42,8 @@ void GsmToPcmFilter::AudioChunkIn(AudioChunkRef& inputAudioChunk)
 {
 	m_outputAudioChunk.reset();
 
+    printf("GSMToPcm To PCM - chunk In\n");
+
 	if(inputAudioChunk.get() == NULL)
 	{
 		return;
@@ -72,7 +72,7 @@ void GsmToPcmFilter::AudioChunkIn(AudioChunkRef& inputAudioChunk)
 
 void GsmToPcmFilter::AudioChunkOut(AudioChunkRef& chunk)
 {
-    LOG4CXX_INFO(s_log, "GSMToPcm To PCM - chunk out");
+    printf("GSMToPcm To PCM - chunk out\n");
 	chunk = m_outputAudioChunk;
 }
 
