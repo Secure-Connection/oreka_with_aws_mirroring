@@ -3824,10 +3824,14 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 	int destPort = rtpPacket->m_destPort;
 	bool sourceAddressIsTracked = false;
 
+    LOG4CXX_INFO(m_log, "ReportRtpPacket 0x1");
+
 	if(DLLCONFIG.m_sangomaEnable && sourcePort == destPort)
 	{
+        LOG4CXX_INFO(m_log, "ReportRtpPacket 0x2");
 		if(rtpPacket->m_sourceIp.s_addr == rtpPacket->m_destIp.s_addr)
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0x3");
 			// Source and destination IP are the same, let's change one
 			// side in order to simulate bidirection RTP
 			// flip the least significant bit of the most significant byte
@@ -3836,6 +3840,7 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 
 		if(sourcePort > DLLCONFIG.m_sangomaTxTcpPortStart)
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0x4");
 			// This is a TX packet
 			sourcePort = sourcePort - DLLCONFIG.m_sangomaTcpPortDelta;
 			rtpPacket->m_sourcePort = sourcePort;
@@ -3847,6 +3852,7 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 		}
 		else
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0x5");
 			// This is an RX packet
 			sourcePort = sourcePort + DLLCONFIG.m_sangomaTcpPortDelta;
 			rtpPacket->m_sourcePort = sourcePort;
@@ -3861,15 +3867,18 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 	session1 = findByMediaAddress(rtpPacket->m_sourceIp, sourcePort);
 	if (session1.get() != NULL)
 	{
+        LOG4CXX_INFO(m_log, "ReportRtpPacket 0x6");
 		// Found a session give it the RTP packet info
 		session = session1;
 		sourceAddressIsTracked = true;
 		if(session1->AddRtpPacket(rtpPacket))
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0x7");
 			numSessionsFound++;
 		}
 		else
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0x8");
 			// RTP discontinuity detected
 			Stop(session1);
 		}
@@ -3879,14 +3888,17 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 	session2 = findByMediaAddress(rtpPacket->m_destIp, destPort);
 	if (session2.get() != NULL)
 	{
+        LOG4CXX_INFO(m_log, "ReportRtpPacket 0x9");
 		// Found a session give it the RTP packet info
 		session = session2;
 		if(session2->AddRtpPacket(rtpPacket))
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0xA");
 			numSessionsFound++;
 		}
 		else
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0xB");
 			// RTP discontinuity detected
 			Stop(session2);
 		}
@@ -3894,6 +3906,7 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 
 	if(numSessionsFound == 2 && session1.get() != session2.get())
 	{
+        LOG4CXX_INFO(m_log, "ReportRtpPacket 0xC");
 		// Need to "merge" the two sessions (ie discard one of them)
 		// Can happen when RTP stream detected before skinny StartMediaTransmission
 		// Can also happens on CallManager with internal calls, so we keep the one that's outgoing
@@ -3902,26 +3915,32 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 
 		if(session1->m_protocol == VoIpSession::ProtRawRtp)
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0xD");
 			mergerSession = session2;
 			mergeeSession = session1;
 		}
 		else if(session2->m_protocol == VoIpSession::ProtRawRtp)
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0xE");
 			mergerSession = session1;
 			mergeeSession = session2;
 		}
 		else
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0xF");
 			// We dont merge/stop the sessions from information taking from SIP INVITE in Multi Mapping mode
 			// Instead we keep both sessions and redirect the media to correct session.
 			// In multiple mapping mode, each session can have several entries in the byIpAndPort map whereas m_ipAndPort only contains the latest media address.
 			// So removing the session from the map with the m_ipAndPort key can be wrong
 			if(DLLCONFIG.m_rtpAllowMultipleMappings == true && session1->m_protocol == VoIpSession::ProtSip && session2->m_protocol == VoIpSession::ProtSip)
 			{
+                LOG4CXX_INFO(m_log, "ReportRtpPacket 0x10");
 				if(session1->m_sipLastInvite.usec() > session2->m_sipLastInvite.usec())
 				{
+                    LOG4CXX_INFO(m_log, "ReportRtpPacket 0x11");
 					if(session2->m_numRtpPackets != 1)			//not the first packet
 					{
+                        LOG4CXX_INFO(m_log, "ReportRtpPacket 0x12");
 						unsigned long long ipAndPort;
 						Craft64bitMediaAddress(ipAndPort, rtpPacket->m_destIp, destPort);
 						logMsg.Format("session[%s] takes over media address:%s from [%s]", session1->m_trackingId, MediaAddressToString(ipAndPort), session2->m_trackingId);
@@ -3930,14 +3949,17 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 						it = m_byIpAndPort.find(ipAndPort);
 						if(it != m_byIpAndPort.end())
 						{
+                            LOG4CXX_INFO(m_log, "ReportRtpPacket 0x13");
 							m_byIpAndPort.erase(it);
 						}
 					}
 				}
 				else
 				{
+                    LOG4CXX_INFO(m_log, "ReportRtpPacket 0x14");
 					if(session1->m_numRtpPackets != 1)			//not the first packet
 					{
+                        LOG4CXX_INFO(m_log, "ReportRtpPacket 0x15");
 						unsigned long long ipAndPort;
 						Craft64bitMediaAddress(ipAndPort, rtpPacket->m_sourceIp, sourcePort);
 						logMsg.Format("session[%s] takes over media address:%s from [%s]", session2->m_trackingId, MediaAddressToString(ipAndPort), session1->m_trackingId);
@@ -3946,29 +3968,37 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 						it = m_byIpAndPort.find(ipAndPort);
 						if(it != m_byIpAndPort.end())
 						{
+                            LOG4CXX_INFO(m_log, "ReportRtpPacket 0x16");
 							m_byIpAndPort.erase(it);
 						}
 					}
 				}
+
+                LOG4CXX_INFO(m_log, "ReportRtpPacket 0x17");
 				return;
+
 			}
 			else if(session1->m_numRtpPackets < session2->m_numRtpPackets && session1->m_numRtpPackets < 5)
 			{
+                LOG4CXX_INFO(m_log, "ReportRtpPacket 0x18");
 				mergerSession = session2;
 				mergeeSession = session1;
 			}
 			else if(session2->m_numRtpPackets < session1->m_numRtpPackets && session2->m_numRtpPackets < 5)
 			{
+                LOG4CXX_INFO(m_log, "ReportRtpPacket 0x19");
 				mergerSession = session1;
 				mergeeSession = session2;
 			}
 			else if(session1->m_direction == CaptureEvent::DirOut)
 			{
+                LOG4CXX_INFO(m_log, "ReportRtpPacket 0x1A");
 				mergerSession = session1;
 				mergeeSession = session2;
 			}
 			else
 			{
+                LOG4CXX_INFO(m_log, "ReportRtpPacket 0x1B");
 				mergerSession = session2;
 				mergeeSession = session1;		
 			}
@@ -3977,33 +4007,40 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 		// Previous rules can be overruled by configuration, useful for merging sessions by "PSTN trunks"
 		if(DLLCONFIG.IsRtpTrackingIpAddress(rtpPacket->m_sourceIp))
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0x1C");
 			mergerSession = session1;
 			mergeeSession = session2;	
 		}
 		else if(DLLCONFIG.IsRtpTrackingIpAddress(rtpPacket->m_destIp))
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0x1D");
 			mergerSession = session2;
 			mergeeSession = session1;	
 		}
 
 		if(m_log->isInfoEnabled())
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0x1E");
 			CStdString debug;
 			debug.Format("Merging [%s] %s with callid:%s into [%s] %s with callid:%s",
 				mergeeSession->m_trackingId, MediaAddressToString(mergeeSession->m_ipAndPort), mergeeSession->m_callId,
 				mergerSession->m_trackingId, MediaAddressToString(mergerSession->m_ipAndPort), mergerSession->m_callId);
 			LOG4CXX_INFO(m_log, debug);
 		}
+        LOG4CXX_INFO(m_log, "ReportRtpPacket 0x1F");
 		Stop(mergeeSession);
 	}
 	else if(numSessionsFound == 1 )
 	{
+        LOG4CXX_INFO(m_log, "ReportRtpPacket 0x20");
 		if(DLLCONFIG.m_mediaAddressUseSecondRtpAddress == true)	//either source or dest media address is not already in tracking map
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0x21");
 			unsigned short trackingPort = 0;
 			in_addr trackingIp;
 			if(sourceAddressIsTracked == true)	//we need to add dest port into tracking map
 			{
+                LOG4CXX_INFO(m_log, "ReportRtpPacket 0x22");
 				trackingPort = rtpPacket->m_destPort;
 				trackingIp = rtpPacket->m_destIp;
                 LOG4CXX_INFO(m_log, "SetMediaAddress 0xB");
@@ -4011,6 +4048,7 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 			}
 			else
 			{
+                LOG4CXX_INFO(m_log, "ReportRtpPacket 0x23");
 				trackingPort = rtpPacket->m_sourcePort;
 				trackingIp = rtpPacket->m_sourceIp;
                 LOG4CXX_INFO(m_log, "SetMediaAddress 0xC");
@@ -4019,26 +4057,31 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 		}
 		if (session->m_numRtpPackets == 1 && session->m_protocol == VoIpSession::ProtSip)
 		{
+            LOG4CXX_INFO(m_log, "ReportRtpPacket 0x24");
 			// This was the first packet of the session, check whether it is tracked on the right IP address
 			in_addr trackingIp;
 			unsigned short trackingPort = 0;
 			if(DLLCONFIG.IsRtpTrackingIpAddress(rtpPacket->m_destIp))
 			{
+                LOG4CXX_INFO(m_log, "ReportRtpPacket 0x25");
 				trackingIp = rtpPacket->m_destIp;
 				trackingPort = rtpPacket->m_destPort;
 			}
 			else if(DLLCONFIG.IsRtpTrackingIpAddress(rtpPacket->m_sourceIp))
 			{
+                LOG4CXX_INFO(m_log, "ReportRtpPacket 0x26");
 				trackingIp = rtpPacket->m_sourceIp;
 				trackingPort = rtpPacket->m_sourcePort;
 			}
 			if(trackingPort)
 			{
+                LOG4CXX_INFO(m_log, "ReportRtpPacket 0x27");
                 LOG4CXX_INFO(m_log, "SetMediaAddress 0xD");
 				SetMediaAddress(session, trackingIp, trackingPort);
 			}
 		}
 	} else {
+        LOG4CXX_INFO(m_log, "ReportRtpPacket 0x28");
         CStdString rtpString;
         rtpPacket->ToString(rtpString);
         LOG4CXX_INFO(m_log, "Could not find session for RTP packet:" + rtpString);
