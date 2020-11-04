@@ -2244,6 +2244,7 @@ void VoIpSessions::ReportSip200Ok(Sip200OkInfoRef info)
 				else
 				{
 					// Session has a private IP
+                    LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x1");
 					SetMediaAddress(session, info->m_mediaIp, mediaPort);
 				}
 			}
@@ -2544,11 +2545,13 @@ bool VoIpSessions::SkinnyFindMostLikelySessionForRtp(RtpPacketInfoRef& rtpPacket
 
 	if(srcmatch == true)
 	{
-		SetMediaAddress(session, rtpPacket->m_sourceIp, rtpPacket->m_sourcePort);
+        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x2");
+	    SetMediaAddress(session, rtpPacket->m_sourceIp, rtpPacket->m_sourcePort);
 		inet_ntopV4(AF_INET, (void*)&rtpPacket->m_sourceIp, szEndPointIp, sizeof(szEndPointIp));
 	}
 	else
 	{
+        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x3");
 		SetMediaAddress(session, rtpPacket->m_destIp, rtpPacket->m_destPort);
 		inet_ntopV4(AF_INET, (void*)&rtpPacket->m_destIp, szEndPointIp, sizeof(szEndPointIp));
 	}
@@ -2608,10 +2611,12 @@ bool VoIpSessions::SkinnyFindMostLikelySessionForRtpBehindNat(RtpPacketInfoRef& 
 
 	if(((unsigned int)session->m_endPointIp.s_addr) == ((unsigned int)rtpPacket->m_sourceIp.s_addr))
 	{
-		SetMediaAddress(session, rtpPacket->m_destIp, rtpPacket->m_destPort);
+        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x4");
+	    SetMediaAddress(session, rtpPacket->m_destIp, rtpPacket->m_destPort);
 	}
 	else
 	{
+        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x5");
 		SetMediaAddress(session, rtpPacket->m_sourceIp, rtpPacket->m_sourcePort);
 	}
 
@@ -3271,6 +3276,7 @@ void VoIpSessions::ReportSkinnyOpenReceiveChannelAck(SkOpenReceiveChannelAckStru
 		if(session->m_ipAndPort == 0 || DLLCONFIG.m_skinnyDynamicMediaAddress)
 		{
 			session->m_skinnyPassThruPartyId = openReceive->passThruPartyId;
+            LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x7");
 			SetMediaAddress(session, openReceive->endpointIpAddr, openReceive->endpointTcpPort);
 		}
 		else
@@ -3307,7 +3313,8 @@ void VoIpSessions::ReportSkinnyOpenReceiveChannelAck(SkOpenReceiveChannelAckStru
 				{
 					CStdString lp(szEndpointIp);
 					session->m_localParty = GetLocalPartyMap(lp);
-				}	
+				}
+                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x8");
 				SetMediaAddress(session, openReceive->endpointIpAddr, openReceive->endpointTcpPort);
 			}
 		}
@@ -3329,6 +3336,7 @@ void VoIpSessions::ReportSkinnyStartMediaTransmission(SkStartMediaTransmissionSt
 		if(session->m_ipAndPort == 0 || DLLCONFIG.m_skinnyDynamicMediaAddress)
 		{
 			session->m_skinnyPassThruPartyId = startMedia->passThruPartyId;
+            LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x9");
 			SetMediaAddress(session, startMedia->remoteIpAddr, startMedia->remoteTcpPort);
 		}
 		else
@@ -3365,7 +3373,8 @@ void VoIpSessions::ReportSkinnyStartMediaTransmission(SkStartMediaTransmissionSt
 				{
 					CStdString lp(szEndpointIp);
 					session->m_localParty = GetLocalPartyMap(lp);
-				}	
+				}
+                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0xA");
 				SetMediaAddress(session, startMedia->remoteIpAddr, startMedia->remoteTcpPort);
 			}
 		}
@@ -3900,12 +3909,14 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 			{
 				trackingPort = rtpPacket->m_destPort;
 				trackingIp = rtpPacket->m_destIp;
+                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0xB");
 				SetMediaAddress(session, trackingIp, trackingPort);
 			}
 			else
 			{
 				trackingPort = rtpPacket->m_sourcePort;
 				trackingIp = rtpPacket->m_sourceIp;
+                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0xC");
 				SetMediaAddress(session, trackingIp, trackingPort);
 			}
 		}
@@ -3926,6 +3937,7 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 			}
 			if(trackingPort)
 			{
+                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0xD");
 				SetMediaAddress(session, trackingIp, trackingPort);
 			}
 		}
@@ -3982,6 +3994,7 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 		// because it is usually the IP+Port of the PSTN Gateway.
 
 		session->m_endPointIp = rtpIp;
+        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0xE");
 		SetMediaAddress(session, rtpIp, rtpPort);
 
 		session->AddRtpPacket(rtpPacket);
