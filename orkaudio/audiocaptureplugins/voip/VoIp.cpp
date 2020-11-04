@@ -1039,7 +1039,7 @@ void SingleDeviceCaptureThreadHandler(pcap_t* pcapHandle)
 	if(pcapHandle)
 	{
 		CStdString log;
-		log.Format("Start Capturing: pcap handle:%x", pcapHandle);
+		log.Format("2. Start Capturing: pcap handle:%x", pcapHandle);
 		LOG4CXX_INFO(s_packetLog, log);
 		pcap_loop(pcapHandle, 0, HandlePacket, NULL);
 		if(!s_liveCapture)
@@ -1076,7 +1076,7 @@ void SingleDeviceCaptureThreadHandler(pcap_t* pcapHandle)
 					{
 						VoIpSingleton::instance()->AddPcapDeviceToMap(deviceName, pcapHandle);
 
-						log.Format("Start Capturing: pcap handle:%x", pcapHandle);
+						log.Format("1. Start Capturing: pcap handle:%x", pcapHandle);
 						LOG4CXX_INFO(s_packetLog, log);
 
 						pcap_loop(pcapHandle, 0, HandlePacket, NULL);
