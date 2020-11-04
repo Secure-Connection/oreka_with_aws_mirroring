@@ -42,7 +42,7 @@ void CapturePort::LoadFilters()
 	{
 		CStdString filterName = *it;
 		FilterRef filter = FilterRegistry::instance()->GetNewFilter(filterName);
-        LOG4CXX_ERROR(s_log, CStdString("Trying to add filter:"+filterName)
+        LOG4CXX_ERROR(s_log, CStdString("Trying to add filter:")+filterName)
 		if(filter.get())
 		{
 			m_filters.push_back(filter);
