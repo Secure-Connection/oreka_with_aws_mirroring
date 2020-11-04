@@ -2008,6 +2008,8 @@ void VoIpSessions::ReportSipInvite(SipInviteInfoRef& invite)
 					session->GoOffHold(invite->m_recvTime);
 					session->m_lastUpdated = time(NULL);	// so that timeout countdown is reset
 					LOG4CXX_INFO(m_log, "[" + session->m_trackingId + "] SIP session going off hold");
+
+                    LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x10");
 					SetMediaAddress(session, invite->m_fromRtpIp, rtpPort);
 					return;
 				}
@@ -2048,17 +2050,20 @@ void VoIpSessions::ReportSipInvite(SipInviteInfoRef& invite)
 				session->GoOffHold(invite->m_recvTime);
 				session->m_lastUpdated = time(NULL);	// so that timeout countdown is reset
 				LOG4CXX_INFO(m_log, "[" + session->m_trackingId + "] SIP session going off hold");
-				SetMediaAddress(session, invite->m_fromRtpIp, rtpPort);
+                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x11");
+                SetMediaAddress(session, invite->m_fromRtpIp, rtpPort);
 				return;
 			}
 		}
 
 		if(session->m_ipAndPort != ipAndPort && DLLCONFIG.m_sipDynamicMediaAddress)
 		{
-			SetMediaAddress(session, invite->m_fromRtpIp, rtpPort);
+            LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x12");
+            SetMediaAddress(session, invite->m_fromRtpIp, rtpPort);
 			if(DLLCONFIG.m_sipTrackMediaAddressOnSender)
 			{
-				SetMediaAddress(session, invite->m_originalSenderIp, rtpPort);
+                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x13");
+                SetMediaAddress(session, invite->m_originalSenderIp, rtpPort);
 			}
 		}
 		if(DLLCONFIG.m_sipCallPickUpSupport)
@@ -2092,10 +2097,12 @@ void VoIpSessions::ReportSipInvite(SipInviteInfoRef& invite)
 
 	newSession->ReportSipInvite(invite);
 	newSession->m_sipLastInvite.GetTimeNow();
-	SetMediaAddress(newSession, invite->m_fromRtpIp, rtpPort);
+    LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x14");
+    SetMediaAddress(newSession, invite->m_fromRtpIp, rtpPort);
 	if(DLLCONFIG.m_sipTrackMediaAddressOnSender)
 	{
-		SetMediaAddress(newSession, invite->m_originalSenderIp, rtpPort);
+        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x15");
+        SetMediaAddress(newSession, invite->m_originalSenderIp, rtpPort);
 	}
 	m_byCallId.insert(std::make_pair(newSession->m_callId, newSession));
 
@@ -2173,10 +2180,14 @@ void VoIpSessions::ReportSipSessionProgress(SipSessionProgressInfoRef& info)
 		VoIpSessionRef session = pair->second;
 		unsigned short mediaPort = std::atoi(info->m_mediaPort);
 
-		SetMediaAddress(session, info->m_mediaIp, mediaPort);
+        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x16");
+
+        SetMediaAddress(session, info->m_mediaIp, mediaPort);
 		if(DLLCONFIG.m_sipTrackMediaAddressOnSender)
 		{
-			SetMediaAddress(session, info->m_senderIp, mediaPort);
+            LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x17");
+
+            SetMediaAddress(session, info->m_senderIp, mediaPort);
 		}
 	}
 }
@@ -2221,7 +2232,9 @@ void VoIpSessions::ReportSip200Ok(Sip200OkInfoRef info)
 
 		if(info->m_hasSdp && DLLCONFIG.m_sipUse200OkMediaAddress && DLLCONFIG.m_sipDynamicMediaAddress)
 		{
-			SetMediaAddress(session, info->m_mediaIp, mediaPort);
+            LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x18");
+
+            SetMediaAddress(session, info->m_mediaIp, mediaPort);
 		}
 		else if(info->m_hasSdp && DLLCONFIG.m_sipUse200OkMediaAddress && !session->m_numRtpPackets) 
 		{
@@ -2229,7 +2242,9 @@ void VoIpSessions::ReportSip200Ok(Sip200OkInfoRef info)
 			if(!session->m_rtpIp.s_addr || DLLCONFIG.m_rtpAllowMultipleMappings)
 			{
 				// Session has empty RTP address or can have multiple RTP addresses.
-				SetMediaAddress(session, info->m_mediaIp, mediaPort);
+                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x19");
+
+                SetMediaAddress(session, info->m_mediaIp, mediaPort);
 			}
 			else
 			{
@@ -2238,7 +2253,8 @@ void VoIpSessions::ReportSip200Ok(Sip200OkInfoRef info)
 					// Session has a public IP
 					if(!DLLCONFIG.m_lanIpRanges.Matches(info->m_mediaIp))
 					{
-						SetMediaAddress(session, info->m_mediaIp, mediaPort);
+                        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x1A");
+                        SetMediaAddress(session, info->m_mediaIp, mediaPort);
 					}
 				}
 				else
@@ -3189,7 +3205,7 @@ void VoIpSessions::SetMediaAddress(VoIpSessionRef& session, struct in_addr media
 		{
 			char szEndPointIp[16];
 			inet_ntopV4(AF_INET, (void*)&session->m_endPointIp, szEndPointIp, sizeof(szEndPointIp));
-			logMsg.Format("[%s] media address:%s %s callId:%s endpoint:%s", session->m_trackingId, MediaAddressToString(mediaAddress), VoIpSession::ProtocolToString(session->m_protocol),session->m_callId, szEndPointIp);
+			logMsg.Format("..[%s] media address:%s %s callId:%s endpoint:%s", session->m_trackingId, MediaAddressToString(mediaAddress), VoIpSession::ProtocolToString(session->m_protocol),session->m_callId, szEndPointIp);
 			LOG4CXX_INFO(m_log, logMsg);
 		}
 
