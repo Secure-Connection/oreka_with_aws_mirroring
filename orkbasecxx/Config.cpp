@@ -25,7 +25,7 @@ Config::Config()
 	m_logRms = LOG_RMS_DEFAULT;
 	m_enableReporting = ENABLE_REPORTING_DEFAULT;
 	m_capturePluginPath = CAPTURE_PLUGIN_PATH_DEFAULT;
-	m_storageAudioFormat = FfPcmWav;
+	m_storageAudioFormat = STORAGE_AUDIO_FORMAT_DEFAULT;
 	m_numBatchThreads = NUM_BATCH_THREADS_DEFAULT;
 	m_numDirectionSelectorThreads = NUM_DIRECTIONSELECTOR_THREADS_DEFAULT;
 	m_numCommandThreads = NUM_COMMAND_THREADS_DEFAULT;
@@ -119,8 +119,7 @@ void Config::Define(Serializer* s)
 	s->StringValue(CAPTURE_PLUGIN_PARAM, m_capturePlugin);
 	s->StringValue(CAPTURE_PLUGIN_PATH_PARAM, m_capturePluginPath);
 	s->StringValue(PLUGINS_DIRECTORY_PARAM, m_pluginsDirectory);
-	//s->EnumValue(STORAGE_AUDIO_FORMAT_PARAM, (int&)m_storageAudioFormat, FileFormatToEnum, FileFormatToString);
-    m_storageAudioFormat = FfPcmWav;
+	s->EnumValue(STORAGE_AUDIO_FORMAT_PARAM, (int&)m_storageAudioFormat, FileFormatToEnum, FileFormatToString);
 	s->IntValue(NUM_BATCH_THREADS_PARAM, m_numBatchThreads);
 	s->IntValue(NUM_DIRECTIONSELECTOR_THREADS_PARAM, m_numDirectionSelectorThreads);
 	s->IntValue(NUM_COMMAND_THREADS_PARAM, m_numCommandThreads);
