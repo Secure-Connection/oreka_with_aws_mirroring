@@ -1042,6 +1042,7 @@ void SingleDeviceCaptureThreadHandler(pcap_t* pcapHandle)
 		log.Format("2. Start Capturing: pcap handle:%x", pcapHandle);
 		LOG4CXX_INFO(s_packetLog, log);
 		pcap_loop(pcapHandle, 0, HandlePacket, NULL);
+        LOG4CXX_INFO(s_packetLog,"PCAP Loop finished");
 		if(!s_liveCapture)
 		{
 			// This is a pcap file replay, stop all sessions before exiting
