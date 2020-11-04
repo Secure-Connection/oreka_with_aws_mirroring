@@ -2009,7 +2009,7 @@ void VoIpSessions::ReportSipInvite(SipInviteInfoRef& invite)
 					session->m_lastUpdated = time(NULL);	// so that timeout countdown is reset
 					LOG4CXX_INFO(m_log, "[" + session->m_trackingId + "] SIP session going off hold");
 
-                    LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x10");
+                    LOG4CXX_INFO(m_log, "SetMediaAddress 0x10");
 					SetMediaAddress(session, invite->m_fromRtpIp, rtpPort);
 					return;
 				}
@@ -2050,7 +2050,7 @@ void VoIpSessions::ReportSipInvite(SipInviteInfoRef& invite)
 				session->GoOffHold(invite->m_recvTime);
 				session->m_lastUpdated = time(NULL);	// so that timeout countdown is reset
 				LOG4CXX_INFO(m_log, "[" + session->m_trackingId + "] SIP session going off hold");
-                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x11");
+                LOG4CXX_INFO(m_log, "SetMediaAddress 0x11");
                 SetMediaAddress(session, invite->m_fromRtpIp, rtpPort);
 				return;
 			}
@@ -2058,11 +2058,11 @@ void VoIpSessions::ReportSipInvite(SipInviteInfoRef& invite)
 
 		if(session->m_ipAndPort != ipAndPort && DLLCONFIG.m_sipDynamicMediaAddress)
 		{
-            LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x12");
+            LOG4CXX_INFO(m_log, "SetMediaAddress 0x12");
             SetMediaAddress(session, invite->m_fromRtpIp, rtpPort);
 			if(DLLCONFIG.m_sipTrackMediaAddressOnSender)
 			{
-                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x13");
+                LOG4CXX_INFO(m_log, "SetMediaAddress 0x13");
                 SetMediaAddress(session, invite->m_originalSenderIp, rtpPort);
 			}
 		}
@@ -2097,11 +2097,11 @@ void VoIpSessions::ReportSipInvite(SipInviteInfoRef& invite)
 
 	newSession->ReportSipInvite(invite);
 	newSession->m_sipLastInvite.GetTimeNow();
-    LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x14");
+    LOG4CXX_INFO(m_log, "SetMediaAddress 0x14");
     SetMediaAddress(newSession, invite->m_fromRtpIp, rtpPort);
 	if(DLLCONFIG.m_sipTrackMediaAddressOnSender)
 	{
-        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x15");
+        LOG4CXX_INFO(m_log, "SetMediaAddress 0x15");
         SetMediaAddress(newSession, invite->m_originalSenderIp, rtpPort);
 	}
 	m_byCallId.insert(std::make_pair(newSession->m_callId, newSession));
@@ -2180,12 +2180,12 @@ void VoIpSessions::ReportSipSessionProgress(SipSessionProgressInfoRef& info)
 		VoIpSessionRef session = pair->second;
 		unsigned short mediaPort = std::atoi(info->m_mediaPort);
 
-        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x16");
+        LOG4CXX_INFO(m_log, "SetMediaAddress 0x16");
 
         SetMediaAddress(session, info->m_mediaIp, mediaPort);
 		if(DLLCONFIG.m_sipTrackMediaAddressOnSender)
 		{
-            LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x17");
+            LOG4CXX_INFO(m_log, "SetMediaAddress 0x17");
 
             SetMediaAddress(session, info->m_senderIp, mediaPort);
 		}
@@ -2232,7 +2232,7 @@ void VoIpSessions::ReportSip200Ok(Sip200OkInfoRef info)
 
 		if(info->m_hasSdp && DLLCONFIG.m_sipUse200OkMediaAddress && DLLCONFIG.m_sipDynamicMediaAddress)
 		{
-            LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x18");
+            LOG4CXX_INFO(m_log, "SetMediaAddress 0x18");
 
             SetMediaAddress(session, info->m_mediaIp, mediaPort);
 		}
@@ -2242,7 +2242,7 @@ void VoIpSessions::ReportSip200Ok(Sip200OkInfoRef info)
 			if(!session->m_rtpIp.s_addr || DLLCONFIG.m_rtpAllowMultipleMappings)
 			{
 				// Session has empty RTP address or can have multiple RTP addresses.
-                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x19");
+                LOG4CXX_INFO(m_log, "SetMediaAddress 0x19");
 
                 SetMediaAddress(session, info->m_mediaIp, mediaPort);
 			}
@@ -2253,14 +2253,14 @@ void VoIpSessions::ReportSip200Ok(Sip200OkInfoRef info)
 					// Session has a public IP
 					if(!DLLCONFIG.m_lanIpRanges.Matches(info->m_mediaIp))
 					{
-                        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x1A");
+                        LOG4CXX_INFO(m_log, "SetMediaAddress 0x1A");
                         SetMediaAddress(session, info->m_mediaIp, mediaPort);
 					}
 				}
 				else
 				{
 					// Session has a private IP
-                    LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x1");
+                    LOG4CXX_INFO(m_log, "SetMediaAddress 0x1");
 					SetMediaAddress(session, info->m_mediaIp, mediaPort);
 				}
 			}
@@ -2561,13 +2561,13 @@ bool VoIpSessions::SkinnyFindMostLikelySessionForRtp(RtpPacketInfoRef& rtpPacket
 
 	if(srcmatch == true)
 	{
-        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x2");
+        LOG4CXX_INFO(m_log, "SetMediaAddress 0x2");
 	    SetMediaAddress(session, rtpPacket->m_sourceIp, rtpPacket->m_sourcePort);
 		inet_ntopV4(AF_INET, (void*)&rtpPacket->m_sourceIp, szEndPointIp, sizeof(szEndPointIp));
 	}
 	else
 	{
-        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x3");
+        LOG4CXX_INFO(m_log, "SetMediaAddress 0x3");
 		SetMediaAddress(session, rtpPacket->m_destIp, rtpPacket->m_destPort);
 		inet_ntopV4(AF_INET, (void*)&rtpPacket->m_destIp, szEndPointIp, sizeof(szEndPointIp));
 	}
@@ -2627,12 +2627,12 @@ bool VoIpSessions::SkinnyFindMostLikelySessionForRtpBehindNat(RtpPacketInfoRef& 
 
 	if(((unsigned int)session->m_endPointIp.s_addr) == ((unsigned int)rtpPacket->m_sourceIp.s_addr))
 	{
-        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x4");
+        LOG4CXX_INFO(m_log, "SetMediaAddress 0x4");
 	    SetMediaAddress(session, rtpPacket->m_destIp, rtpPacket->m_destPort);
 	}
 	else
 	{
-        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x5");
+        LOG4CXX_INFO(m_log, "SetMediaAddress 0x5");
 		SetMediaAddress(session, rtpPacket->m_sourceIp, rtpPacket->m_sourcePort);
 	}
 
@@ -3292,7 +3292,7 @@ void VoIpSessions::ReportSkinnyOpenReceiveChannelAck(SkOpenReceiveChannelAckStru
 		if(session->m_ipAndPort == 0 || DLLCONFIG.m_skinnyDynamicMediaAddress)
 		{
 			session->m_skinnyPassThruPartyId = openReceive->passThruPartyId;
-            LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x7");
+            LOG4CXX_INFO(m_log, "SetMediaAddress 0x7");
 			SetMediaAddress(session, openReceive->endpointIpAddr, openReceive->endpointTcpPort);
 		}
 		else
@@ -3330,7 +3330,7 @@ void VoIpSessions::ReportSkinnyOpenReceiveChannelAck(SkOpenReceiveChannelAckStru
 					CStdString lp(szEndpointIp);
 					session->m_localParty = GetLocalPartyMap(lp);
 				}
-                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x8");
+                LOG4CXX_INFO(m_log, "SetMediaAddress 0x8");
 				SetMediaAddress(session, openReceive->endpointIpAddr, openReceive->endpointTcpPort);
 			}
 		}
@@ -3352,7 +3352,7 @@ void VoIpSessions::ReportSkinnyStartMediaTransmission(SkStartMediaTransmissionSt
 		if(session->m_ipAndPort == 0 || DLLCONFIG.m_skinnyDynamicMediaAddress)
 		{
 			session->m_skinnyPassThruPartyId = startMedia->passThruPartyId;
-            LOG4CXX_DEBUG(m_log, "SetMediaAddress 0x9");
+            LOG4CXX_INFO(m_log, "SetMediaAddress 0x9");
 			SetMediaAddress(session, startMedia->remoteIpAddr, startMedia->remoteTcpPort);
 		}
 		else
@@ -3390,7 +3390,7 @@ void VoIpSessions::ReportSkinnyStartMediaTransmission(SkStartMediaTransmissionSt
 					CStdString lp(szEndpointIp);
 					session->m_localParty = GetLocalPartyMap(lp);
 				}
-                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0xA");
+                LOG4CXX_INFO(m_log, "SetMediaAddress 0xA");
 				SetMediaAddress(session, startMedia->remoteIpAddr, startMedia->remoteTcpPort);
 			}
 		}
@@ -3925,14 +3925,14 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 			{
 				trackingPort = rtpPacket->m_destPort;
 				trackingIp = rtpPacket->m_destIp;
-                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0xB");
+                LOG4CXX_INFO(m_log, "SetMediaAddress 0xB");
 				SetMediaAddress(session, trackingIp, trackingPort);
 			}
 			else
 			{
 				trackingPort = rtpPacket->m_sourcePort;
 				trackingIp = rtpPacket->m_sourceIp;
-                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0xC");
+                LOG4CXX_INFO(m_log, "SetMediaAddress 0xC");
 				SetMediaAddress(session, trackingIp, trackingPort);
 			}
 		}
@@ -3953,7 +3953,7 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 			}
 			if(trackingPort)
 			{
-                LOG4CXX_DEBUG(m_log, "SetMediaAddress 0xD");
+                LOG4CXX_INFO(m_log, "SetMediaAddress 0xD");
 				SetMediaAddress(session, trackingIp, trackingPort);
 			}
 		}
@@ -4010,7 +4010,7 @@ void VoIpSessions::ReportRtpPacket(RtpPacketInfoRef& rtpPacket)
 		// because it is usually the IP+Port of the PSTN Gateway.
 
 		session->m_endPointIp = rtpIp;
-        LOG4CXX_DEBUG(m_log, "SetMediaAddress 0xE");
+        LOG4CXX_INFO(m_log, "SetMediaAddress 0xE");
 		SetMediaAddress(session, rtpIp, rtpPort);
 
 		session->AddRtpPacket(rtpPacket);
