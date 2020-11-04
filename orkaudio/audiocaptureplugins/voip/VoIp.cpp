@@ -831,10 +831,13 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 {
 	time_t now = time(NULL);
 
+    LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0x1");
+
 	s_numPackets++;
 	s_numPacketsPerSecond++;
 	if(s_lastPacketsPerSecondTime != now)
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0x2");
 		s_lastPacketsPerSecondTime = now;
 		if(s_numPacketsPerSecond > s_maxPacketsPerSecond)
 		{
@@ -853,6 +856,7 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 
 	if(s_liveCapture && (now - s_lastPcapStatsReportingTime) >= 10)
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0x3");
 		MutexSentinel mutexSentinel(s_mutex);		// serialize access for competing pcap threads
 		s_lastPcapStatsReportingTime = now;
 		VoIpSingleton::instance()->ReportPcapStats();
@@ -877,6 +881,7 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 	}
 	if(DLLCONFIG.m_pcapTest)
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0x4");
 		return;
 	}
 
@@ -885,18 +890,22 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 
 	if(ntohs(ethernetHeader->type) == ETHER_TYPE_IEEE8021Q)
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0x5");
 		ipHeader = (IpHeaderStruct*)((char*)ethernetHeader + sizeof(EthernetHeaderStruct) + 4);
 	}
 	else if(ntohs(ethernetHeader->type) == ETHER_TYPE_IPV4 || ntohs(ethernetHeader->type) == ETHER_TYPE_ARP)
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0x6");
 		ipHeader = (IpHeaderStruct*)((char*)ethernetHeader + sizeof(EthernetHeaderStruct));
 	}
 	else if(ntohs(ethernetHeader->type) == ETHER_TYPE_IPV6)
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0x7");
 		return;
 	}
 	else	//Maybe linux cooked pcap
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0x8");
 		//If Linux cooked capture, we arbitrarily align the Ethernet header pointer so that its ETHER_TYPE is aligned with the ETHER_TYPE field of the Linux Cooked header.
 		//This means that the source and destination MAC addresses of the obtained Ethernet header are totally wrong, but this is fine, as long as we are aware of this limitation
 		ethernetHeader = (EthernetHeaderStruct *)(pkt_data + 2);
@@ -919,6 +928,7 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 
 	if(TryIpPacketV4(ipHeader) != true)
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0x9");
 		LOG4CXX_INFO(s_packetStatsLog,"Not IP Packet");
 
 		return;
@@ -927,6 +937,7 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 	UdpHeaderStruct* udpHeader = (UdpHeaderStruct*)((char *)ipHeader + sizeof(IpHeaderStruct));
 
 	if(ntohs(udpHeader->dest) == 4789) {
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0xA");
 	    ipHeader = (IpHeaderStruct*)((char*)ethernetHeader + sizeof(EthernetHeaderStruct) * 2  + +sizeof(UdpHeaderStruct) + sizeof(IpHeaderStruct) + 8 /*VXLAN Size */);
 	}
 
@@ -935,6 +946,7 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 	u_char* captureEnd = (u_char*)pkt_data + header->caplen;
 	if( captureEnd < (u_char*)ipPacketEnd  || (u_char*)ipPacketEnd <= ((u_char*)ipHeader + ipHeaderLength + TCP_HEADER_LENGTH))
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0xB");
 		// The packet has been snipped or has not enough payload, drop it,
 		LOG4CXX_INFO(s_packetStatsLog,"Dropping - not enough payload");
 
@@ -944,6 +956,7 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 //#ifdef WIN32
 	if(!s_liveCapture)
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0xC");
 		// This is a pcap file replay
 		if(DLLCONFIG.m_pcapFastReplay)
 		{
@@ -980,27 +993,32 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 
 	if(DLLCONFIG.IsPacketWanted(ipHeader) == false)
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0xD");
 		return;
 	}
 
 	if (DLLCONFIG.m_ipFragmentsReassemble && ipHeader->isFragmented()) {
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0xE");
 		SizedBufferRef packetData = HandleIpFragment(ipHeader);	
 		if (packetData) { // Packet data will return non-empty when the packet is complete
 			ProcessTransportLayer(ethernetHeader,reinterpret_cast<IpHeaderStruct*>(packetData->get()) );
 		}
 	}
 	else {
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0xF");
 		ProcessTransportLayer(ethernetHeader,ipHeader);
 	}
 
 	if((now - s_lastHooveringTime) > 5)
 	{
+        LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0x10");
 		MutexSentinel mutexSentinel(s_mutex);		// serialize access for competing pcap threads
 		s_lastHooveringTime = now;
 		VoIpSessionsSingleton::instance()->Hoover(now);
 		Iax2SessionsSingleton::instance()->Hoover(now);
 		VoIpSingleton::instance()->LoadPartyMaps();
 	}
+    LOG4CXX_INFO(s_rtpPacketLog, "HandlePacket 0x11");
 }
 
 void SingleDeviceCaptureThreadHandler(pcap_t* pcapHandle)
