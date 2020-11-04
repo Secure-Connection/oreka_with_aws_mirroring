@@ -1161,6 +1161,7 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 
 	if (channel == 1 && !firstPacketForChannel)
 	{
+        LOG4CXX_INFO(m_log, "RTP Packet for channel 1");
 		// Subsequent RTP packet for side 1
 		if(rtpPacket->m_timestamp == m_lastRtpPacketSide1->m_timestamp)
 		{
@@ -1221,6 +1222,7 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 	}
 	else if (channel == 2 && !firstPacketForChannel)
 	{
+        LOG4CXX_INFO(m_log, "RTP Packet for channel 2");
 		// Subsequent RTP packet for side 2
 		if(rtpPacket->m_timestamp == m_lastRtpPacketSide2->m_timestamp)
 		{
@@ -1272,6 +1274,7 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 	}
 	else if (channel == 0) // neither belongs to 1 or 2
 	{
+        LOG4CXX_INFO(m_log, "RTP Packet for channel 0");
 		// this packet does not match either s1 or s2 (on the basis of SSRC)
 		if(m_ssrcCandidate == -1)
 		{
