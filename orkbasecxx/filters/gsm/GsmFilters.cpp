@@ -13,6 +13,9 @@
 #pragma warning( disable: 4786 ) // disables truncated symbols in browse-info warning
 
 #include "GsmFilters.h"
+#include <log4cxx/logger.h>
+static log4cxx::LoggerPtr s_log = log4cxx::Logger::getLogger("codec.opus");
+
 
 GsmToPcmFilter::GsmToPcmFilter()
 {

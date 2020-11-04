@@ -16,6 +16,9 @@
 
 #include "G722Codec.h"
 #include <cstring>
+#include <log4cxx/logger.h>
+static log4cxx::LoggerPtr s_log = log4cxx::Logger::getLogger("codec.opus");
+
 G722ToPcmFilter::G722ToPcmFilter()
 {
 	// Initialize decoder
