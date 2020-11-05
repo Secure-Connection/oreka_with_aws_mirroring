@@ -288,7 +288,9 @@ void AudioTape::Write()
 				// Need to create file appender when receiving first audio chunk
 				if (m_state == StateCreated)
 				{
-                    LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x6");
+				    CStdString logMsg;
+				    logMsg.format((LOG.tapeLog, "AudioTape::Write 0x6:%d",chunkRef->GetEncoding()));
+                    LOG4CXX_ERROR(LOG.tapeLog, logMsg);
 					m_state = StateActive;
 
 					switch(chunkRef->GetEncoding())
