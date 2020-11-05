@@ -214,6 +214,8 @@ void AudioTape::Write()
 	bool done = false;
 	CStdString logMsg;
 
+    LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write");
+
 	if(m_state == StateCreated && PartyFilterActive())
 	{
 		if(!m_passedPartyFilterTest)
