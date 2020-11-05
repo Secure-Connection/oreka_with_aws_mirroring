@@ -289,7 +289,7 @@ void AudioTape::Write()
 				if (m_state == StateCreated)
 				{
 				    CStdString logMsg;
-				    logMsg.format((LOG.tapeLog, "AudioTape::Write 0x6:%d",chunkRef->GetEncoding()));
+				    logMsg.Format((LOG.tapeLog, "AudioTape::Write 0x6:%d",chunkRef->GetEncoding()));
                     LOG4CXX_ERROR(LOG.tapeLog, logMsg);
 					m_state = StateActive;
 
