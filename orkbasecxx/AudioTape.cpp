@@ -256,6 +256,8 @@ void AudioTape::Write()
 		return;
 	}
 
+    LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x1");
+
 	while(!done && m_state != StateStopped && m_state != StateError)
 	{
 		// Get the oldest audio chunk
@@ -287,11 +289,11 @@ void AudioTape::Write()
 					switch(chunkRef->GetEncoding())
 					{
 					case PcmAudio:
-                        LOG4CXX_INFO(LOG.tapeLog, "PCMAudio");
+                        LOG4CXX_ERROR(LOG.tapeLog, "PCMAudio");
 						m_audioFileRef.reset(new LibSndFileFile(SF_FORMAT_PCM_16 | SF_FORMAT_WAV));
 						break;
 					default:
-                        LOG4CXX_INFO(LOG.tapeLog, "MediaChunkFile");
+                        LOG4CXX_ERROR(LOG.tapeLog, "MediaChunkFile");
 						// All other encodings: output as a media chunk file
 						m_audioFileRef.reset(new MediaChunkFile());
 					}
