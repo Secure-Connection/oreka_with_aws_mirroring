@@ -260,12 +260,14 @@ void AudioTape::Write()
 
 	while(!done && m_state != StateStopped && m_state != StateError)
 	{
+        LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x2");
 		// Get the oldest audio chunk
 		AudioChunkRef chunkRef;
 		{
 			MutexSentinel sentinel(m_mutex);
 			if (m_chunkQueue.size() > 0)
 			{
+                LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x3");
 				chunkRef = m_chunkQueue.front();
 				m_chunkQueue.pop();
 
@@ -274,16 +276,19 @@ void AudioTape::Write()
 			}
 			else
 			{
+                LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x4");
 				done = true;
 			}
 		}
 		if(!done)
 		{
+            LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x5");
 			try
 			{
 				// Need to create file appender when receiving first audio chunk
 				if (m_state == StateCreated)
 				{
+                    LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x6");
 					m_state = StateActive;
 
 					switch(chunkRef->GetEncoding())
@@ -299,6 +304,7 @@ void AudioTape::Write()
 					}
 					if (m_state == StateActive)
 					{
+                        LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x7");
 						// A file format was successfully added to the tape, open it
 						CStdString file = CONFIG.m_audioOutputPathMcf + "/" + m_filePath + m_fileIdentifier;
 
@@ -313,20 +319,25 @@ void AudioTape::Write()
 						// determine what final extension the file will have after optional compression
 						if(CONFIG.m_storageAudioFormat == FfNative)
 						{
+                            LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x8");
 							m_fileExtension = m_audioFileRef->GetExtension();
 						}
 						else
 						{
+                            LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x9");
 							m_fileExtension = FileFormatGetExtension(CONFIG.m_storageAudioFormat);
 						}
 					}
 				}
 				if (m_state == StateActive)
 				{
+                    LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0xA");
 					if((m_bytesWritten / 1024) > CONFIG.m_captureFileSizeLimitKb)
 					{
+                        LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0xB");
 						if((time(NULL) - m_lastLogWarning) > 3600)
 						{
+                            LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0xC");
 							CStdString logMsg;
 
 							logMsg.Format("[%s] capture file %s.mcf is over size limit (%u KBytes) - ignoring new data", m_trackingId, GetIdentifier(), CONFIG.m_captureFileSizeLimitKb);
@@ -336,12 +347,14 @@ void AudioTape::Write()
 					}
 					else
 					{
+                        LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0xD");
 						m_audioFileRef->WriteChunk(chunkRef);
 						m_bytesWritten += chunkRef->GetNumBytes();
 					}
 
 					if (CONFIG.m_logRms)
 					{
+                        LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0xE");
 						// Compute RMS, RMS dB and log
 						CStdString rmsString;
 						rmsString.Format("%.1f dB:%.1f", chunkRef.get()->ComputeRms(), chunkRef.get()->ComputeRmsDb());
@@ -351,6 +364,7 @@ void AudioTape::Write()
 			}
 			catch (CStdString& e)
 			{
+                LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0xF");
 				m_numErrors++;
 
 				if(m_numErrors <= 3)
@@ -365,9 +379,11 @@ void AudioTape::Write()
 
 	if ( (m_shouldStop && m_state != StateStopped) || m_state == StateError)
 	{
+        LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x10");
 		m_state = StateStopped;
 		if(m_audioFileRef.get())
 		{
+            LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x11");
 			m_audioFileRef->Close();
 			/*
 			 * This function is now called in the TapeFileNaming
@@ -376,12 +392,13 @@ void AudioTape::Write()
 			//GenerateFinalFilePathAndIdentifier();
 			if(m_bytesWritten > 0)
 			{
+                LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x12");
 				m_readyForBatchProcessing = true;
 			}
 		}
 	}
 
-
+    LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x13");
 }
 
 void AudioTape::SetShouldStop()
