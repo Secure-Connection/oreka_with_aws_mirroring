@@ -24,7 +24,7 @@ class SIPEventWriter {
     virtual int get_element_size();
     virtual int get_queue_identifier();
 public:
-    static static SIPEventWriter * instance();
+    static SIPEventWriter * instance();
     virtual bool write_sip_event(CStdString caller, CStdString callee, CStdString session_id, uint64_t time, SipEventType eventType );
 };
 
