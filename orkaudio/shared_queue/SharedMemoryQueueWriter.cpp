@@ -13,7 +13,7 @@ static LoggerPtr s_parsersLog = Logger::getLogger("parsers.sip");
 SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _element_size, int _queue_size) {
     queue_identifier = _queue_identifier;
     element_size = _element_size;
-    queue_size = queue_size;
+    queue_size = _queue_size;
 
     key = ftok("memory",queue_identifier);
     shmid = shmget(key, 2*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
