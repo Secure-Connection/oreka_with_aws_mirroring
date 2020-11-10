@@ -18,11 +18,11 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter() {
     *read_pointer = 0;
 }
 
-bool SharedMemoryQueueWriter::isFull() {
+bool SharedMemoryQueueWriter::is_full() {
     return get_next_value(*write_pointer)==*read_pointer();
 }
 
-bool SharedMemoryQueueWriter::isEmpty() {
+bool SharedMemoryQueueWriter::is_empty() {
     return *write_pointer==*read_pointer;
 }
 
