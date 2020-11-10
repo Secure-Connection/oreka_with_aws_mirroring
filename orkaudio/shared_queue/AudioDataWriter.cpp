@@ -19,7 +19,7 @@ AudioDataWriter * AudioDataWriter::instance() {
 }
 
 
-int AuidioDataWriter::get_element_size() {
+int AudioDataWriter::get_element_size() {
     return sizeof(PCMData)+512;
 }
 virtual int AuidioDataWriter::get_queue_identifier() {
@@ -27,7 +27,7 @@ virtual int AuidioDataWriter::get_queue_identifier() {
 }
 
 
-bool AuidioDataWriter::write_pcm_data(CStdString session_id, int channel, int payload_type, int data_length, unsigned char * audio_data) {
+bool AudioDataWriter::write_pcm_data(CStdString session_id, int channel, int payload_type, int data_length, unsigned char * audio_data) {
     if(is_full()) {
         return false;
     }
