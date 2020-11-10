@@ -155,13 +155,8 @@ bool TrySipBye(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, U
 
         __int64_t current_time = get_time_from_epoch_micros();
 
-        CStdString call_stop_json = "{";
-        call_stop_json += "\"session_id\":\"" + info->m_callId + "\",\n";
-        call_stop_json += "\"recording_path\": "",\n";
-        call_stop_json += "\"end\":" + CStdString(std::to_string(current_time).c_str()) + " \n}";
-
         LOG4CXX_INFO(s_sipPacketLog, "Stopping elvis");
-        SealedLocalConnector::instance()->SendStopCall(call_stop_json);
+        SipEventWriter::instance()->write_sip_event(info->from,info->to,info->m_callId,current_time,SipEventType::SIP_STOP)
     }
     return result;
 }
@@ -700,6 +695,8 @@ bool TrySip200Ok(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader,
         }
 
         VoIpSessionsSingleton::instance()->ReportSip200Ok(info);
+
+        SipEventWriter::instance()->write_sip_event(info->from,info->to,info->m_callId,time(NULL),SipEventType::SIP_START)
     }
 
     LOG4CXX_INFO(s_sipPacketLog, "Calling elvis 0x5");

@@ -1526,7 +1526,12 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
         LOG4CXX_INFO(m_log, logMsg1);
 		AudioChunkRef chunk(new AudioChunk());
 		chunk->SetBuffer(rtpPacket->m_payload, details);
-		g_audioChunkCallBack(chunk, m_capturePort);
+		//g_audioChunkCallBack(chunk, m_capturePort);
+
+        CStdString m_callId;
+        SipInviteInfoRef m_invite;
+
+        AudioDataWriter::instance()->write_pcm_data(m_callId, channel, rtpPacket->m_payloadType, irtpPacket->m_payloadSize, rtpPacket->m_payload);
 
 	}
     LOG4CXX_INFO(m_log, "AddRtpPacket 0xE1");
