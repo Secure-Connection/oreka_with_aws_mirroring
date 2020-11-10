@@ -13,9 +13,7 @@ SIPEventWriter * SIPEventWriter::instance() {
 }
 
 
-SIPEventWriter::SipEventWriter():SharedMemoryQueueWriter(  0x1790,(int) sizeof(SIPEvent), 512)
-{}
-
+:SharedMemoryQueueWriter(  0x1790,(int) sizeof(SIPEvent), 512)
 bool SIPEventWriter::write_sip_event(CStdString caller, CStdString callee, CStdString session_id, uint64_t eventTime, SipEventType eventType ){
     SIPEvent event;
 
