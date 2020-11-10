@@ -37,7 +37,7 @@ private:
  protected:
 
   public:
-     SharedMemoryQueueWriter(int element_size, int queue_size);
+     SharedMemoryQueueWriter(int queue_identifier, int element_size, int queue_size);
      ~SharedMemoryQueueWriter();
      bool is_full();
 
