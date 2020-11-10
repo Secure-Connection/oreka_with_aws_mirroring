@@ -156,7 +156,7 @@ bool TrySipBye(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, U
         __int64_t current_time = get_time_from_epoch_micros();
 
         LOG4CXX_INFO(s_sipPacketLog, "Stopping elvis");
-        SIPEventWriter::instance()->write_sip_event(info->from,info->to,info->m_callId,current_time,SipEventType::SIP_STOP)
+        SIPEventWriter::instance()->write_sip_event(info->m_from,info->m_to,info->m_callId,current_time,SipEventType::SIP_STOP)
     }
     return result;
 }
