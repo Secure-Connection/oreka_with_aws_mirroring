@@ -6,11 +6,6 @@
 
 AudioDataWriter * AudioDataWriter::s_instance = NULL;
 
-
-int AudioDataWriter::get_queue_size() {
-    return 2048;
-}
-
 AudioDataWriter * AudioDataWriter::instance() {
     if(s_instance==NULL) {
         s_instance = new AudioDataWriter();
@@ -19,20 +14,12 @@ AudioDataWriter * AudioDataWriter::instance() {
 }
 
 
-int AudioDataWriter::get_element_size() {
-    return sizeof(PCMData)+512;
-}
-int AudioDataWriter::get_queue_identifier() {
-    return 0x1789;
-}
-
-
 bool AudioDataWriter::write_pcm_data(CStdString session_id, int channel, int payload_type, int data_length, unsigned char * audio_data) {
     if(is_full()) {
         return false;
     }
 
-    unsigned char *element_memory = (unsigned char*)malloc(get_element_size());
+    unsigned char *element_memory = (unsigned char*)malloc(sizeof(PCMData)+512);
 
     write_element(element_memory);
 
