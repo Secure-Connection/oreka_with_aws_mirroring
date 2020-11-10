@@ -4,7 +4,7 @@
 
 #include "AudioDataWriter.h"
 
-AudioDataWriter * AudioDataWriter::instance = NULL;
+AudioDataWriter * AudioDataWriter::s_instance = NULL;
 
 
 int AuidioDataWriter::get_queue_size() {
@@ -12,10 +12,10 @@ int AuidioDataWriter::get_queue_size() {
 }
 
 AudioDataWriter * AudioDataWriter::instance() {
-    if(instance==NULL) {
-        instance = new AudioDataWriter();
+    if(s_instance==NULL) {
+        s_instance = new AudioDataWriter();
     }
-    return instance;
+    return s_instance;
 }
 
 
