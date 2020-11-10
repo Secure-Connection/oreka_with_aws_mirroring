@@ -22,7 +22,7 @@ AudioDataWriter * AudioDataWriter::instance() {
 int AudioDataWriter::get_element_size() {
     return sizeof(PCMData)+512;
 }
-virtual int AudioDataWriter::get_queue_identifier() {
+int AudioDataWriter::get_queue_identifier() {
     return 0x1789;
 }
 
