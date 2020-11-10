@@ -4,6 +4,10 @@
 
 #include "SharedMemoryQueueWriter.h"
 
+#include "LogManager.h"
+
+static LoggerPtr s_parsersLog = Logger::getLogger("parsers.sip");
+
 SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _element_size, int _queue_size) {
     queue_identifier = _queue_identifier;
     element_size = _element_size;
@@ -12,14 +16,15 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     key = ftok("memory",queue_identifier);
     shmid = shmget(key, 2*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
     if(shmid == -1){
-        //printf("Unable to create the Shared Memory Segment.\n");
+        LOG4CXX_ERROR(s_parsersLog, "Unable to create the Shared Memory Segment.\n");
     }
 
     shared_memory = (unsigned char *)shmat(shmid,(void*)0,0);
+    LOG4CXX_INFO(s_parsersLog, "Shared Memory For Queue:%x", (unsigned int) shared_memeory);
     write_pointer = (int *)shared_memory;
     read_pointer = (int *)(shared_memory+sizeof(int));
-  /*  *write_pointer = 0;
-    *read_pointer = 0;*/
+    *write_pointer = 0;
+    *read_pointer = 0;
 }
 
 bool SharedMemoryQueueWriter::is_full() {
