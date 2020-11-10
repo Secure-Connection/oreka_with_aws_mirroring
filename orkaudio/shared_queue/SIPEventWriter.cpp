@@ -17,8 +17,8 @@ SIPEventWriter * SIPEventWriter::instance() {
 
 bool SIPEventWriter::write_sip_event(CStdString caller, CStdString callee, CStdString session_id, uint64_t eventTime, SipEventType eventType ){
     SIPEvent event;
-
-    strncpy(event.caller,caller.c_str(),32);
+    LOG4CXX_INFO(s_sipPacketLog, "write_sip_event entry");
+    /*strncpy(event.caller,caller.c_str(),32);
     strncpy(event.callee,callee.c_str(),32);
     strncpy(event.session_id,session_id.c_str(),64);
     event.time_from_epoch_micros = eventTime;
@@ -28,7 +28,7 @@ bool SIPEventWriter::write_sip_event(CStdString caller, CStdString callee, CStdS
         return false;
     }
 
-    write_element((unsigned char *)&event);
+    write_element((unsigned char *)&event);*/
 
     return true;
 }
