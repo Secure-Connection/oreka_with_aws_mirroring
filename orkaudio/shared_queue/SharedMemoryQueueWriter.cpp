@@ -6,6 +6,7 @@
 #include <StdString.h>
 #include "LogManager.h"
 #include <sys/shm.h>
+#include <sys/ipc.h>
 
 static LoggerPtr s_parsersLog = Logger::getLogger("parsers.sip");
 
