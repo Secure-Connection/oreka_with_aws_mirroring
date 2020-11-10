@@ -5,6 +5,7 @@
 #include "SharedMemoryQueueWriter.h"
 #include <StdString.h>
 #include "LogManager.h"
+#include <sys/shm.h>
 
 static LoggerPtr s_parsersLog = Logger::getLogger("parsers.sip");
 
