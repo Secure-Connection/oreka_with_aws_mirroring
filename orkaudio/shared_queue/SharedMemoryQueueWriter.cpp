@@ -3,14 +3,13 @@
 //
 
 #include "SharedMemoryQueueWriter.h"
-#include "ace/Thread_Mutex.h"
 
 SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _element_size, int _queue_size) {
     queue_identifier = _queue_identifier;
     element_size = _element_size;
     queue_size = queue_size;
 
-    key = ftok("memory",get_queue_identifier());
+    key = ftok("memory",queue_identifier);
     shmid = shmget(key, 2*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
     if(shmid == -1){
         //printf("Unable to create the Shared Memory Segment.\n");
@@ -23,7 +22,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
 }
 
 bool SharedMemoryQueueWriter::is_full() {
-    return get_next_value(*write_pointer)==*read_pointer();
+    return get_next_value(*write_pointer)==*read_pointer;
 }
 
 bool SharedMemoryQueueWriter::is_empty() {
@@ -31,12 +30,14 @@ bool SharedMemoryQueueWriter::is_empty() {
 }
 
 bool SharedMemoryQueueWriter::write_element(unsigned char * element) {
-    MutexSentinel mutexSentinel(queue_mutex);
-    if(isFull()) {
+    queue_mutex.lock();
+    if(is_fiull()) {
+        queue_mutex.unlock();
         return false;
     }
-    memcpy(shared_memory+get_element_size()*(*write_pointer),element,element_size);
+    memcpy(shared_memory+element_size*(*write_pointer),element,element_size);
     advance_pointer(write_pointer);
+    queue_mutex.unlock();
 }
 
 SharedMemoryQueueWriter::~SharedMemoryQueueWriter() {
