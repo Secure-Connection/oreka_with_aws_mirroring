@@ -9,7 +9,7 @@
 
 typedef struct {
     char session_id[64];
-    uint16_t data_length;
+    __uint16_t data_length;
     unsigned char payload_type;
     unsigned char channel;
     unsigned char pcmdata[0];
