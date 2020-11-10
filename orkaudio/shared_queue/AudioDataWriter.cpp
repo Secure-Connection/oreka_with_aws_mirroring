@@ -7,7 +7,7 @@
 AudioDataWriter * AudioDataWriter::s_instance = NULL;
 
 
-int AuidioDataWriter::get_queue_size() {
+int AudioDataWriter::get_queue_size() {
     return 2048;
 }
 
