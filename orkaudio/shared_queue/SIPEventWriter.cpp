@@ -4,17 +4,6 @@
 
 #include "SIPEventWriter.h"
 
-int SIPEventWriter::get_queue_size() {
-    return 512;
-}
-int SIPEventWriter::get_element_size() {
-    return sizeof(SIPEvent);
-}
-int SIPEventWriter::get_queue_identifier() {
-    return 0x1790;
-}
-
-
 
 SIPEventWriter * SIPEventWriter::instance() {
     if(s_instance==NULL) {

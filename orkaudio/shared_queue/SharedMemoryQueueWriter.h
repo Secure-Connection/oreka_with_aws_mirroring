@@ -16,12 +16,15 @@ private:
     int * read_pointer;
     key_t key;
     int shmid;
+    int element_size;
+    int queue_size;
+    int queue_identifier;
     unsigned char * shared_memory;
     std::mutex queue_mutex;
 
     inline int get_next_value(int value) {
         int new_value = value + 1;
-        if(new_value==get_queue_size()) {
+        if(new_value==queue_size) {
             new_value = 0;
         }
         return new_value;
@@ -32,9 +35,6 @@ private:
     }
 
  protected:
-    virtual int get_queue_size() = 0;
-    virtual int get_element_size() = 0;
-    virtual  int get_queue_identifier()=0;
 
   public:
      SharedMemoryQueueWriter(int element_size, int queue_size);

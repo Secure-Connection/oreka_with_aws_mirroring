@@ -20,11 +20,8 @@ typedef struct {
 class SIPEventWriter: public SharedMemoryQueueWriter {
     static SIPEventWriter * s_instance;
 
-    virtual int get_queue_size();
-    virtual int get_element_size();
-    virtual int get_queue_identifier();
 public:
-    SIPEventWriter: SharedMemoryQueueWriter(sizeof(SIPEvent), 512) {}
+    SIPEventWriter: SharedMemoryQueueWriter(  0x1790, sizeof(SIPEvent), 512) {}
     static SIPEventWriter * instance();
     virtual bool write_sip_event(CStdString caller, CStdString callee, CStdString session_id, uint64_t time, SipEventType eventType );
 };

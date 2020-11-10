@@ -5,7 +5,11 @@
 #include "SharedMemoryQueueWriter.h"
 #include "ace/Thread_Mutex.h"
 
-SharedMemoryQueueWriter::SharedMemoryQueueWriter(int element_size, int queue_size) {
+SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _element_size, int _queue_size) {
+    queue_identifier = _queue_identifier;
+    element_size = _element_size;
+    queue_size = queue_size;
+
     key = ftok("memory",get_queue_identifier());
     shmid = shmget(key, 2*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
     if(shmid == -1){
@@ -31,7 +35,7 @@ bool SharedMemoryQueueWriter::write_element(unsigned char * element) {
     if(isFull()) {
         return false;
     }
-    memcpy(shared_memory+get_element_size()*(*write_pointer),element,get_element_size());
+    memcpy(shared_memory+get_element_size()*(*write_pointer),element,element_size);
     advance_pointer(write_pointer);
 }
 
