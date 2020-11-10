@@ -10,10 +10,11 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     queue_size = queue_size;
 
     key = ftok("memory",queue_identifier);
-/*    shmid = shmget(key, 2*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
+    shmid = shmget(key, 2*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
     if(shmid == -1){
         //printf("Unable to create the Shared Memory Segment.\n");
     }
+    /*
     shared_memory = (unsigned char *)shmat(shmid,(void*)0,0);
     write_pointer = (int *)shared_memory;
     read_pointer = (int *)(shared_memory+sizeof(int));
