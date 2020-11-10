@@ -18,7 +18,7 @@
 #include "VoIpConfig.h"
 #include "SealedLocalConnector.h"
 #include <boost/algorithm/string/predicate.hpp>
-
+#include "../../shared_queue/SIPEventWriter.h"
 static LoggerPtr s_parsersLog = Logger::getLogger("parsers.sip");
 static LoggerPtr s_sipPacketLog = Logger::getLogger("packet.sip");
 static LoggerPtr s_sipExtractionLog = Logger::getLogger("sipextraction");
@@ -156,7 +156,7 @@ bool TrySipBye(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, U
         __int64_t current_time = get_time_from_epoch_micros();
 
         LOG4CXX_INFO(s_sipPacketLog, "Stopping elvis");
-        SipEventWriter::instance()->write_sip_event(info->from,info->to,info->m_callId,current_time,SipEventType::SIP_STOP)
+        SIPEventWriter::instance()->write_sip_event(info->from,info->to,info->m_callId,current_time,SipEventType::SIP_STOP)
     }
     return result;
 }
@@ -696,7 +696,7 @@ bool TrySip200Ok(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader,
 
         VoIpSessionsSingleton::instance()->ReportSip200Ok(info);
 
-        SipEventWriter::instance()->write_sip_event(info->from,info->to,info->m_callId,time(NULL),SipEventType::SIP_START)
+        SIPEventWriter::instance()->write_sip_event(info->from,info->to,info->m_callId,time(NULL),SipEventType::SIP_START)
     }
 
     LOG4CXX_INFO(s_sipPacketLog, "Calling elvis 0x5");
