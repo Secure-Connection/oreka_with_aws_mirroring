@@ -10,7 +10,7 @@ int SIPEventWriter::get_queue_size() {
 int SIPEventWriter::get_element_size() {
     return sizeof(SIPEvent);
 }
-virtual int SIPEventWriter::get_queue_identifier() {
+int SIPEventWriter::get_queue_identifier() {
     return 0x1790;
 }
 
