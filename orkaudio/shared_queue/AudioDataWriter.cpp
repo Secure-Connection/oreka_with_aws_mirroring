@@ -4,9 +4,21 @@
 
 #include "AudioDataWriter.h"
 
+AudioDataWriter * AudioDataWriter::instance = NULL;
+
+
 int AuidioDataWriter::get_queue_size() {
     return 2048;
 }
+
+AudioDataWriter * AudioDataWriter::instance() {
+    if(instance==NULL) {
+        instance = new AudioDataWriter();
+    }
+    return instance;
+}
+
+
 int AuidioDataWriter::get_element_size() {
     return sizeof(PCMData)+512;
 }

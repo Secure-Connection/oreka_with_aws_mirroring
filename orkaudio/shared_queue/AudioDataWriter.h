@@ -16,6 +16,9 @@ typedef struct {
 }PCMData;
 
 class AudioDataWriter: public SharedMemoryQueueWriter {
+    static AudioDataWriter * instance;
+public:
+    static AudioDataWriter::instance();
     virtual int get_queue_size();
     virtual int get_element_size();
     virtual int get_queue_identifier();
