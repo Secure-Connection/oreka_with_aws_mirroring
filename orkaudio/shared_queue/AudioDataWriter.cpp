@@ -16,7 +16,7 @@ AudioDataWriter * AudioDataWriter::instance() {
 
 bool AudioDataWriter::write_pcm_data(CStdString session_id, int channel, int payload_type, int data_length, unsigned char * audio_data) {
     LOG4CXX_INFO(s_parsersLog, "write_pcm_data entry");
-    /*if(is_full()) {
+    if(is_full()) {
         return false;
     }
 
@@ -24,6 +24,5 @@ bool AudioDataWriter::write_pcm_data(CStdString session_id, int channel, int pay
 
     write_element(element_memory);
 
-    free(element_memory);*/
-
+    free(element_memory);
 }
