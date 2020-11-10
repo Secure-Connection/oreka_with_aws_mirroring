@@ -24,7 +24,7 @@ class SIPEventWriter: public SharedMemoryQueueWriter {
     virtual int get_element_size();
     virtual int get_queue_identifier();
 public:
-    SIPEventWriter: SharedMemoryQueueWriter(get_element_size(), get_queue_size()) {}
+    SIPEventWriter: SharedMemoryQueueWriter(sizeof(SIPEvent), 512) {}
     static SIPEventWriter * instance();
     virtual bool write_sip_event(CStdString caller, CStdString callee, CStdString session_id, uint64_t time, SipEventType eventType );
 };

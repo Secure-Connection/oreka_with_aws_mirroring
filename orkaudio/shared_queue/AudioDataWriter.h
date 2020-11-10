@@ -18,7 +18,7 @@ typedef struct {
 class AudioDataWriter: public SharedMemoryQueueWriter {
     static AudioDataWriter * s_instance;
 public:
-    AudioDataWriter(): SharedMemoryQueueWriter(get_element_size(), get_queue_size()) {}
+    AudioDataWriter(): SharedMemoryQueueWriter(sizeof(PCMData)+512, 2048) {}
 
     static AudioDataWriter * instance();
     virtual int get_queue_size();
