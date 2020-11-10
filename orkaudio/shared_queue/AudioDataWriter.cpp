@@ -5,7 +5,7 @@
 #include "AudioDataWriter.h"
 
 AudioDataWriter * AudioDataWriter::s_instance = NULL;
-
+static LoggerPtr s_parsersLog = Logger::getLogger("parsers.sip");
 AudioDataWriter * AudioDataWriter::instance() {
     if(s_instance==NULL) {
         s_instance = new AudioDataWriter();
@@ -15,7 +15,8 @@ AudioDataWriter * AudioDataWriter::instance() {
 
 
 bool AudioDataWriter::write_pcm_data(CStdString session_id, int channel, int payload_type, int data_length, unsigned char * audio_data) {
-    if(is_full()) {
+    LOG4CXX_INFO(s_parsersLog, "write_pcm_data entry");
+    /*if(is_full()) {
         return false;
     }
 
@@ -23,6 +24,6 @@ bool AudioDataWriter::write_pcm_data(CStdString session_id, int channel, int pay
 
     write_element(element_memory);
 
-    free(element_memory);
+    free(element_memory);*/
 
 }
