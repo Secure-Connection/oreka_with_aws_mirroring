@@ -6,6 +6,9 @@
 #define OREKA_SIPEVENTWRITER_H
 
 #include "SharedMemoryQueueWriter.h"
+#include "LogManager.h"
+
+
 
 enum SipEventType { SIP_START, SIP_STOP };
 
