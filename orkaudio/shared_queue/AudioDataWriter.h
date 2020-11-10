@@ -15,7 +15,7 @@ typedef struct {
     unsigned char pcmdata[0];
 }PCMData;
 
-class AudioDateWriter: public SharedMemoryQueueWriter {
+class AudioDataWriter: public SharedMemoryQueueWriter {
     virtual int get_queue_size();
     virtual int get_element_size();
     virtual int get_queue_identifier();
