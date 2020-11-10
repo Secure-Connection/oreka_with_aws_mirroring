@@ -32,7 +32,7 @@ bool AudioDataWriter::write_pcm_data(CStdString session_id, int channel, int pay
         return false;
     }
 
-    unsigned char *element_memory = malloc(get_element_size());
+    unsigned char *element_memory = (unsigned char*)malloc(get_element_size());
 
     write_element(element_memory);
 
