@@ -16,7 +16,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     key = ftok("memory",queue_identifier);
     shmid = shmget(key, 2*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
     if(shmid == -1){
-        LOG4CXX_ERROR(s_parsersLog, "Unable to create the Sha\"Shared Memory For Queue:%x\", (unsigned int) shared_memeoryred Memory Segment.\n");
+        LOG4CXX_ERROR(s_parsersLog, "Unable to create the Sha\"Shared Memory For Queue:%d", errno);
     }
 
     shared_memory = (unsigned char *)shmat(shmid,(void*)0,0);
