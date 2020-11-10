@@ -2,7 +2,7 @@
 // Created by arik halperin on 05/11/2020.
 //
 
-#include "AuidioDataWriter.h"
+#include "AudioDataWriter.h"
 
 int AuidioDataWriter::get_queue_size() {
     return 2048;
