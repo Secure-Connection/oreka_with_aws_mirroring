@@ -50,7 +50,7 @@ bool SharedMemoryQueueWriter::write_element(unsigned char * element) {
         queue_mutex.unlock();
         return false;
     }
-    memcpy(shared_memory+element_size*(*write_pointer),element,element_size);
+    memcpy(shared_memory+element_size*(*write_pointer)+2*sizeof(int),element,element_size);
     advance_pointer(write_pointer);
     queue_mutex.unlock();
 }
