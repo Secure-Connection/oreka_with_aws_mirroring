@@ -14,6 +14,16 @@ virtual int SIPEventWriter::get_queue_identifier() {
     return 0x1790;
 }
 
+
+
+SIPEventWriter * SIPEventWriter::instance() {
+    if(s_instance==NULL) {
+        s_instance = new SIPEventWriter();
+    }
+    return s_instance;
+}
+
+
 virtual bool SIPEventWriter::write_sip_event(CStdString caller, CStdString callee, CStdString session_id, uint64_t eventTime, SipEventType eventType ){
     SIPEvent event;
 

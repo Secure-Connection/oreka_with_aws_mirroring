@@ -26,6 +26,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include "../common/DtmfHandling.h"
 #include "../../shared_queue/AudioDataWriter.h"
+#include "../../shared_queue/SipEventWriter.h"
 extern AudioChunkCallBackFunction g_audioChunkCallBack;
 extern CaptureEventCallBackFunction g_captureEventCallBack;
 
