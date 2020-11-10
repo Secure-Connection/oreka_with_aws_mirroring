@@ -1449,14 +1449,14 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
                 CStdString call_start_json = "{";
 
 
-                call_start_json += "\"session_id\":\"" + info->m_callId + "\",\n";
+              /*  call_start_json += "\"session_id\":\"" + info->m_callId + "\",\n";
                 call_start_json += "\"direction\": 1,\n";
                 call_start_json += "\"phone_number_from\":\"" + info->m_from + "\",\n";
                 call_start_json += "\"phone_number_to\":\"" + info->m_to + "\",\n";
-                call_start_json += "\"start\":" + CStdString(std::to_string(current_time).c_str()) + " \n}";
+                call_start_json += "\"start\":" + CStdString(std::to_string(current_time).c_str()) + " \n}";*/
 
                 LOG4CXX_INFO(s_sipPacketLog, "Calling elvis");
-            //    SealedLocalConnector::instance()->SendStartCall(call_start_json);
+                SIPEventWriter::instance()->write_sip_event(info->m_from, info->m_to, info->m_callId, current_time, SipEventType::SIP_START);
             }
 
             VoIpSessionsSingleton::instance()->ReportSipInvite(info);
