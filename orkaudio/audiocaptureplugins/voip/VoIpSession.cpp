@@ -1532,7 +1532,7 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
         CStdString m_callId;
         SipInviteInfoRef m_invite;
 
-        AudioDataWriter::instance()->write_pcm_data(m_callId, channel, rtpPacket->m_payloadType, rtpPacket->m_payloadSize, rtpPacket->m_payload);
+       // AudioDataWriter::instance()->write_pcm_data(m_callId, channel, rtpPacket->m_payloadType, rtpPacket->m_payloadSize, rtpPacket->m_payload);
 
 	}
     LOG4CXX_INFO(m_log, "AddRtpPacket 0xE1");
