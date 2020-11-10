@@ -35,6 +35,8 @@ extern CaptureEventCallBackFunction g_captureEventCallBack;
 	VoIpSessions* VoIpSessionsSingleton::voipSessions = NULL;
 #endif
 
+AudioDataWriter a;
+
 VoIpSession::VoIpSession(CStdString& trackingId) : OrkSession(&DLLCONFIG),
 	m_hasReceivedCallInfo(false),
 	m_creationDate()
