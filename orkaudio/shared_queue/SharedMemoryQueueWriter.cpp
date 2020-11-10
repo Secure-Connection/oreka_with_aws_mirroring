@@ -3,7 +3,7 @@
 //
 
 #include "SharedMemoryQueueWriter.h"
-
+#include <StdString.h>
 #include "LogManager.h"
 
 static LoggerPtr s_parsersLog = Logger::getLogger("parsers.sip");
@@ -16,11 +16,14 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     key = ftok("memory",queue_identifier);
     shmid = shmget(key, 2*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
     if(shmid == -1){
-        LOG4CXX_ERROR(s_parsersLog, "Unable to create the Shared Memory Segment.\n");
+        LOG4CXX_ERROR(s_parsersLog, "Unable to create the Sha\"Shared Memory For Queue:%x\", (unsigned int) shared_memeoryred Memory Segment.\n");
     }
 
     shared_memory = (unsigned char *)shmat(shmid,(void*)0,0);
-    LOG4CXX_INFO(s_parsersLog, "Shared Memory For Queue:%x", (unsigned int) shared_memeory);
+    CStdString logMsg;
+    logMsg.format("Shared Memory For Queue:%x", (unsigned int) shared_memeory);
+
+    LOG4CXX_INFO(s_parsersLog, logMsg);
     write_pointer = (int *)shared_memory;
     read_pointer = (int *)(shared_memory+sizeof(int));
     *write_pointer = 0;
