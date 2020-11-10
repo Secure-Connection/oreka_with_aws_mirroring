@@ -34,7 +34,7 @@ private:
  protected:
     virtual int get_queue_size() = 0;
     virtual int get_element_size() = 0;
-    static  int get_queue_identifier()=0;
+    virtual  int get_queue_identifier()=0;
 
   public:
      SharedMemoryQueueWriter(int element_size, int queue_size);
