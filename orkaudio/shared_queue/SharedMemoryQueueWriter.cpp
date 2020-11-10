@@ -31,7 +31,7 @@ bool SharedMemoryQueueWriter::is_empty() {
 
 bool SharedMemoryQueueWriter::write_element(unsigned char * element) {
     queue_mutex.lock();
-    if(is_fiull()) {
+    if(is_full()) {
         queue_mutex.unlock();
         return false;
     }
