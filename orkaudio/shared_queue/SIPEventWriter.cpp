@@ -30,7 +30,7 @@ bool SIPEventWriter::write_sip_event(CStdString caller, CStdString callee, CStdS
     strncpy(event.caller,caller.c_str(),32);
     strncpy(event.callee,callee.c_str(),32);
     strncpy(event.session_id,session_id.c_str(),64);
-    event.time_from_epoch = eventTime;
+    event.time_from_epoch_micros = eventTime;
     event.eventType = eventType;
 
     if(is_full()) {

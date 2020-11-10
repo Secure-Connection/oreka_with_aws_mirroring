@@ -17,7 +17,7 @@ typedef struct {
     SipEventType eventType;
 }SIPEvent;
 
-class SIPEventWriter {
+class SIPEventWriter: public SharedMemoryQueueWriter {
     static SIPEventWriter * s_instance;
 
     virtual int get_queue_size();
