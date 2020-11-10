@@ -3,7 +3,7 @@
 //
 
 #include "AudioDataWriter.h"
-
+#include "LogManager.h"
 AudioDataWriter * AudioDataWriter::s_instance = NULL;
 static LoggerPtr s_parsersLog = Logger::getLogger("parsers.sip");
 AudioDataWriter * AudioDataWriter::instance() {
