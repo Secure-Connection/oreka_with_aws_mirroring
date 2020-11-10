@@ -37,7 +37,7 @@ private:
     virtual int get_queue_identifier()=0;
 
   public:
-     SharedMemoryQueueWriter();
+     SharedMemoryQueueWriter(int element_size, int queue_size);
      ~SharedMemoryQueueWriter();
      bool is_full();
 

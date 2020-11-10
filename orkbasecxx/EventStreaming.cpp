@@ -16,7 +16,6 @@
 
 #include "EventStreaming.h"
 #include "ConfigManager.h"
-#include "ace/Thread_Mutex.h"
 
 //==========================================================
 

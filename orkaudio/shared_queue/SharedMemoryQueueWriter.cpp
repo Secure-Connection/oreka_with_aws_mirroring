@@ -3,11 +3,11 @@
 //
 
 #include "SharedMemoryQueueWriter.h"
+#include "ace/Thread_Mutex.h"
 
-
-SharedMemoryQueueWriter::SharedMemoryQueueWriter() {
+SharedMemoryQueueWriter::SharedMemoryQueueWriter(int element_size, int queue_size) {
     key = ftok("memory",get_queue_identifier());
-    shmid = shmget(key, 2*sizeof(int) + get_element_size() * get_queue_size() ,0666|IPC_CREAT);
+    shmid = shmget(key, 2*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
     if(shmid == -1){
         //printf("Unable to create the Shared Memory Segment.\n");
     }
