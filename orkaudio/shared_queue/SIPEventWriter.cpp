@@ -24,7 +24,7 @@ SIPEventWriter * SIPEventWriter::instance() {
 }
 
 
-virtual bool SIPEventWriter::write_sip_event(CStdString caller, CStdString callee, CStdString session_id, uint64_t eventTime, SipEventType eventType ){
+bool SIPEventWriter::write_sip_event(CStdString caller, CStdString callee, CStdString session_id, uint64_t eventTime, SipEventType eventType ){
     SIPEvent event;
 
     strncpy(event.caller,caller.c_str(),32);
