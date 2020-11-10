@@ -18,7 +18,7 @@ typedef struct {
 class AudioDataWriter: public SharedMemoryQueueWriter {
     static AudioDataWriter * s_instance;
 public:
-    AudioDataWriter(): SharedMemoryQueueWriter(0x1789, sizeof(PCMData)+512, 2048) {}
+    AudioDataWriter(): SharedMemoryQueueWriter(0x1789, (int)(sizeof(PCMData)+512), 2048) {}
 
     static AudioDataWriter * instance();
     bool write_pcm_data(CStdString session_id, int channel, int payload_type, int data_length, unsigned char * audio_data);
