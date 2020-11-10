@@ -19,7 +19,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     CStdString logMsg;
     if(shmid == -1){
 
-        logMsg.Format( "Unable to create the Sha\"Shared Memory For Queue:%d %d %d", errno,SHMMAX, SHMIN);
+        logMsg.Format( "Unable to create the Sha\"Shared Memory For Queue:%d %d %d %d", errno,SHMMAX, SHMMIN, 2*sizeof(int) + element_size * queue_size);
         LOG4CXX_ERROR(s_parsersLog,logMsg);
     }
 
