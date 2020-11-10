@@ -37,7 +37,7 @@ bool SIPEventWriter::write_sip_event(CStdString caller, CStdString callee, CStdS
         return false;
     }
 
-    write_element(&event);
+    write_element((unsigned char *)&event);
 
     return true;
 }
