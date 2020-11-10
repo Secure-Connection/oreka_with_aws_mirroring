@@ -21,7 +21,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
 
     shared_memory = (unsigned char *)shmat(shmid,(void*)0,0);
     CStdString logMsg;
-    logMsg.Format("Shared Memory For Queue:%x", (unsigned int) shared_memory);
+    logMsg.Format("Shared Memory For Queue:%x", (unsigned long) shared_memory);
 
     LOG4CXX_INFO(s_parsersLog, logMsg);
     write_pointer = (int *)shared_memory;
