@@ -5,6 +5,8 @@
 #include "SIPEventWriter.h"
 
 
+SIPEventWriter * SIPEventWriter::s_instance= NULL;
+
 SIPEventWriter * SIPEventWriter::instance() {
     if(s_instance==NULL) {
         s_instance = new SIPEventWriter();
