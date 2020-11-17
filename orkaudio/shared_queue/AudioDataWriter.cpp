@@ -3,9 +3,8 @@
 //
 
 #include "AudioDataWriter.h"
-#include "LogManager.h"
-AudioDataWriter * AudioDataWriter::s_instance = NULL;
-static LoggerPtr s_parsersLog = Logger::getLogger("parsers.sip");
+
+AudioDataWriter * AudioDataWriter::s_instance = new AudioDataWriter();
 AudioDataWriter * AudioDataWriter::instance() {
     if(s_instance==NULL) {
         s_instance = new AudioDataWriter();
@@ -14,13 +13,18 @@ AudioDataWriter * AudioDataWriter::instance() {
 }
 
 
-bool AudioDataWriter::write_pcm_data(CStdString session_id, int channel, int payload_type, int data_length, unsigned char * audio_data) {
-    LOG4CXX_INFO(s_parsersLog, "write_pcm_data entry");
+bool AudioDataWriter::write_pcm_data(std::string session_id, int channel, int payload_type, int data_length, unsigned char * audio_data) {
     if(is_full()) {
         return false;
     }
 
-    unsigned char *element_memory = (unsigned char*)malloc(sizeof(PCMData)+512);
+    unsigned char *element_memory = (unsigned char*)malloc(sizeof(PCMData));
+
+    strcpy(((PCMData *)element_memory)->session_id,session_id.c_str());
+    ((PCMData *)element_memory)->channel = channel;
+    ((PCMData *)element_memory)->payload_type = payload_type;
+    ((PCMData *)element_memory)->data_length = data_length;
+    memcpy(((PCMData *)element_memory)->pcmdata, audio_data, data_length);
 
     write_element(element_memory);
 

@@ -8,7 +8,6 @@
 #include <sys/shm.h>
 #include <memory.h>
 #include <mutex>
-#include <StdString.h>
 
 class SharedMemoryQueueWriter {
 private:

@@ -6,9 +6,7 @@
 #define OREKA_SIPEVENTWRITER_H
 
 #include "SharedMemoryQueueWriter.h"
-#include "LogManager.h"
-
-
+#include <string>
 
 enum SipEventType { SIP_START, SIP_STOP };
 
@@ -24,9 +22,9 @@ class SIPEventWriter: public SharedMemoryQueueWriter {
     static SIPEventWriter * s_instance;
 
 public:
-    SIPEventWriter():SharedMemoryQueueWriter(  0x1790,(int) sizeof(SIPEvent), 512) {}
+    SIPEventWriter():SharedMemoryQueueWriter(  0x90,(int) sizeof(SIPEvent), 512) {}
     static SIPEventWriter * instance();
-    virtual bool write_sip_event(CStdString caller, CStdString callee, CStdString session_id, uint64_t time, SipEventType eventType );
+    virtual bool write_sip_event(std::string caller, std::string callee, std::string session_id, uint64_t time, SipEventType eventType );
 };
 
 

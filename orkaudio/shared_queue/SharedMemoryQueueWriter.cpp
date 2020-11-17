@@ -3,33 +3,38 @@
 //
 
 #include "SharedMemoryQueueWriter.h"
-#include <StdString.h>
-#include "LogManager.h"
+#include <iostream>
+#include <fstream>
+#include <string>
 #include <sys/shm.h>
 #include <sys/ipc.h>
-
-static LoggerPtr s_parsersLog = Logger::getLogger("parsers.sip");
 
 SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _element_size, int _queue_size) {
     queue_identifier = _queue_identifier;
     element_size = _element_size;
     queue_size = _queue_size;
+    std::string logMsg;
+    std::string keyval = "/tmp/"+std::to_string(queue_identifier);
+    std::ofstream shared_memory_file;
+    shared_memory_file.open(keyval,std::ios::out | std::ios::app | std::ios::binary);
+    shared_memory_file.close();
 
-    key = ftok("memory",queue_identifier);
+    key = ftok(keyval.c_str(), queue_identifier);
+    if(key==-1) {
+        logMsg= "Could not generate key:" +  std::to_string(errno);
+        std::cout<<logMsg;
+    }
+
     shmid = shmget(key, 2*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
 
-    CStdString logMsg;
-    if(shmid == -1){
 
-        logMsg.Format( "Unable to create the Sha\"Shared Memory For Queue:%d %d %d", errno, element_size,queue_size);
-        LOG4CXX_ERROR(s_parsersLog,logMsg);
+    if(shmid == -1){
+        logMsg= "Shared Memory For Queue:" +  std::to_string(errno) + " " + std::to_string(element_size)+ " " +std::to_string(queue_size);
+        std::cout<<logMsg;
     }
 
     shared_memory = (unsigned char *)shmat(shmid,(void*)0,0);
 
-    logMsg.Format("Shared Memory For Queue:%x", (unsigned long) shared_memory);
-
-    LOG4CXX_INFO(s_parsersLog, logMsg);
     write_pointer = (int *)shared_memory;
     read_pointer = (int *)(shared_memory+sizeof(int));
     *write_pointer = 0;
