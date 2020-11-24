@@ -13,7 +13,7 @@ AudioDataWriter * AudioDataWriter::instance() {
 }
 
 
-bool AudioDataWriter::write_pcm_data(std::string session_id, int channel, int payload_type, int data_length, unsigned char * audio_data) {
+bool AudioDataWriter::write_pcm_data(std::string session_id, int channel, int payload_type, int data_length, unsigned char * audio_data, uint64_t timestamp) {
     if(is_full()) {
         return false;
     }
@@ -22,6 +22,7 @@ bool AudioDataWriter::write_pcm_data(std::string session_id, int channel, int pa
 
     strcpy(((PCMData *)element_memory)->session_id,session_id.c_str());
     ((PCMData *)element_memory)->channel = channel;
+    ((PCMData *)element_memory)->timestamp = timestamp;
     ((PCMData *)element_memory)->payload_type = payload_type;
     ((PCMData *)element_memory)->data_length = data_length;
     memcpy(((PCMData *)element_memory)->pcmdata, audio_data, data_length);

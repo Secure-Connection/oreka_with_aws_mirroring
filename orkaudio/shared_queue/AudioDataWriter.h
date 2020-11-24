@@ -9,10 +9,10 @@
 
 typedef struct {
     char session_id[64];
+    unsigned char channel;
     uint64_t timestamp;
     uint16_t data_length;
     unsigned char payload_type;
-    unsigned char channel;
     unsigned char pcmdata[512];
 }PCMData;
 
@@ -22,7 +22,7 @@ public:
     AudioDataWriter(): SharedMemoryQueueWriter(0x89, (int)(sizeof(PCMData)), 2048) {}
 
     static AudioDataWriter * instance();
-    bool write_pcm_data(std::string session_id, int channel, int payload_type, int data_length, unsigned char * audio_data);
+    bool write_pcm_data(std::string session_id, int channel, int payload_type, int data_length, unsigned char * audio_data, uint64_t timestamp);
 };
 
 
