@@ -1528,7 +1528,7 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 		AudioChunkRef chunk(new AudioChunk());
 		chunk->SetBuffer(rtpPacket->m_payload, details);
 		//g_audioChunkCallBack(chunk, m_capturePort);
-        AudioDataWriter::instance()->write_pcm_data(m_callId, channel, rtpPacket->m_payloadType, rtpPacket->m_payloadSize, rtpPacket->m_payload);
+        AudioDataWriter::instance()->write_pcm_data(m_callId, channel, rtpPacket->m_payloadType, rtpPacket->m_payloadSize, rtpPacket->m_payload, time(NULL) * 1000000);
 
 	}
     LOG4CXX_INFO(m_log, "AddRtpPacket 0xE1");
