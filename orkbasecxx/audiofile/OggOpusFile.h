@@ -14,10 +14,10 @@
 #ifndef __OGGOPUSFILE_H__
 #define __OGGOPUSFILE_H__
 
-#include <opus/opus_types.h>
+#include <opus_types.h>
 //#include <ogg/ogg.h>
-#include <opus/opus.h>
-#include <opus/opus_multistream.h>
+#include <opus.h>
+#include <opus_multistream.h>
 #include "opus_header.h"
 
 #ifdef ENABLE_NLS
