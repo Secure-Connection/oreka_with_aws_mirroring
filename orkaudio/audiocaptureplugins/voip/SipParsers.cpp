@@ -156,7 +156,7 @@ bool TrySipBye(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, U
         __int64_t current_time = get_time_from_epoch_micros();
 
         LOG4CXX_INFO(s_sipPacketLog, "Stopping elvis");
-        SIPEventWriter::instance()->write_sip_event(info->m_from,info->m_to,info->m_callId,current_time,SipEventType::SIP_STOP);
+        SIPEventWriter::instance()->write_sip_event(info->m_fromName,info->m_to,info->m_callId,current_time,SipEventType::SIP_STOP);
     }
     return result;
 }
@@ -696,7 +696,7 @@ bool TrySip200Ok(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader,
 
         VoIpSessionsSingleton::instance()->ReportSip200Ok(info);
 
-        SIPEventWriter::instance()->write_sip_event(info->m_from,info->m_to,info->m_callId,time(NULL),SipEventType::SIP_START);
+        SIPEventWriter::instance()->write_sip_event(info->m_fromName,info->m_to,info->m_callId,time(NULL),SipEventType::SIP_START);
     }
 
     LOG4CXX_INFO(s_sipPacketLog, "Calling elvis 0x5");
@@ -1456,7 +1456,7 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
                 call_start_json += "\"start\":" + CStdString(std::to_string(current_time).c_str()) + " \n}";*/
 
                 LOG4CXX_INFO(s_sipPacketLog, "Calling elvis");
-                SIPEventWriter::instance()->write_sip_event(info->m_from, info->m_to, info->m_callId, current_time, SipEventType::SIP_START);
+                SIPEventWriter::instance()->write_sip_event(info->m_fromName, info->m_to, info->m_callId, current_time, SipEventType::SIP_START);
             }
 
             VoIpSessionsSingleton::instance()->ReportSipInvite(info);
