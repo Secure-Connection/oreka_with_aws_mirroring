@@ -411,7 +411,7 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 			// pt=97 is IAX2 iLBC payload
 			// pt > 98 is telephone-event in SIP
 			{
-                LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x8");
+                //LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x8");
 				if(DLLCONFIG.m_rtpBlockedIpRanges.Matches(ipHeader->ip_src) || DLLCONFIG.m_rtpBlockedIpRanges.Matches(ipHeader->ip_dest))
 				{
                     LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x9");
@@ -510,11 +510,11 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 
 void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, int ipHeaderLength, u_char* ipPacketEnd)
 {
-    LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x1");
+    //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x1");
 	UdpHeaderStruct* udpHeader = (UdpHeaderStruct*)((char *)ipHeader + ipHeaderLength);
 	if(ntohs(udpHeader->source) >= DLLCONFIG.m_udpMinPort && ntohs(udpHeader->dest) >= DLLCONFIG.m_udpMinPort)
 	{
-        LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x2");
+      //  LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x2");
 		bool detectedUsefulPacket = false;
 		u_char* udpPayload = (u_char *)udpHeader + sizeof(UdpHeaderStruct);
 
@@ -765,7 +765,7 @@ void ProcessTransportLayer(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 
     if(ipHeader->ip_p == IPPROTO_UDP)
 	{
-        LOG4CXX_INFO(s_rtpPacketLog, "Calling DetectUsefulUdpPacket");
+        //LOG4CXX_INFO(s_rtpPacketLog, "Calling DetectUsefulUdpPacket");
 		DetectUsefulUdpPacket(ethernetHeader, ipHeader, ipHeaderLength, ipPacketEnd);
 	}
 	else if(ipHeader->ip_p == IPPROTO_TCP)
