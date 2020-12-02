@@ -1190,8 +1190,8 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 
 	if (channel == 1 && !firstPacketForChannel)
 	{
-        LOG4CXX_INFO(m_log, "AddRtpPacket 0xB2");
-        LOG4CXX_INFO(m_log, "RTP Packet for channel 1");
+        //LOG4CXX_INFO(m_log, "AddRtpPacket 0xB2");
+        //LOG4CXX_INFO(m_log, "RTP Packet for channel 1");
 		// Subsequent RTP packet for side 1
 		if(rtpPacket->m_timestamp == m_lastRtpPacketSide1->m_timestamp)
 		{
@@ -1458,7 +1458,7 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 	{
         LOG4CXX_INFO(m_log, "AddRtpPacket 0xD5");
 		CStdString debug;
-		debug.Format("[%s] %s: Add RTP packet srcPort:%u dstPort:%u seq:%u ts:%u  arrival:%u ch:%d", m_trackingId, m_capturePort, rtpPacket->m_sourcePort, rtpPacket->m_destPort, rtpPacket->m_seqNum, rtpPacket->m_timestamp, rtpPacket->m_arrivalTimestamp, channel);
+		//debug.Format("[%s] %s: Add RTP packet srcPort:%u dstPort:%u seq:%u ts:%u  arrival:%u ch:%d", m_trackingId, m_capturePort, rtpPacket->m_sourcePort, rtpPacket->m_destPort, rtpPacket->m_seqNum, rtpPacket->m_timestamp, rtpPacket->m_arrivalTimestamp, channel);
 		LOG4CXX_INFO(m_log, debug);
 	}
 
@@ -1466,12 +1466,12 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 			(m_protocol == ProtSkinny && m_numRtpPackets == 2)	||
 			(m_protocol == ProtSip    && m_numRtpPackets == (CONFIG.m_discardUnidirectionalCalls?1:2)) )
 	{
-        LOG4CXX_INFO(m_log, "AddRtpPacket 0xD6");
+   //     LOG4CXX_INFO(m_log, "AddRtpPacket 0xD6");
 		// We've got enough packets to start the session.
 		// For Raw RTP, the high number is to make sure we have a "real" raw RTP session, not a leftover from a SIP/Skinny session
 		if(CONFIG.m_lookBackRecording == true) 
 		{
-            LOG4CXX_INFO(m_log, "AddRtpPacket 0xD7");
+     //       LOG4CXX_INFO(m_log, "AddRtpPacket 0xD7");
 			if(CONFIG.m_discardUnidirectionalCalls) {
                 LOG4CXX_INFO(m_log, "AddRtpPacket 0xD8");
 				m_startWhenReceiveS2 = true;
