@@ -1456,10 +1456,10 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 
 	//if(m_log->isDebugEnabled())
 	{
-        LOG4CXX_INFO(m_log, "AddRtpPacket 0xD5");
+      //  LOG4CXX_INFO(m_log, "AddRtpPacket 0xD5");
 		CStdString debug;
 		//debug.Format("[%s] %s: Add RTP packet srcPort:%u dstPort:%u seq:%u ts:%u  arrival:%u ch:%d", m_trackingId, m_capturePort, rtpPacket->m_sourcePort, rtpPacket->m_destPort, rtpPacket->m_seqNum, rtpPacket->m_timestamp, rtpPacket->m_arrivalTimestamp, channel);
-		LOG4CXX_INFO(m_log, debug);
+		//LOG4CXX_INFO(m_log, debug);
 	}
 
 	if(		(m_protocol == ProtRawRtp && m_numRtpPackets == DLLCONFIG.m_rtpMinAmountOfPacketsBeforeStart)	||
@@ -1477,7 +1477,7 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 				m_startWhenReceiveS2 = true;
 			}
 			else {
-                LOG4CXX_INFO(m_log, "AddRtpPacket 0xD9");
+          //      LOG4CXX_INFO(m_log, "AddRtpPacket 0xD9");
 				Start();
 				ReportMetadata();
 			}
@@ -1487,17 +1487,17 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 
 	if(m_started)
 	{
-        LOG4CXX_INFO(m_log, "AddRtpPacket 0xDA");
+        //LOG4CXX_INFO(m_log, "AddRtpPacket 0xDA");
 		CStdString payloadType;
 	
 		payloadType.Format("%d",rtpPacket->m_payloadType);
 
 		for(std::list<CStdString>::iterator it = CONFIG.m_speexPayloadTypes.begin() ; it != CONFIG.m_speexPayloadTypes.end() ; it++)
 		{
-            LOG4CXX_INFO(m_log, "AddRtpPacket 0xDB");
+            //LOG4CXX_INFO(m_log, "AddRtpPacket 0xDB");
 			if( *it == payloadType ) 
 			{
-                LOG4CXX_INFO(m_log, "AddRtpPacket 0xDE");
+               // LOG4CXX_INFO(m_log, "AddRtpPacket 0xDE");
 				rtpPacket->m_payloadType = pt_SPEEX;
 				break;
 			}
@@ -1513,12 +1513,12 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
 		details.m_numBytes = rtpPacket->m_payloadSize;
 		if(rtpPacket->m_payloadType >= 96)
 		{
-            LOG4CXX_INFO(m_log, "AddRtpPacket 0xDF");
+           // LOG4CXX_INFO(m_log, "AddRtpPacket 0xDF");
 			details.m_rtpPayloadType = m_orekaRtpPayloadTypeMap[rtpPacket->m_payloadType-96];
 		}
 		else
 		{
-            LOG4CXX_INFO(m_log, "AddRtpPacket 0xE0");
+          //  LOG4CXX_INFO(m_log, "AddRtpPacket 0xE0");
 			details.m_rtpPayloadType = rtpPacket->m_payloadType;
 		}
 
@@ -1531,7 +1531,7 @@ bool VoIpSession::AddRtpPacket(RtpPacketInfoRef& rtpPacket)
         AudioDataWriter::instance()->write_pcm_data(m_callId, channel, rtpPacket->m_payloadType, rtpPacket->m_payloadSize, rtpPacket->m_payload, time(NULL) * 1000000);
 
 	}
-    LOG4CXX_INFO(m_log, "AddRtpPacket 0xE1");
+  //  LOG4CXX_INFO(m_log, "AddRtpPacket 0xE1");
 	return true;
 }
 

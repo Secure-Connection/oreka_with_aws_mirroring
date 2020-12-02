@@ -112,7 +112,7 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 {
 	CStdString logMsg;
 
-    LOG4CXX_INFO(getLog(), "DetectChannel Entry");
+    //LOG4CXX_INFO(getLog(), "DetectChannel Entry");
 
 	if (pIsFirstPacket)
 	{
@@ -121,38 +121,38 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 
 	if(m_lastRtpPacketSide1.get() == NULL)
 	{
-        LOG4CXX_INFO(getLog(), "DetectChannel 0x1");
+      //  LOG4CXX_INFO(getLog(), "DetectChannel 0x1");
 		// First RTP packet for side 1
 		m_lastRtpPacketSide1 = rtpPacket;
 
 		if(getLog()->isInfoEnabled())
 		{
-            LOG4CXX_INFO(getLog(), "DetectChannel 0x2");
+        //    LOG4CXX_INFO(getLog(), "DetectChannel 0x2");
 			rtpPacket->ToString(logMsg);
 			logMsg =  "[" + m_trackingId + "] 1st packet s1: " + logMsg;
 			LOG4CXX_INFO(getLog(), logMsg);
 		}
 		if (pIsFirstPacket)
 		{
-            LOG4CXX_INFO(getLog(), "DetectChannel 0x3");
+          //  LOG4CXX_INFO(getLog(), "DetectChannel 0x3");
 			*pIsFirstPacket = true;
 		}
 		return 1;
 	}
 	else if( rtpPacket->m_ssrc == m_lastRtpPacketSide1->m_ssrc && m_lastRtpPacketSide1->m_destIp.s_addr == rtpPacket->m_destIp.s_addr ) {
-        LOG4CXX_INFO(getLog(), "DetectChannel 0x4");
+        //LOG4CXX_INFO(getLog(), "DetectChannel 0x4");
 		return 1;
 	}
 
 	if(m_lastRtpPacketSide2.get() == NULL)
 	{
-        LOG4CXX_INFO(getLog(), "DetectChannel 0x5");
+        //LOG4CXX_INFO(getLog(), "DetectChannel 0x5");
 		// First RTP packet for side 2
 		m_lastRtpPacketSide2 = rtpPacket;
 
 		if(getLog()->isInfoEnabled())
 		{
-            LOG4CXX_INFO(getLog(), "DetectChannel 0x6");
+          //  LOG4CXX_INFO(getLog(), "DetectChannel 0x6");
 			rtpPacket->ToString(logMsg);
 			logMsg =  "[" + m_trackingId + "] 1st packet s2: " + logMsg;
 			LOG4CXX_INFO(getLog(), logMsg);
@@ -160,12 +160,12 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 		//We just ignore the first s2 packet if m_sessionStartsOnS2ActivityDb enable, since channel swapping could happen after first s1 and s2
 		if(m_config->m_sessionStartsOnS2ActivityDb != 0)
 		{
-            LOG4CXX_INFO(getLog(), "DetectChannel 0x7");
+            //LOG4CXX_INFO(getLog(), "DetectChannel 0x7");
 			//do nothing to not start the call
 		}
 		else if(CONFIG.m_discardUnidirectionalCalls && m_startWhenReceiveS2)
 		{
-            LOG4CXX_INFO(getLog(), "DetectChannel 0x8");
+        //    LOG4CXX_INFO(getLog(), "DetectChannel 0x8");
 			Start();
 			ReportMetadata();
 			if (CONFIG.m_lookBackRecording == false)
@@ -176,10 +176,10 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 		}
 		if (pIsFirstPacket)
 		{
-            LOG4CXX_INFO(getLog(), "DetectChannel 0xA");
+          //  LOG4CXX_INFO(getLog(), "DetectChannel 0xA");
 			*pIsFirstPacket = true;
 		}
-        LOG4CXX_INFO(getLog(), "DetectChannel 0xB");
+        //LOG4CXX_INFO(getLog(), "DetectChannel 0xB");
 
         return 2;
 	}
