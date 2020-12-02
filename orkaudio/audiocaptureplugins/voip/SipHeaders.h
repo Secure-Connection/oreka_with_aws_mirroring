@@ -165,6 +165,7 @@ public:
 	struct in_addr m_senderIp;
 	struct in_addr m_receiverIp;
 	CStdString m_from;
+	CStdString m_fromName;
 	CStdString m_to;
 };
 typedef oreka::shared_ptr<Sip200OkInfo> Sip200OkInfoRef;

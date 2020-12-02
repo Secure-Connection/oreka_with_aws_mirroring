@@ -624,6 +624,8 @@ bool TrySip200Ok(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader,
 
             char* fromFieldEnd = memFindEOL(fromField, sipEnd);
 
+            GrabSipName(fromField, fromFieldEnd, info->m_fromName);
+
             char* sipUser = memFindAfter("sip:", fromField, fromFieldEnd);
             if(sipUser)
             {
