@@ -343,7 +343,7 @@ bool TryRtcp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, Udp
 	}
 
 	info->ToString(logMsg);
-	LOG4CXX_DEBUG(s_rtcpPacketLog, logMsg);
+	//LOG4CXX_DEBUG(s_rtcpPacketLog, logMsg);
 
 	VoIpSessionsSingleton::instance()->ReportRtcpSrcDescription(info);
 
@@ -356,17 +356,17 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 	RtpHeaderStruct* rtpHeader = (RtpHeaderStruct*)udpPayload;
 	std::map<unsigned int, unsigned int>::iterator pair;
 
-    LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x1");
+    //LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x1");
 
 	/* Ensure that the UDP payload is at least sizeof(RtpHeaderStruct) */
 	if(ntohs(udpHeader->len) < sizeof(RtpHeaderStruct)) {
-        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x2");
+        //LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x2");
         return false;
     }
 
 	if (rtpHeader->version == 2 && rtpHeader->cc == 0 && rtpHeader->p == 0)
 	{
-        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x3");
+        //LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x3");
 		if((!(ntohs(udpHeader->source)%2) && !(ntohs(udpHeader->dest)%2)) || DLLCONFIG.m_rtpDetectOnOddPorts)	// udp ports usually even 
 		{
             LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x4");
@@ -417,19 +417,19 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
                     LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x9");
 					if(s_rtpPacketLog->isDebugEnabled())
 					{
-                        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xA");
+                  //      LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xA");
 						CStdString logMsg;
 						char sourceIp[16];
 						inet_ntopV4(AF_INET, (void*)&ipHeader->ip_src, sourceIp, sizeof(sourceIp));
 						char destIp[16];
 						inet_ntopV4(AF_INET, (void*)&ipHeader->ip_dest, destIp, sizeof(destIp));
 						logMsg.Format("RTP packet filtered by rtpBlockedIpRanges: src:%s dst:%s", sourceIp, destIp);
-						LOG4CXX_DEBUG(s_rtpPacketLog, logMsg);
+				//		LOG4CXX_DEBUG(s_rtpPacketLog, logMsg);
 					}
 				}
 				else
 				{
-                    LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xB");
+              //      LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xB");
 					result = true;
 					u_char* payload = (u_char *)rtpHeader + sizeof(RtpHeaderStruct);
 					u_char* packetEnd = (u_char *)ipHeader + ntohs(ipHeader->ip_len);
@@ -454,7 +454,7 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 					//Extension length x 4 bytes
 					if(rtpHeader->x == 1)
 					{
-                        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xC");
+            //            LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xC");
 						unsigned short profileFieldLen = 2;
 						unsigned short ExtLenFieldLen = 2;
 						unsigned short extLenFieldValue = (payload[2] << 8) | payload[3];
@@ -466,7 +466,7 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 					}
 					else
 					{
-                        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xD");
+          //              LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xD");
 						rtpInfo->m_payloadSize = payloadLength;
 						rtpInfo->m_payload = payload;
 					}
@@ -474,14 +474,14 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 
 					if(s_rtpPacketLog->isDebugEnabled())
 					{
-                        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xE");
+        //                LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xE");
 						CStdString logMsg;
 						rtpInfo->ToString(logMsg);
-						LOG4CXX_DEBUG(s_rtpPacketLog, logMsg);
+		//				LOG4CXX_DEBUG(s_rtpPacketLog, logMsg);
 					}
 					if(payloadLength < 900)		// sanity check, speech RTP payload should always be smaller
 					{
-                        LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xF");
+      //                  LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0xF");
 						VoIpSessionsSingleton::instance()->ReportRtpPacket(rtpInfo);
 					}
 				}
@@ -504,7 +504,7 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 			}
 		}
 	}
-    LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x12");
+    //LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x12");
 	return result;
 }
 
@@ -524,7 +524,7 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 		detectedUsefulPacket = TryRtp(ethernetHeader, ipHeader, udpHeader, udpPayload);
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x3");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x3");
 			detectedUsefulPacket= TrySipInvite(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 			if(detectedUsefulPacket) {
 				 LOG4CXX_INFO(s_packetStatsLog, "..Found invite");
@@ -532,19 +532,19 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x4");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x4");
 			detectedUsefulPacket= TrySip200Ok(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 			if(detectedUsefulPacket) {
-			   LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x5");
+			  // LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x5");
 			   LOG4CXX_INFO(s_packetStatsLog, "..Found 200OK");
 			}
 		}
 
 
 		if(DLLCONFIG.m_sipNotifySupport == true){
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x6");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x6");
 			if(!detectedUsefulPacket) {
-                LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x7");
+                //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x7");
 				detectedUsefulPacket= TrySipNotify(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 				if(detectedUsefulPacket) {
 				   LOG4CXX_INFO(s_packetStatsLog, "found notify");
@@ -555,7 +555,7 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
             LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x8");
 			if(DLLCONFIG.m_sipDetectSessionProgress == true)
 			{
-                LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x9");
+                //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x9");
 			      detectedUsefulPacket = TrySipSessionProgress(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 			      if(detectedUsefulPacket) {
                                    LOG4CXX_INFO(s_packetStatsLog, "found 183");
@@ -565,16 +565,16 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0xA");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0xA");
 			if(DLLCONFIG.m_sip302MovedTemporarilySupport == true)
 			{
-                LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0xB");
+              //  LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0xB");
 				detectedUsefulPacket = TrySip302MovedTemporarily(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 			}
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0xC");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0xC");
 			detectedUsefulPacket = TrySipBye(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 			      if(detectedUsefulPacket) {
                       LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0xD");
@@ -588,26 +588,26 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0xF");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0xF");
 			detectedUsefulPacket = TrySipInfo(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x10");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x10");
 			detectedUsefulPacket = TryLogFailedSip(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x11");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x11");
 			if(DLLCONFIG.m_sipCallPickUpSupport == true)
 			{
-                LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x12");
+              //  LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x12");
 				detectedUsefulPacket= TrySipSubscribe(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 			}
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x13");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x13");
 			if(DLLCONFIG.m_rtcpDetect == true)
 			{
                 LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x14");
@@ -619,52 +619,52 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 
 		if(DLLCONFIG.m_iax2Support == false)
 		{
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x15");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x15");
 			detectedUsefulPacket = true;	// Stop trying to detect if this UDP packet could be of interest
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x16");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x16");
 			 detectedUsefulPacket = TryIax2New(ethernetHeader, ipHeader, udpHeader, udpPayload);
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x17");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x17");
 			detectedUsefulPacket = TryIax2Accept(ethernetHeader, ipHeader, udpHeader, udpPayload);
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x18");
+            ///LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x18");
 			detectedUsefulPacket = TryIax2Authreq(ethernetHeader, ipHeader, udpHeader, udpPayload);
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x19");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x19");
 			detectedUsefulPacket = TryIax2Hangup(ethernetHeader, ipHeader, udpHeader, udpPayload);
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x1A");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x1A");
 			detectedUsefulPacket = TryIax2ControlHangup(ethernetHeader, ipHeader, udpHeader, udpPayload);
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x1B");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x1B");
 			detectedUsefulPacket = TryIax2Reject(ethernetHeader, ipHeader, udpHeader, udpPayload);
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x1C");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x1C");
 			detectedUsefulPacket = TryIax2FullVoiceFrame(ethernetHeader, ipHeader, udpHeader, udpPayload);
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x1D");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x1D");
 			detectedUsefulPacket = TryIax2MetaTrunkFrame(ethernetHeader, ipHeader, udpHeader, udpPayload);
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x1E");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x1E");
 			detectedUsefulPacket = TryIax2MiniVoiceFrame(ethernetHeader, ipHeader, udpHeader, udpPayload);
 		}
 	}
