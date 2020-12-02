@@ -228,7 +228,7 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 					decoder->AudioChunkOut(tmpChunkRef);
 					if(tmpChunkRef.get())
 					{
-                        LOG4CXX_INFO(getLog(), "DetectChannel 0x12");
+      //                  LOG4CXX_INFO(getLog(), "DetectChannel 0x12");
 
                         rmsVal = tmpChunkRef->ComputeRmsDb();
 					}
@@ -251,7 +251,7 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 			}
 			if(rmsVal > m_config->m_sessionStartsOnS2ActivityDb)
 			{
-                LOG4CXX_INFO(getLog(), "DetectChannel 0x15");
+               // LOG4CXX_INFO(getLog(), "DetectChannel 0x15");
 
                 Start();
 				ReportMetadata();
@@ -264,11 +264,11 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 			}
 		}
 
-        LOG4CXX_INFO(getLog(), "DetectChannel 0x17");
+        //LOG4CXX_INFO(getLog(), "DetectChannel 0x17");
 
         return 2;
 	}
-    LOG4CXX_INFO(getLog(), "DetectChannel 0x18");
+    //LOG4CXX_INFO(getLog(), "DetectChannel 0x18");
 
 
     return 0;
