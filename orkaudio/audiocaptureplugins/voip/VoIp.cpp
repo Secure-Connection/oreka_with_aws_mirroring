@@ -369,7 +369,7 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
         //LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x3");
 		if((!(ntohs(udpHeader->source)%2) && !(ntohs(udpHeader->dest)%2)) || DLLCONFIG.m_rtpDetectOnOddPorts)	// udp ports usually even 
 		{
-            LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x4");
+            //LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x4");
 			pair = DLLCONFIG.m_rtpPayloadTypeBlockList.find(rtpHeader->pt);
 			if(pair != DLLCONFIG.m_rtpPayloadTypeBlockList.end())
 			{
@@ -488,7 +488,7 @@ bool TryRtp(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, UdpH
 			}
 			else
 			{
-                LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x10");
+                //LOG4CXX_INFO(s_rtpPacketLog, "TryRtp 0x10");
 				// unsupported CODEC
 				if(s_rtpPacketLog->isDebugEnabled())
 				{
@@ -552,7 +552,7 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 			}
 		}
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x8");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x8");
 			if(DLLCONFIG.m_sipDetectSessionProgress == true)
 			{
                 //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0x9");
@@ -583,7 +583,7 @@ void DetectUsefulUdpPacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 		}
 
 		if(!detectedUsefulPacket) {
-            LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0xE");
+            //LOG4CXX_INFO(s_rtpPacketLog, "DetectUsefulUdpPacket 0xE");
 			detectedUsefulPacket = TrySipRefer(ethernetHeader, ipHeader, udpHeader, udpPayload, ipPacketEnd);
 		}
 
