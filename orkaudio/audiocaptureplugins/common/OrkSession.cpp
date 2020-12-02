@@ -184,10 +184,10 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
         return 2;
 	}
 	else if(rtpPacket->m_ssrc == m_lastRtpPacketSide2->m_ssrc && m_lastRtpPacketSide2->m_destIp.s_addr == rtpPacket->m_destIp.s_addr) {
-        LOG4CXX_INFO(getLog(), "DetectChannel 0xC");
+        //LOG4CXX_INFO(getLog(), "DetectChannel 0xC");
 
         if(!m_started && (m_config->m_sessionStartsOnS2ActivityDb != 0)){
-            LOG4CXX_INFO(getLog(), "DetectChannel 0xD");
+         //   LOG4CXX_INFO(getLog(), "DetectChannel 0xD");
 
             AudioChunkDetails details;
 			details.m_arrivalTimestamp = rtpPacket->m_arrivalTimestamp;
