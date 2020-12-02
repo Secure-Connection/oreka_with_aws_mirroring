@@ -170,7 +170,7 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 			ReportMetadata();
 			if (CONFIG.m_lookBackRecording == false)
 			{
-                LOG4CXX_INFO(getLog(), "DetectChannel 0x9");
+                //LOG4CXX_INFO(getLog(), "DetectChannel 0x9");
 				m_nonLookBackSessionStarted = true;
 			}
 		}
@@ -199,13 +199,13 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 			details.m_numBytes = rtpPacket->m_payloadSize;
 			if(rtpPacket->m_payloadType >= 96)
 			{
-                LOG4CXX_INFO(getLog(), "DetectChannel 0xE");
+                //LOG4CXX_INFO(getLog(), "DetectChannel 0xE");
 
                 details.m_rtpPayloadType = m_orekaRtpPayloadTypeMap[rtpPacket->m_payloadType-96];
 			}
 			else
 			{
-                LOG4CXX_INFO(getLog(), "DetectChannel 0xF");
+                //LOG4CXX_INFO(getLog(), "DetectChannel 0xF");
 
                 details.m_rtpPayloadType = rtpPacket->m_payloadType;
 			}
@@ -214,14 +214,14 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 			double rmsVal = 0;
 			if(chunk->GetEncoding() != PcmAudio)
 			{
-                LOG4CXX_INFO(getLog(), "DetectChannel 0x10");
+                //LOG4CXX_INFO(getLog(), "DetectChannel 0x10");
 
                 AudioChunkRef tmpChunkRef;
 				FilterRef decoder;
 				decoder = m_decoders.at(details.m_rtpPayloadType);
 				if(decoder.get() != NULL)
 				{
-                    LOG4CXX_INFO(getLog(), "DetectChannel 0x11");
+                  //  LOG4CXX_INFO(getLog(), "DetectChannel 0x11");
 
                     LOG4CXX_INFO(getLog(), "RTP Type:"+(int)details.m_rtpPayloadType);
 					decoder->AudioChunkIn(chunk);
@@ -238,16 +238,16 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 			}
 			else
 			{
-                LOG4CXX_INFO(getLog(), "DetectChannel 0x13");
+                //LOG4CXX_INFO(getLog(), "DetectChannel 0x13");
 
                 rmsVal = chunk->ComputeRmsDb();
 			}
 			if(getLog()->isDebugEnabled())
 			{
-                LOG4CXX_INFO(getLog(), "DetectChannel 0x14");
+                //LOG4CXX_INFO(getLog(), "DetectChannel 0x14");
 
                 logMsg.Format("[%s] s2 db:%lf" ,m_trackingId, rmsVal);
-				LOG4CXX_TRACE(getLog(), logMsg);
+				//LOG4CXX_TRACE(getLog(), logMsg);
 			}
 			if(rmsVal > m_config->m_sessionStartsOnS2ActivityDb)
 			{
@@ -257,7 +257,7 @@ int OrkSession::DetectChannel(RtpPacketInfoRef& rtpPacket, bool* pIsFirstPacket)
 				ReportMetadata();
 				if (CONFIG.m_lookBackRecording == false)
 				{
-                    LOG4CXX_INFO(getLog(), "DetectChannel 0x16");
+                  //  LOG4CXX_INFO(getLog(), "DetectChannel 0x16");
 
                     m_nonLookBackSessionStarted = true;
 				}
