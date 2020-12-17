@@ -13,7 +13,7 @@ AudioDataWriter * AudioDataWriter::instance() {
 }
 
 
-bool AudioDataWriter::write_pcm_data(std::string session_id, int channel, int payload_type, , int sequence_number, int data_length, unsigned char * audio_data, uint64_t timestamp) {
+bool AudioDataWriter::write_pcm_data(std::string session_id, int channel, int payload_type, int sequence_number, int data_length, unsigned char * audio_data, uint64_t timestamp) {
     if(is_full()) {
         return false;
     }
