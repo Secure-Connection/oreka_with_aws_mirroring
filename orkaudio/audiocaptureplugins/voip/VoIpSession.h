@@ -157,7 +157,6 @@ public:
 	unsigned int m_ssrcCandidate;
 	void ReportMetadataUpdateSkinny();
 	bool m_hasReceivedCallInfo;
-
 private:
 	void ProcessMetadataSip(RtpPacketInfoRef&);
 	void ProcessMetadataSipIncoming();
