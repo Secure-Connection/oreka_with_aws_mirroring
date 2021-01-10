@@ -1129,28 +1129,36 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
             char* sipUser = memFindAfter("sip:", fromField, fromFieldEnd);
             if(sipUser)
             {
+                LOG4CXX_INFO(s_sipExtractionLog, "We have SIP user");
                 if(DLLCONFIG.m_sipReportFullAddress)
                 {
+                    LOG4CXX_INFO(s_sipExtractionLog, "Full address");
                     GrabSipUserAddress(sipUser, fromFieldEnd, info->m_from);
                 }
                 else
                 {
+                    LOG4CXX_INFO(s_sipExtractionLog, "Non Full address");
                     GrabSipUriUser(sipUser, fromFieldEnd, info->m_from);
                 }
                 GrabSipUriDomain(sipUser, fromFieldEnd, info->m_fromDomain);
             }
             else
             {
+                LOG4CXX_INFO(s_sipExtractionLog, "We dont have SIP user");
                 if(DLLCONFIG.m_sipReportFullAddress)
                 {
+                    LOG4CXX_INFO(s_sipExtractionLog, "Full address");
                     GrabSipUserAddress(fromField, fromFieldEnd, info->m_from);
                 }
                 else
                 {
+                    LOG4CXX_INFO(s_sipExtractionLog, "Non Full address");
                     GrabSipUriUser(fromField, fromFieldEnd, info->m_from);
                 }
                 GrabSipUriDomain(fromField, fromFieldEnd, info->m_fromDomain);
             }
+
+            LOG4CXX_INFO(s_sipExtractionLog, "found from:", info->m_from);
         }
         if(toField)
         {
