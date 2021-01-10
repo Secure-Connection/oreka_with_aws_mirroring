@@ -1158,7 +1158,7 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
                 GrabSipUriDomain(fromField, fromFieldEnd, info->m_fromDomain);
             }
 
-            LOG4CXX_INFO(s_sipExtractionLog, "found from:", info->m_from);
+            LOG4CXX_INFO(s_sipExtractionLog, "found from:" + info->m_from);
         }
         if(toField)
         {
