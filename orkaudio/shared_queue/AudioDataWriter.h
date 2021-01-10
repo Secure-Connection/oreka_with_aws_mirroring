@@ -11,7 +11,7 @@ typedef struct {
     char session_id[64];
     unsigned char channel;
     int sequence_number;
-    uint64_t timestamp;
+    uint32_t timestamp;
     uint16_t data_length;
     unsigned char payload_type;
     unsigned char pcmdata[512];
