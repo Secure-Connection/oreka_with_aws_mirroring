@@ -1466,7 +1466,7 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
                 call_start_json += "\"start\":" + CStdString(std::to_string(current_time).c_str()) + " \n}";*/
 
                 LOG4CXX_INFO(s_sipPacketLog, "Calling elvis");
-                SIPEventWriter::instance()->write_sip_event(info->m_fromName, info->m_to, info->m_callId, current_time, SipEventType::SIP_START);
+                SIPEventWriter::instance()->write_sip_event(info->m_from, info->m_to, info->m_callId, current_time, SipEventType::SIP_START);
             }
 
             VoIpSessionsSingleton::instance()->ReportSipInvite(info);
