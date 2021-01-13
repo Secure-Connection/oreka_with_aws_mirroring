@@ -707,7 +707,8 @@ bool TrySip200Ok(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader,
 
         VoIpSessionsSingleton::instance()->ReportSip200Ok(info);
 
-        string from;
+        std::string from;
+
         if(info->m_from=="") {
             from=info->m_fromName;
         } else {
