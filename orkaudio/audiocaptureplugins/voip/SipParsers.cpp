@@ -157,7 +157,7 @@ bool TrySipBye(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, U
 
         LOG4CXX_INFO(s_sipPacketLog, "Stopping elvis");
 
-        string from;
+        std::string from;
 
         if(info->m_from=="") {
             from=info->m_fromName;
