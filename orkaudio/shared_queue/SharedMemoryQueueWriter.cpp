@@ -19,9 +19,11 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     shared_memory_file.open(keyval,std::ios::out | std::ios::app | std::ios::binary);
     shared_memory_file.close();
 
+    std::cout<<"Creating shared memory" + std::endl;
+
     key = ftok(keyval.c_str(), queue_identifier);
     if(key==-1) {
-        logMsg= "Could not generate key:" +  std::to_string(errno);
+        logMsg= "Could not generate key:" +  std::to_string(errno)  + std::endl;;
         std::cout<<logMsg;
     }
 
@@ -29,17 +31,19 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
 
 
     if(shmid == -1){
-        logMsg= "Shared Memory For Queue:" +  std::to_string(errno) + " " + std::to_string(element_size)+ " " +std::to_string(queue_size);
+        logMsg= "Shared Memory For Queue:" +  std::to_string(errno) + " " + std::to_string(element_size)+ " " +std::to_string(queue_size)  + std::endl;
         std::cout<<logMsg;
     }
 
     shared_memory = (unsigned char *)shmat(shmid,(void*)0,0);
 
     if (shared_memory < 0) {
-        printf("Error mapping shared memory: %s\n",strerror(errno));
+        logMsg= "Error mapping shared memory: "+std::to_string(errno) + std::endl;
+        std::cout<<logMsg;
         return;
     } else {
-        printf("shared memory: %ll\n",(unsigned long) shmat);
+        logMsg = "shared memory: "+ std::to_string((unsigned long) shmat) + std::endl;
+        std::cout<<logMsg;
     }
 
     write_pointer = (int *)shared_memory;
