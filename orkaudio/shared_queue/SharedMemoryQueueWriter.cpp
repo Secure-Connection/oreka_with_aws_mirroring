@@ -19,7 +19,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     shared_memory_file.open(keyval,std::ios::out | std::ios::app | std::ios::binary);
     shared_memory_file.close();
 
-    std::cout<<"Creating shared memory" + "\n";
+    std::cout<<"Creating shared memory\n";
 
     key = ftok(keyval.c_str(), queue_identifier);
     if(key==-1) {
