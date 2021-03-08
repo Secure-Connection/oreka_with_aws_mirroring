@@ -31,18 +31,18 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
 
 
     if(shmid == -1){
-        logMsg= "Shared Memory For Queue:" +  std::to_string(errno) + " " + std::to_string(element_size)+ " " +std::to_string(queue_size)  + std::endl;
+        logMsg= "Shared Memory For Queue:" +  std::to_string(errno) + " " + std::to_string(element_size)+ " " +std::to_string(queue_size)  + "\n";
         std::cout<<logMsg;
     }
 
     shared_memory = (unsigned char *)shmat(shmid,(void*)0,0);
 
     if (shared_memory < 0) {
-        logMsg= "Error mapping shared memory: "+std::to_string(errno) + std::endl;
+        logMsg= "Error mapping shared memory: "+std::to_string(errno) + "\n"
         std::cout<<logMsg;
         return;
     } else {
-        logMsg = "shared memory: "+ std::to_string((unsigned long) shmat) + std::endl;
+        logMsg = "shared memory: "+ std::to_string((unsigned long) shmat) + "\n";
         std::cout<<logMsg;
     }
 
