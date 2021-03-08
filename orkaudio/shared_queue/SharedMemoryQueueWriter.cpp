@@ -23,7 +23,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
 
     key = ftok(keyval.c_str(), queue_identifier);
     if(key==-1) {
-        logMsg= "Could not generate key:" +  std::to_string(errno)  + std::endl;;
+        logMsg= "Could not generate key:" +  std::to_string(errno)  + "\n";
         std::cout<<logMsg;
     }
 
