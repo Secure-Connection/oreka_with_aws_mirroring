@@ -214,9 +214,7 @@ void AudioTape::Write()
 	bool done = false;
 	CStdString logMsg;
 
-    LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write");
-
-	if(m_state == StateCreated && PartyFilterActive())
+    if(m_state == StateCreated && PartyFilterActive())
 	{
 		if(!m_passedPartyFilterTest)
 		{
@@ -256,7 +254,6 @@ void AudioTape::Write()
 		return;
 	}
 
-    LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x1");
 
 	while(!done && m_state != StateStopped && m_state != StateError)
 	{
@@ -282,8 +279,7 @@ void AudioTape::Write()
 		}
 		if(!done)
 		{
-            LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x5");
-			try
+    		try
 			{
 				// Need to create file appender when receiving first audio chunk
 				if (m_state == StateCreated)
@@ -321,26 +317,21 @@ void AudioTape::Write()
 						// determine what final extension the file will have after optional compression
 						if(CONFIG.m_storageAudioFormat == FfNative)
 						{
-                            LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x8");
-							m_fileExtension = m_audioFileRef->GetExtension();
+    						m_fileExtension = m_audioFileRef->GetExtension();
 						}
 						else
 						{
-                            LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x9");
-							m_fileExtension = FileFormatGetExtension(CONFIG.m_storageAudioFormat);
+    						m_fileExtension = FileFormatGetExtension(CONFIG.m_storageAudioFormat);
 						}
 					}
 				}
 				if (m_state == StateActive)
 				{
-                    LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0xA");
-					if((m_bytesWritten / 1024) > CONFIG.m_captureFileSizeLimitKb)
+    				if((m_bytesWritten / 1024) > CONFIG.m_captureFileSizeLimitKb)
 					{
-                        LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0xB");
-						if((time(NULL) - m_lastLogWarning) > 3600)
+    					if((time(NULL) - m_lastLogWarning) > 3600)
 						{
-                            LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0xC");
-							CStdString logMsg;
+    						CStdString logMsg;
 
 							logMsg.Format("[%s] capture file %s.mcf is over size limit (%u KBytes) - ignoring new data", m_trackingId, GetIdentifier(), CONFIG.m_captureFileSizeLimitKb);
 							LOG4CXX_ERROR(LOG.tapeLog, logMsg);
@@ -356,8 +347,7 @@ void AudioTape::Write()
 
 					if (CONFIG.m_logRms)
 					{
-                        LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0xE");
-						// Compute RMS, RMS dB and log
+              			// Compute RMS, RMS dB and log
 						CStdString rmsString;
 						rmsString.Format("%.1f dB:%.1f", chunkRef.get()->ComputeRms(), chunkRef.get()->ComputeRmsDb());
 						LOG4CXX_INFO(LOG.tapeLog, "[" + m_trackingId + "] RMS: " + rmsString);
@@ -399,8 +389,6 @@ void AudioTape::Write()
 			}
 		}
 	}
-
-    LOG4CXX_ERROR(LOG.tapeLog, "AudioTape::Write 0x13");
 }
 
 void AudioTape::SetShouldStop()
