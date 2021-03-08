@@ -35,14 +35,15 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
         std::cout<<logMsg;
     }
 
-    shared_memory = (unsigned char *)shmat(shmid,(void*)0,0);
+    void * memory = shmat(shmid,(void*)0,0);
 
-    if (shared_memory < 0) {
+    if (memory < 0) {
         logMsg= "Error mapping shared memory: "+std::to_string(errno) + "\n";
         std::cout<<logMsg;
         return;
     } else {
-        logMsg = "shared memory: "+ std::to_string((unsigned long) shmat) + "\n";
+        logMsg = "shared memory: "+ std::to_string(memory) + "\n";
+        shared_memory = memory;
         std::cout<<logMsg;
     }
 
