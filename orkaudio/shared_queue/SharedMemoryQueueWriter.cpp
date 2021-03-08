@@ -43,7 +43,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
         return;
     } else {
         logMsg = "shared memory: "+ std::to_string(memory) + "\n";
-        shared_memory = memory;
+        shared_memory = (unsigned char *)memory;
         std::cout<<logMsg;
     }
 
