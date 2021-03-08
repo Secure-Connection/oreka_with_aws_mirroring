@@ -38,6 +38,8 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     if (shared_memory < 0) {
         printf("Error mapping shared memory: %s\n",strerror(errno));
         return;
+    } else {
+        printf("shared memory: %ll\n",(unsigned long) shmat);
     }
 
     write_pointer = (int *)shared_memory;
