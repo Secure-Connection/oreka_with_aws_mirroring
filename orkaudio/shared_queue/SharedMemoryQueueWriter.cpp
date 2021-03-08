@@ -35,6 +35,11 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
 
     shared_memory = (unsigned char *)shmat(shmid,(void*)0,0);
 
+    if (shared_memory < 0) {
+        printf("Error mapping shared memory: %s\n",strerror(errno));
+        return errno;
+    }
+
     write_pointer = (int *)shared_memory;
     read_pointer = (int *)(shared_memory+sizeof(int));
     *write_pointer = 0;

@@ -1604,6 +1604,7 @@ void VoIp::OpenDevices()
 		{
 			LOG4CXX_INFO(s_packetLog, CStdString(":Available pcap devices:"));
 
+
 			for (pcap_if_t* device = devices; device != NULL; device = device->next)
 			{
 				if(!device){break;}
