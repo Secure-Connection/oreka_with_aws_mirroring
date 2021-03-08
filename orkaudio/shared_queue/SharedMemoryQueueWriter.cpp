@@ -38,7 +38,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     shared_memory = (unsigned char *)shmat(shmid,(void*)0,0);
 
     if (shared_memory < 0) {
-        logMsg= "Error mapping shared memory: "+std::to_string(errno) + "\n"
+        logMsg= "Error mapping shared memory: "+std::to_string(errno) + "\n";
         std::cout<<logMsg;
         return;
     } else {
