@@ -1617,7 +1617,7 @@ void VoIp::OpenDevices()
 	//			deviceName.Find("lo") == -1			&&			// Don't want Unix loopback device
 		//			deviceName.Find("any") == -1			)		// Don't want Unix "any" device
                         
-				if(deviceName.find("eth0")!=-1)        		
+				if(deviceName.find("ens192")!=-1)        		
 				{
 					defaultDevice =  device;
 				}

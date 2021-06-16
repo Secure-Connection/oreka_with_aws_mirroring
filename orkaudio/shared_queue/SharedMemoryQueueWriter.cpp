@@ -14,7 +14,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     element_size = _element_size;
     queue_size = _queue_size;
     std::string logMsg;
-    std::string keyval = "/tmp/"+std::to_string(queue_identifier);
+    std::string keyval = "/root/"+std::to_string(queue_identifier);
     std::ofstream shared_memory_file;
     shared_memory_file.open(keyval,std::ios::out | std::ios::app | std::ios::binary);
     shared_memory_file.close();
