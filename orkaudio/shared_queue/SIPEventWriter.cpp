@@ -23,6 +23,8 @@ bool SIPEventWriter::write_sip_event(std::string caller, std::string callee, std
     event.eventType = eventType;
 
     if(is_full()) {
+	printf("Queue is full!!!!");
+	exit(0);
         return false;
     }
 
