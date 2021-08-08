@@ -55,11 +55,11 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     }
 
     (int *) end_of_memory = (int *)(shared_memory+2*sizeof(int) + element_size * queue_size);
-    if (*end_memory = 0xCAFEBABE) {
+    if (*end_of_memory = 0xCAFEBABE) {
         //Already initialized
         return;
     } else {
-        *end_memory = 0xCAFEBABE;
+        *end_of_memory = 0xCAFEBABE;
     }
 
     write_pointer = (int *)shared_memory;
