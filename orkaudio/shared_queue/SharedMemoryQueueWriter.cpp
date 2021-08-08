@@ -21,7 +21,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
 
     queue_mutex = new named_mutex(open_or_create,queue_mutex_name);
 
-    scoped_lock<named_mutex> lock(queue_mutex);
+    scoped_lock<named_mutex> lock(*queue_mutex);
 
     shared_memory_file.open(keyval,std::ios::out | std::ios::app | std::ios::binary);
     shared_memory_file.close();
@@ -69,17 +69,17 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
 }
 
 bool SharedMemoryQueueWriter::is_full() {
-    scoped_lock<named_mutex> lock(queue_mutex);
+    scoped_lock<named_mutex> lock(*queue_mutex);
     return get_next_value(*write_pointer)==*read_pointer;
 }
 
 bool SharedMemoryQueueWriter::is_empty() {
-    scoped_lock<named_mutex> lock(queue_mutex);
+    scoped_lock<named_mutex> lock(*queue_mutex);
     return *write_pointer==*read_pointer;
 }
 
 bool SharedMemoryQueueWriter::write_element(unsigned char * element) {
-    scoped_lock<named_mutex> lock(queue_mutex);
+    scoped_lock<named_mutex> lock(*queue_mutex);
     if(is_full()) {
         return false;
     }
