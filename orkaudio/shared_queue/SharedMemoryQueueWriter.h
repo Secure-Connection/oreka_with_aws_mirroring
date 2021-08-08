@@ -7,8 +7,9 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <memory.h>
-#include <mutex>
+#include <boost/interprocess/sync/named_mutex.hpp>
 
+using namespace boost::inteprocess;
 class SharedMemoryQueueWriter {
 private:
     int * write_pointer;
@@ -19,7 +20,7 @@ private:
     int queue_size;
     int queue_identifier;
     unsigned char * shared_memory;
-    std::mutex queue_mutex;
+    named_mutex * queue_mutex;
 
     inline int get_next_value(int value) {
         int new_value = value + 1;

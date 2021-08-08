@@ -16,6 +16,13 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     std::string logMsg;
     std::string keyval = "/root/"+std::to_string(queue_identifier);
     std::ofstream shared_memory_file;
+
+    std::string queue_mutex_name = "queue_mutex_"+std::to_string(queue_identifier);
+
+    queue_mutex = new named_mutex(open_or_create,queue_mutex_name);
+
+    scoped_lock<named_mutex> lock(queue_mutex);
+
     shared_memory_file.open(keyval,std::ios::out | std::ios::app | std::ios::binary);
     shared_memory_file.close();
 
@@ -27,7 +34,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
         std::cout<<logMsg;
     }
 
-    shmid = shmget(key, 2*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
+    shmid = shmget(key, 3*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
 
 
     if(shmid == -1){
@@ -47,6 +54,14 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
         std::cout<<logMsg;
     }
 
+    (int *) end_of_memory = (int *)(shared_memory+2*sizeof(int) + element_size * queue_size);
+    if (*end_memory = 0xCAFEBABE) {
+        //Already initialized
+        return;
+    } else {
+        *end_memory = 0xCAFEBABE;
+    }
+
     write_pointer = (int *)shared_memory;
     read_pointer = (int *)(shared_memory+sizeof(int));
     *write_pointer = 0;
@@ -54,24 +69,27 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
 }
 
 bool SharedMemoryQueueWriter::is_full() {
+    scoped_lock<named_mutex> lock(queue_mutex);
     return get_next_value(*write_pointer)==*read_pointer;
 }
 
 bool SharedMemoryQueueWriter::is_empty() {
+    scoped_lock<named_mutex> lock(queue_mutex);
     return *write_pointer==*read_pointer;
 }
 
 bool SharedMemoryQueueWriter::write_element(unsigned char * element) {
-    queue_mutex.lock();
+    scoped_lock<named_mutex> lock(queue_mutex);
     if(is_full()) {
-        queue_mutex.unlock();
         return false;
     }
     memcpy(shared_memory+element_size*(*write_pointer)+2*sizeof(int),element,element_size);
     advance_pointer(write_pointer);
-    queue_mutex.unlock();
 }
 
 SharedMemoryQueueWriter::~SharedMemoryQueueWriter() {
+    std::string queue_mutex_name = "queue_mutex_"+std::to_string(queue_identifier);
+    named_mutex::remove(queue_mutex_name);
+    delete queue_mutex;
     shmdt(shared_memory);
 }
