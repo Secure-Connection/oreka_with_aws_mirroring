@@ -54,7 +54,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
         std::cout<<logMsg;
     }
 
-    (int *) end_of_memory = (int *)(shared_memory+2*sizeof(int) + element_size * queue_size);
+    int *end_of_memory = (int *)(shared_memory+2*sizeof(int) + element_size * queue_size);
     if (*end_of_memory = 0xCAFEBABE) {
         //Already initialized
         return;
