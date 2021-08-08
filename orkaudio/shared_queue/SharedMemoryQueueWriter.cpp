@@ -89,7 +89,7 @@ bool SharedMemoryQueueWriter::write_element(unsigned char * element) {
 
 SharedMemoryQueueWriter::~SharedMemoryQueueWriter() {
     std::string queue_mutex_name = "queue_mutex_"+std::to_string(queue_identifier);
-    named_mutex::remove(queue_mutex_name);
+    named_mutex::remove(queue_mutex_name.c_str());
     delete queue_mutex;
     shmdt(shared_memory);
 }
