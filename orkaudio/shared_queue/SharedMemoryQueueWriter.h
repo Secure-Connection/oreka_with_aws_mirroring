@@ -7,9 +7,10 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <memory.h>
+#include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
 
-using namespace boost::inteprocess;
+using namespace boost::interprocess;
 class SharedMemoryQueueWriter {
 private:
     int * write_pointer;
