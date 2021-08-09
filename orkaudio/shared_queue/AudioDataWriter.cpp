@@ -4,7 +4,7 @@
 
 #include "AudioDataWriter.h"
 
-AudioDataWriter * AudioDataWriter::s_instance = new AudioDataWriter();
+AudioDataWriter * AudioDataWriter::s_instance = nullptr;
 AudioDataWriter * AudioDataWriter::instance() {
     if(s_instance==NULL) {
         s_instance = new AudioDataWriter();
@@ -31,4 +31,5 @@ bool AudioDataWriter::write_pcm_data(std::string session_id, int channel, int pa
     write_element(element_memory);
 
     free(element_memory);
+    return true;
 }

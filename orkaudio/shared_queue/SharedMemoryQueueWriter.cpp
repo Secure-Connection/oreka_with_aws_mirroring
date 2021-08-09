@@ -8,6 +8,19 @@
 #include <string>
 #include <sys/shm.h>
 #include <sys/ipc.h>
+#include <boost/interprocess/sync/scoped_lock.hpp>
+#include <boost/interprocess/sync/named_mutex.hpp>
+
+key_t SharedMemoryQueueWriter::get_key(string keyval, int queue_identifier) {
+    key = ftok(keyval.c_str(), queue_identifier);
+    if(key==-1) {
+        std::ofstream shared_memory_file;
+        shared_memory_file.open(keyval,std::ios::out | std::ios::app | std::ios::binary);
+        shared_memory_file.close();
+        key = ftok(keyval.c_str(), queue_identifier);
+    }
+    return key;
+}
 
 SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _element_size, int _queue_size) {
     queue_identifier = _queue_identifier;
@@ -15,31 +28,33 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     queue_size = _queue_size;
     std::string logMsg;
     std::string keyval = "/root/"+std::to_string(queue_identifier);
-    std::ofstream shared_memory_file;
+
 
     std::string queue_mutex_name = "queue_mutex_"+std::to_string(queue_identifier);
 
-    queue_mutex = new named_mutex(open_or_create,queue_mutex_name);
+    queue_mutex = new boost::interprocess::named_mutex(open_or_create,queue_mutex_name.c_str());
 
     scoped_lock<named_mutex> lock(*queue_mutex);
 
-    shared_memory_file.open(keyval,std::ios::out | std::ios::app | std::ios::binary);
-    shared_memory_file.close();
+    printf("Locked\n");
 
     std::cout<<"Creating shared memory\n";
 
-    key = ftok(keyval.c_str(), queue_identifier);
+    key = get_key(keyval, queue_identifier);
+
     if(key==-1) {
         logMsg= "Could not generate key:" +  std::to_string(errno)  + "\n";
         std::cout<<logMsg;
     }
 
-    shmid = shmget(key, 3*sizeof(int) + element_size * queue_size ,0666|IPC_CREAT);
+    shmid = shmget(key, 3*sizeof(int) + element_size * queue_size ,IPC_CREAT | SHM_R | SHM_W);
 
 
     if(shmid == -1){
         logMsg= "Shared Memory For Queue:" +  std::to_string(errno) + " " + std::to_string(element_size)+ " " +std::to_string(queue_size)  + "\n";
         std::cout<<logMsg;
+    } else {
+            printf("Success with shm:%d\n",shmid);
     }
 
     void * memory = shmat(shmid,NULL,0);
@@ -55,11 +70,13 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     }
 
     int *end_of_memory = (int *)(shared_memory+2*sizeof(int) + element_size * queue_size);
-    if (*end_of_memory = 0xCAFEBABE) {
+    if (*end_of_memory == 0xDEADBEEF) {
         //Already initialized
+        printf("Already intialized-Unlocked\n");
         return;
     } else {
-        *end_of_memory = 0xCAFEBABE;
+        printf("First time\n");
+        *end_of_memory = 0xDEADBEEF;
     }
 
     write_pointer = (int *)shared_memory;
@@ -69,12 +86,10 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
 }
 
 bool SharedMemoryQueueWriter::is_full() {
-    scoped_lock<named_mutex> lock(*queue_mutex);
-    return get_next_value(*write_pointer)==*read_pointer;
+       return get_next_value(*write_pointer)==*read_pointer;
 }
 
 bool SharedMemoryQueueWriter::is_empty() {
-    scoped_lock<named_mutex> lock(*queue_mutex);
     return *write_pointer==*read_pointer;
 }
 
