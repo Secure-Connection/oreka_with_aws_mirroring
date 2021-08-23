@@ -73,7 +73,7 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     if (*end_of_memory == 0xDEADBEEF) {
         //Already initialized
         printf("Already intialized-Unlocked\n");
-        return;
+//        return;
     } else {
         printf("First time\n");
         *end_of_memory = 0xDEADBEEF;
