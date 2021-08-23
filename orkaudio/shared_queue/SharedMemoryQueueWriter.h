@@ -37,7 +37,7 @@ private:
         *ptr = get_next_value(*ptr);
     }
 
-    key_t get_key(string keyval, int queue_identifier);
+    key_t get_key(std::string keyval, int queue_identifier);
 
  protected:
 
