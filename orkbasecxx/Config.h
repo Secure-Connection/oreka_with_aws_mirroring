@@ -17,6 +17,7 @@
 #include "StdString.h"
 #include "Object.h"
 #include "AudioCapture.h"
+#include <list>
 #include <log4cxx/logger.h>
 #include <map>
 
