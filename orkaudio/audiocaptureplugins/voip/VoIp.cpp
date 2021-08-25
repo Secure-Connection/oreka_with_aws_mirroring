@@ -26,6 +26,7 @@
 #include <list>
 #include <stdio.h>
 #include <string.h>
+#include <boost/lockfree/queue.hpp>
 #include "AudioCapturePlugin.h"
 #include "AudioCapturePluginCommon.h"
 #include "Utils.h"
@@ -109,6 +110,15 @@ public:
 	unsigned int m_numIfDropped10s;
 };
 typedef oreka::shared_ptr<PcapHandleData> PcapHandleDataRef;
+//========================================================
+struct PcapPacketData {
+    const EthernetHeaderStruct *ethernetHeader;
+    const IpHeaderStruct *ipHeader;
+
+    PcapPacketData() : ethernetHeader(nullptr), ipHeader(nullptr) {}
+    PcapPacketData(const EthernetHeaderStruct *ethernetHeader, const IpHeaderStruct *ipHeader) : ethernetHeader(new EthernetHeaderStruct(*ethernetHeader)), ipHeader(new IpHeaderStruct(*ipHeader)) {}
+};
+boost::lockfree::queue<PcapPacketData> voip_backlog;
 //========================================================
 class VoIp : public OrkSingleton<VoIp>
 {
@@ -987,11 +997,12 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 	if (DLLCONFIG.m_ipFragmentsReassemble && ipHeader->isFragmented()) {
         SizedBufferRef packetData = HandleIpFragment(ipHeader);
 		if (packetData) { // Packet data will return non-empty when the packet is complete
-			ProcessTransportLayer(ethernetHeader,reinterpret_cast<IpHeaderStruct*>(packetData->get()) );
+		    ipHeader = (IpHeaderStruct *)packetData->get();
+		    while (!voip_backlog.push({ethernetHeader, ipHeader}));// push unto the backlog
 		}
 	}
 	else {
-        ProcessTransportLayer(ethernetHeader,ipHeader);
+	    while (!voip_backlog.push({ethernetHeader, ipHeader}));// push unto the backlog
 	}
 
 	if((now - s_lastHooveringTime) > 5)
@@ -1766,10 +1777,10 @@ void VoIp::LoadPartyMaps()
 	struct stat finfo;
 	CStdString filename = LOCAL_PARTY_MAP_FILE;
 	int rt = -1;
-	if(stat((PCSTR)filename.c_str(), &finfo) != 0)
+	if(stat(filename.c_str(), &finfo) != 0)
 	{
 		filename = ETC_LOCAL_PARTY_MAP_FILE;
-		rt = stat((PCSTR)filename.c_str(), &finfo);
+		rt = stat(filename.c_str(), &finfo);
 	}
 	if(rt == 0)
 	{
