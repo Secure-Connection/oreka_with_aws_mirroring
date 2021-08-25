@@ -112,8 +112,8 @@ public:
 typedef oreka::shared_ptr<PcapHandleData> PcapHandleDataRef;
 //========================================================
 struct PcapPacketData {
-    const EthernetHeaderStruct *ethernetHeader;
-    const IpHeaderStruct *ipHeader;
+    EthernetHeaderStruct *ethernetHeader;
+    IpHeaderStruct *ipHeader;
 
     PcapPacketData() : ethernetHeader(nullptr), ipHeader(nullptr) {}
     PcapPacketData(const EthernetHeaderStruct *ethernetHeader, const IpHeaderStruct *ipHeader) : ethernetHeader(new EthernetHeaderStruct(*ethernetHeader)), ipHeader(new IpHeaderStruct(*ipHeader)) {}
@@ -1013,6 +1013,28 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 		Iax2SessionsSingleton::instance()->Hoover(now);
 		VoIpSingleton::instance()->LoadPartyMaps();
 	}
+}
+
+[[noreturn]]
+void PacketThreadHandler() {
+    SetThreadName("PacketThreadHandler");
+
+    // lower our priority, TODO: this might be too low...
+    pthread_setschedprio(pthread_self(), sched_get_priority_min(sched_getscheduler(getpid())));
+
+    PcapPacketData p;
+    for (;;) {
+
+        // whilst backlog has packets handle them
+        while (voip_backlog.pop(p)) {
+            ProcessTransportLayer(p.ethernetHeader, p.ipHeader);
+            delete p.ethernetHeader;
+            delete p.ipHeader;
+        }
+
+        // backlog was empty, so sleep a bit
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
 }
 
 void SingleDeviceCaptureThreadHandler(pcap_t* pcapHandle)
@@ -2017,6 +2039,15 @@ void VoIp::Run()
 		}
 	}
 
+	// start the lower priority thread for handling packets
+	try {
+	    std::thread handler(PacketThreadHandler);
+	    handler.detach();
+	} catch(const std::exception &ex){
+	    logMsg.Format("Failed to start PacketHandler thread reason:%s", ex.what());
+	    LOG4CXX_ERROR(s_packetLog, logMsg);
+	    exit(-1);// we can't proceed if we can't handle packets...
+	}
 }
 
 void VoIp::Shutdown()
