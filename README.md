@@ -1,4 +1,4 @@
-=================================================
+
 Welcome to Oreka, an open media capture and retrieval platform
 
 Copyright (C) 2005, orecx LLC	http://www.orecx.com
@@ -13,7 +13,7 @@ The platform currently comprises three services:
 
 * orktrack: logs all activity from one or more orkaudio services to any mainstream database.
 
-* orkweb:	Web based user interface for retrieval. 
+* orkweb: web based user interface for retrieval. 
 
 To get started:
 
