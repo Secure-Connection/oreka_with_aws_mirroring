@@ -18,7 +18,7 @@ The platform currently comprises three services:
 To get started:
 
 * This is the source distribution package. I you want to get going fast, get Windows or debian Linux binary packages from the project webpage.
-* Refer to BUILD_C++.txt for building orkaudio and associated capture modules
+* ~~Refer to BUILD_C++.txt for building orkaudio and associated capture modules~~ Run `setup_c++.sh`
 * Refer to BUILD_JAVA.txt for building orktrack and orkweb
 
 This package is organized as follows:
