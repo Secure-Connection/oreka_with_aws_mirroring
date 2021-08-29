@@ -1,7 +1,7 @@
 base_path=$(pwd)
 
 # install dependencies
-sudo apt-get install autoconf libtool libboost-all-dev libcurl4-openssl-dev libssl-dev libboost-dev libapr1-dev liblog4cxx-dev libpcap-dev libxerces-c-dev libsndfile1-dev libspeex-dev
+sudo apt-get install -y autoconf libtool libboost-all-dev libcurl4-openssl-dev libssl-dev libboost-dev libapr1-dev liblog4cxx-dev libpcap-dev libxerces-c-dev libsndfile1-dev libspeex-dev
 
 # Download and build opus and silk libraries
 git clone https://github.com/OrecX/dependencies.git
