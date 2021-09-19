@@ -1,3 +1,4 @@
+#! /bin/sh
 base_path=$(pwd)
 
 # install dependencies
