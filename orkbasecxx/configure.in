@@ -1,6 +1,6 @@
 AC_INIT(configure.in)
 
-AM_CONFIG_HEADER(config.h)
+#AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(orkbase, 1.0)
 
 boost_lib=-lboost_system
@@ -38,11 +38,11 @@ fi
 
 AC_SUBST(boost_lib,$boost_lib)
 	
-# Check if gcc supports cpp11 
-if [echo "int main(){}" | $CXX -std=c++11 -xc++ -S -  &>/dev/null]; then 
-	CXXFLAGS+=" -std=c++11 -DSUPPORTS_CPP11 -fPIC"
+# Check if gcc supports cpp17
+if [echo "int main(){}" | $CXX -std=c++17 -xc++ -S -  &>/dev/null]; then
+	CXXFLAGS+=" -std=c++17 -DSUPPORTS_CPP17 -fPIC"
 else	
-	AC_MSG_FAILURE("Compiler must support C++ 11")
+	AC_MSG_FAILURE("Compiler must support C++ 17")
 fi
 
 AM_PROG_LIBTOOL

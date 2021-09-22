@@ -1,4 +1,4 @@
-=================================================
+
 Welcome to Oreka, an open media capture and retrieval platform
 
 Copyright (C) 2005, orecx LLC	http://www.orecx.com
@@ -13,12 +13,12 @@ The platform currently comprises three services:
 
 * orktrack: logs all activity from one or more orkaudio services to any mainstream database.
 
-* orkweb:	Web based user interface for retrieval. 
+* orkweb: web based user interface for retrieval. 
 
 To get started:
 
 * This is the source distribution package. I you want to get going fast, get Windows or debian Linux binary packages from the project webpage.
-* Refer to BUILD_C++.txt for building orkaudio and associated capture modules
+* ~~Refer to BUILD_C++.txt for building orkaudio and associated capture modules~~ Run `setup_c++.sh`
 * Refer to BUILD_JAVA.txt for building orktrack and orkweb
 
 This package is organized as follows:
