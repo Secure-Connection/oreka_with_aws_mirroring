@@ -22,7 +22,6 @@
 #define snprintf _snprintf
 #endif
 
-
 #include <list>
 #include <stdio.h>
 #include <string.h>
@@ -2011,16 +2010,14 @@ void VoIp::Run()
 	if(DLLCONFIG.m_orekaEncapsulationMode == true)
 	{
 		try{
-			std::thread handler(UdpListenerThread);
-			handler.detach();
+			std::thread(UdpListenerThread).detach();
 		} catch(const std::exception &ex){
 			logMsg.Format("Failed to start UdpListenerThread thread reason:%s",  ex.what());
 			LOG4CXX_ERROR(s_packetLog, logMsg);	
 		}
 #ifndef WIN32
 		try{
-			std::thread handler(TcpListenerThread);
-			handler.detach();
+			std::thread(TcpListenerThread).detach();
 		} catch(const std::exception &ex){
 			logMsg.Format("Failed to start TcpListenerThread thread reason:%s",  ex.what());
 			LOG4CXX_ERROR(s_packetLog, logMsg);	
@@ -2028,12 +2025,10 @@ void VoIp::Run()
 #endif
 	}
 
-	for(std::list<PcapHandleDataRef>::iterator it = m_pcapHandles.begin(); it != m_pcapHandles.end(); it++)
-	{
-		try{
-			std::thread handler(SingleDeviceCaptureThreadHandler, (*it)->m_pcapHandle);
-			handler.detach();
-		} catch(const std::exception &ex){
+	for (auto &m_pcapHandle : m_pcapHandles) {
+		try {
+			std::thread(SingleDeviceCaptureThreadHandler, m_pcapHandle->m_pcapHandle).detach();
+		} catch(const std::exception &ex) {
 			logMsg.Format("Failed to start SingleDeviceCaptureThreadHandler thread reason:%s",  ex.what());
 			LOG4CXX_ERROR(s_packetLog, logMsg);	
 		}
@@ -2041,9 +2036,8 @@ void VoIp::Run()
 
 	// start the lower priority thread for handling packets
 	try {
-	    std::thread handler(PacketThreadHandler);
-	    handler.detach();
-	} catch(const std::exception &ex){
+	    std::thread(PacketThreadHandler).detach();
+	} catch(const std::exception &ex) {
 	    logMsg.Format("Failed to start PacketHandler thread reason:%s", ex.what());
 	    LOG4CXX_ERROR(s_packetLog, logMsg);
 	    exit(-1);// we can't proceed if we can't handle packets...
@@ -2358,8 +2352,7 @@ void TcpListenerThread()
 		logMsg.Format("Accepted incomming connection from:%s on socket:%d",inet_ntoa(remoteAddr.sin_addr), clientSock);
 		LOG4CXX_INFO(s_packetLog, logMsg);
 		try{
-			std::thread handler(HandleTcpConnection, clientSock);
-			handler.detach();
+			std::thread(HandleTcpConnection, clientSock).detach();
 		} catch(const std::exception &ex){
 			logMsg.Format("Failed to start HandleTcpConnection thread reason:%s",  ex.what());
 			LOG4CXX_ERROR(LOG.rootLog, logMsg);	
