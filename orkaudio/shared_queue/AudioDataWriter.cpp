@@ -3,6 +3,7 @@
 //
 
 #include "AudioDataWriter.h"
+#include <cassert>
 
 AudioDataWriter *AudioDataWriter::s_instance = nullptr;
 std::queue<PCMData> AudioDataWriter::s_backlog;
