@@ -8,8 +8,6 @@
 #include <string>
 #include <sys/shm.h>
 #include <sys/ipc.h>
-#include <boost/interprocess/sync/scoped_lock.hpp>
-#include <boost/interprocess/sync/named_mutex.hpp>
 
 key_t SharedMemoryQueueWriter::get_key(string keyval, int queue_identifier) {
     key = ftok(keyval.c_str(), queue_identifier);
@@ -28,15 +26,6 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
     queue_size = _queue_size;
     std::string logMsg;
     std::string keyval = "/root/"+std::to_string(queue_identifier);
-
-
-    std::string queue_mutex_name = "queue_mutex_"+std::to_string(queue_identifier);
-
-    queue_mutex = new boost::interprocess::named_mutex(open_or_create,queue_mutex_name.c_str());
-
-    scoped_lock<named_mutex> lock(*queue_mutex);
-
-    printf("Locked\n");
 
     std::cout<<"Creating shared memory\n";
 
@@ -93,8 +82,7 @@ bool SharedMemoryQueueWriter::is_empty() {
     return *write_pointer==*read_pointer;
 }
 
-bool SharedMemoryQueueWriter::write_element(unsigned char * element) {
-    scoped_lock<named_mutex> lock(*queue_mutex);
+bool SharedMemoryQueueWriter::write_element(unsigned char *element) {
     if(is_full()) {
         return false;
     }
@@ -103,8 +91,5 @@ bool SharedMemoryQueueWriter::write_element(unsigned char * element) {
 }
 
 SharedMemoryQueueWriter::~SharedMemoryQueueWriter() {
-    std::string queue_mutex_name = "queue_mutex_"+std::to_string(queue_identifier);
-    named_mutex::remove(queue_mutex_name.c_str());
-    delete queue_mutex;
     shmdt(shared_memory);
 }
