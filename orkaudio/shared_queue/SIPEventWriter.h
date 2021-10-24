@@ -8,7 +8,7 @@
 #include "SharedMemoryQueueWriter.h"
 #include <string>
 
-enum SipEventType { SIP_START, SIP_STOP };
+enum SipEventType : uint8_t { SIP_START, SIP_START_INVITE, SIP_STOP };
 
 typedef struct {
     char caller[32];
