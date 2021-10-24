@@ -117,7 +117,7 @@ struct PcapPacketData {
     PcapPacketData() : ethernetHeader(nullptr), ipHeader(nullptr) {}
     PcapPacketData(const EthernetHeaderStruct *ethernetHeader, const IpHeaderStruct *ipHeader) : ethernetHeader(new EthernetHeaderStruct(*ethernetHeader)), ipHeader(new IpHeaderStruct(*ipHeader)) {}
 };
-boost::lockfree::queue<PcapPacketData> voip_backlog;
+boost::lockfree::queue<PcapPacketData, boost::lockfree::fixed_sized<false>> voip_backlog(0);
 //========================================================
 class VoIp : public OrkSingleton<VoIp>
 {
