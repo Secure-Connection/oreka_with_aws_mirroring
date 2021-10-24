@@ -1469,7 +1469,7 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
         //Sip INVITE without sdp will be reported, but other methods without sdp will not be
         if(drop == false && sipMethod == SIP_METHOD_INVITE && info->m_from.size() && info->m_to.size() && info->m_callId.size())
         {
-            SIPEventWriter::instance()->write_sip_event(info->m_from, info->m_to, info->m_callId, current_time, SipEventType::SIP_START);
+            SIPEventWriter::instance()->write_sip_event(info->m_from, info->m_to, info->m_callId, get_time_from_epoch_micros(), SipEventType::SIP_START);
             VoIpSessionsSingleton::instance()->ReportSipInvite(info);
         }
         else if(drop == false && info->m_fromRtpPort.size() && info->m_from.size() && info->m_to.size() && info->m_callId.size())
