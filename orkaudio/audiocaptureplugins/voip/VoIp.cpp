@@ -940,7 +940,9 @@ void HandlePacket(u_char *param, const struct pcap_pkthdr *header, const u_char 
 		LOG4CXX_INFO(s_packetStatsLog,"Dropping - not enough payload");
 
 		return;
-	}
+	} else {
+        printf("Good packet\n");
+    }
 
 //#ifdef WIN32
 	if(!s_liveCapture)
