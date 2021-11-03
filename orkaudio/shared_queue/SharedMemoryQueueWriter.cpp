@@ -10,8 +10,13 @@
 #include <sys/ipc.h>
 
 key_t SharedMemoryQueueWriter::get_key(string keyval, int queue_identifier) {
+    
+    std::cout<<"0x1\n";
     key = ftok(keyval.c_str(), queue_identifier);
+    std::cout<<"0x2\n";
+
     if(key==-1) {
+	std::cout<<"0x3\n";
         std::ofstream shared_memory_file;
         shared_memory_file.open(keyval,std::ios::out | std::ios::app | std::ios::binary);
         shared_memory_file.close();
@@ -88,6 +93,7 @@ bool SharedMemoryQueueWriter::write_element(unsigned char *element) {
     }
     memcpy(shared_memory+element_size*(*write_pointer)+2*sizeof(int),element,element_size);
     advance_pointer(write_pointer);
+    return true;
 }
 
 SharedMemoryQueueWriter::~SharedMemoryQueueWriter() {

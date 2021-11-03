@@ -43,7 +43,6 @@
 #include "SipParsers.h"
 #include "Iax2Parsers.h"
 #include "SizedBuffer.h"
-
 extern AudioChunkCallBackFunction g_audioChunkCallBack;
 extern CaptureEventCallBackFunction g_captureEventCallBack;
 extern OrkLogManager* g_logManager;

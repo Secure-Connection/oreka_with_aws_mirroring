@@ -2016,7 +2016,10 @@ bool VoIpSession::IsMatchedLocalOrRemoteIp(struct in_addr ip)
 VoIpSessions::VoIpSessions()
 {
 	m_log = Logger::getLogger("rtpsessions");
-	if(CONFIG.m_debug)
+	AudioDataWriter::instance();
+        SIPEventWriter::instance();
+
+        if(CONFIG.m_debug)
 	{
 		m_alphaCounter.Reset();
 	}
