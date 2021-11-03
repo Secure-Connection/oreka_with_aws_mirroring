@@ -167,7 +167,7 @@ bool TrySipBye(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, U
 
         LOG4CXX_INFO(s_sipPacketLog, "Sending to Sealed:"+logMsg);
 
-
+        printf("Sending to sealed\n");
         SIPEventWriter::instance()->write_sip_event(info->m_fromName,info->m_to,info->m_callId,current_time,SipEventType::SIP_STOP);
     }
     return result;
@@ -717,7 +717,7 @@ bool TrySip200Ok(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader,
         } else {
            from = info->m_fromName;
         }
-
+        printf("Sending to sealed 1\n");
         SIPEventWriter::instance()->write_sip_event(from,info->m_to,info->m_callId,get_time_from_epoch_micros(),SipEventType::SIP_START);
     }
 
@@ -1486,6 +1486,8 @@ bool TrySipInvite(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader
                 call_start_json += "\"start\":" + CStdString(std::to_string(current_time).c_str()) + " \n}";*/
 
                 LOG4CXX_INFO(s_sipPacketLog, "Calling elvis");
+                printf("Sending to sealed 2\n");
+
                 SIPEventWriter::instance()->write_sip_event(info->m_from, info->m_to, info->m_callId, current_time, SipEventType::SIP_START);
             }
 
