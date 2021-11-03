@@ -6,6 +6,7 @@
 
 AudioDataWriter * AudioDataWriter::s_instance = nullptr;
 AudioDataWriter * AudioDataWriter::instance() {
+    printf("Creating audio writer\n");
     if(s_instance==NULL) {
         s_instance = new AudioDataWriter();
     }

@@ -7,6 +7,7 @@
 SIPEventWriter * SIPEventWriter::s_instance= new SIPEventWriter();
 
 SIPEventWriter * SIPEventWriter::instance() {
+    printf("Creating sip writer\n");
     if(s_instance==NULL) {
         s_instance = new SIPEventWriter();
     }
