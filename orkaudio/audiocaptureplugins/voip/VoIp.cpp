@@ -111,11 +111,13 @@ public:
 typedef oreka::shared_ptr<PcapHandleData> PcapHandleDataRef;
 //========================================================
 struct PcapPacketData {
-    EthernetHeaderStruct *ethernetHeader;
-    IpHeaderStruct *ipHeader;
+    EthernetHeaderStruct ethernetHeader;
+    u_char *ipHeader;
 
-    PcapPacketData() : ethernetHeader(nullptr), ipHeader(nullptr) {}
-    PcapPacketData(const EthernetHeaderStruct *ethernetHeader, const IpHeaderStruct *ipHeader) : ethernetHeader(new EthernetHeaderStruct(*ethernetHeader)), ipHeader(new IpHeaderStruct(*ipHeader)) {}
+    PcapPacketData() : ethernetHeader({}), ipHeader(nullptr) {}
+    PcapPacketData(const EthernetHeaderStruct *ethernetHeader, IpHeaderStruct *ipHeader) : ethernetHeader(*ethernetHeader), ipHeader(new u_char[ipHeader->packetLen()]) {
+        memcpy(this->ipHeader, ipHeader, ipHeader->packetLen());
+    }
 };
 boost::lockfree::queue<PcapPacketData, boost::lockfree::fixed_sized<false>> voip_backlog(0);
 //========================================================
@@ -1026,9 +1028,8 @@ void PacketThreadHandler() {
 
         // whilst backlog has packets handle them
         while (voip_backlog.pop(p)) {
-            ProcessTransportLayer(p.ethernetHeader, p.ipHeader);
-            delete p.ethernetHeader;
-            delete p.ipHeader;
+            ProcessTransportLayer(&p.ethernetHeader, (IpHeaderStruct *)p.ipHeader);
+            delete[] p.ipHeader;
         }
 
         // backlog was empty, so sleep a bit

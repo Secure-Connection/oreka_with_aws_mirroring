@@ -25,14 +25,16 @@ cd oreka_with_aws_mirroring
 # Build orkbasecxx on the command line:
 cd orkbasecxx
 autoreconf -i
+autoreconf -i
 ./configure CXX=g++
-make
+make -j 8
 sudo make install
 cd ..
 
 # Build orkaudio on the command line:
 cd orkaudio
 autoreconf -i
+autoreconf -i
 ./configure CXX=g++
-make
+make -j 8
 sudo make install
