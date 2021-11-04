@@ -43,6 +43,9 @@
 #include "SipParsers.h"
 #include "Iax2Parsers.h"
 #include "SizedBuffer.h"
+#include "../../shared_queue/SIPEventWriter.h"
+#include "../../shared_queue/AudioDataWriter.h"
+
 extern AudioChunkCallBackFunction g_audioChunkCallBack;
 extern CaptureEventCallBackFunction g_captureEventCallBack;
 extern OrkLogManager* g_logManager;
@@ -1248,7 +1251,8 @@ PcapHandleData::PcapHandleData(pcap_t* pcaphandle ,const char *name): ifName(nam
 VoIp::VoIp()
 {
 	m_lastModLocalPartyMapTs = 0;
-
+        AudioDataWriter::instance();
+        SIPEventWriter::instance();
 }
 
 void Configure(DOMNode* node)
