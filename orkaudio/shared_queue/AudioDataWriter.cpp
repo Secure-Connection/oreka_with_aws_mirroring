@@ -26,7 +26,7 @@ bool AudioDataWriter::write_pcm_data(std::string session_id, int channel, int pa
     }
 
     // ensure we don't overflow the queue, memcpy_s doesn't exist in UNIX
-    assert(data_length < sizeof(element.session_id));
+    assert(data_length < sizeof(PCMData::session_id));
 
     // create the struct to retain the PCM data
     PCMData element{};
