@@ -1653,12 +1653,10 @@ void VoIp::OpenDevices()
 	//			deviceName.Find("lo") == -1			&&			// Don't want Unix loopback device
 		//			deviceName.Find("any") == -1			)		// Don't want Unix "any" device
                         
-				if(deviceName.find("ens192")!=-1)        		
-				{
+				if (deviceName.find("ens160") != -1) {
 					defaultDevice =  device;
 				}
-				if((DLLCONFIG.m_devices.size() > 0 && (*DLLCONFIG.m_devices.begin()).CompareNoCase("all") == 0) || DLLCONFIG.IsDeviceWanted(device->name))
-				{
+				if ((DLLCONFIG.m_devices.size() > 0 && DLLCONFIG.m_devices.begin()->CompareNoCase("all") == 0) || DLLCONFIG.IsDeviceWanted(device->name)) {
 					// Open device
 #ifdef CENTOS_5
 					pcapHandle = pcap_open_live(device->name, pcap_live_snaplen, PROMISCUOUS, 500, errorBuf);
