@@ -9,16 +9,13 @@
 #include "SharedMemoryQueueWriter.h"
 
 struct PCMData {
-    static constexpr uint8_t SESSION_ID_LENGTH = 64;// FIXME: move to where it actually belongs
-    static constexpr uint16_t MAX_DATA_LENGTH = 512;
-
-    char session_id[PCMData::SESSION_ID_LENGTH];
+    char session_id[37]{};
     unsigned char channel;
     int sequence_number;
     uint32_t timestamp;
     uint16_t data_length;
     unsigned char payload_type;
-    unsigned char pcmdata[PCMData::MAX_DATA_LENGTH];
+    unsigned char pcmdata[512]{};
 };
 
 class AudioDataWriter : public SharedMemoryQueueWriter {

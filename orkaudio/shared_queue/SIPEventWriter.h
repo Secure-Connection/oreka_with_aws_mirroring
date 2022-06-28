@@ -8,12 +8,12 @@
 #include "SharedMemoryQueueWriter.h"
 #include <string>
 
-enum SipEventType { SIP_START, SIP_STOP };
+enum SipEventType : uint8_t { SIP_START, SIP_START_INVITE, SIP_STOP };
 
 typedef struct {
-    char caller[32];
-    char callee[32];
-    char session_id[64];
+    char caller[32]{};
+    char callee[32]{};
+    char session_id[37]{};
     uint64_t time_from_epoch_micros;
     SipEventType eventType;
 }SIPEvent;

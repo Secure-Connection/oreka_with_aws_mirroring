@@ -43,6 +43,8 @@
 #include "SipParsers.h"
 #include "Iax2Parsers.h"
 #include "SizedBuffer.h"
+#include "../../shared_queue/SIPEventWriter.h"
+#include "../../shared_queue/AudioDataWriter.h"
 
 extern AudioChunkCallBackFunction g_audioChunkCallBack;
 extern CaptureEventCallBackFunction g_captureEventCallBack;
@@ -111,13 +113,15 @@ public:
 typedef oreka::shared_ptr<PcapHandleData> PcapHandleDataRef;
 //========================================================
 struct PcapPacketData {
-    EthernetHeaderStruct *ethernetHeader;
-    IpHeaderStruct *ipHeader;
+    EthernetHeaderStruct ethernetHeader;
+    u_char *ipHeader;
 
-    PcapPacketData() : ethernetHeader(nullptr), ipHeader(nullptr) {}
-    PcapPacketData(const EthernetHeaderStruct *ethernetHeader, const IpHeaderStruct *ipHeader) : ethernetHeader(new EthernetHeaderStruct(*ethernetHeader)), ipHeader(new IpHeaderStruct(*ipHeader)) {}
+    PcapPacketData() : ethernetHeader({}), ipHeader(nullptr) {}
+    PcapPacketData(const EthernetHeaderStruct *ethernetHeader, IpHeaderStruct *ipHeader) : ethernetHeader(*ethernetHeader), ipHeader(new u_char[ipHeader->packetLen()]) {
+        memcpy(this->ipHeader, ipHeader, ipHeader->packetLen());
+    }
 };
-boost::lockfree::queue<PcapPacketData> voip_backlog;
+boost::lockfree::queue<PcapPacketData, boost::lockfree::fixed_sized<false>> voip_backlog(0);
 //========================================================
 class VoIp : public OrkSingleton<VoIp>
 {
@@ -1026,9 +1030,8 @@ void PacketThreadHandler() {
 
         // whilst backlog has packets handle them
         while (voip_backlog.pop(p)) {
-            ProcessTransportLayer(p.ethernetHeader, p.ipHeader);
-            delete p.ethernetHeader;
-            delete p.ipHeader;
+            ProcessTransportLayer(&p.ethernetHeader, (IpHeaderStruct *)p.ipHeader);
+            delete[] p.ipHeader;
         }
 
         // backlog was empty, so sleep a bit
@@ -1248,7 +1251,8 @@ PcapHandleData::PcapHandleData(pcap_t* pcaphandle ,const char *name): ifName(nam
 VoIp::VoIp()
 {
 	m_lastModLocalPartyMapTs = 0;
-
+        AudioDataWriter::instance();
+        SIPEventWriter::instance();
 }
 
 void Configure(DOMNode* node)
@@ -1649,12 +1653,10 @@ void VoIp::OpenDevices()
 	//			deviceName.Find("lo") == -1			&&			// Don't want Unix loopback device
 		//			deviceName.Find("any") == -1			)		// Don't want Unix "any" device
                         
-				if(deviceName.find("ens192")!=-1)        		
-				{
+				if (deviceName.find("ens160") != -1) {
 					defaultDevice =  device;
 				}
-				if((DLLCONFIG.m_devices.size() > 0 && (*DLLCONFIG.m_devices.begin()).CompareNoCase("all") == 0) || DLLCONFIG.IsDeviceWanted(device->name))
-				{
+				if ((DLLCONFIG.m_devices.size() > 0 && DLLCONFIG.m_devices.begin()->CompareNoCase("all") == 0) || DLLCONFIG.IsDeviceWanted(device->name)) {
 					// Open device
 #ifdef CENTOS_5
 					pcapHandle = pcap_open_live(device->name, pcap_live_snaplen, PROMISCUOUS, 500, errorBuf);
