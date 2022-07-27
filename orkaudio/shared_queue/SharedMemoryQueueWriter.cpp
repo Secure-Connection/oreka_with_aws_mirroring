@@ -10,7 +10,6 @@
 #include <sys/ipc.h>
 
 key_t SharedMemoryQueueWriter::get_key(string keyval, int queue_identifier) {
-    
     std::cout<<"0x1\n";
     key = ftok(keyval.c_str(), queue_identifier);
     std::cout<<"0x2\n";
@@ -80,14 +79,17 @@ SharedMemoryQueueWriter::SharedMemoryQueueWriter(int _queue_identifier, int _ele
 }
 
 bool SharedMemoryQueueWriter::is_full() {
-       return get_next_value(*write_pointer)==*read_pointer;
+    std::lock_guard<std::mutex> guard(m_mutex);
+    return get_next_value(*write_pointer)==*read_pointer;
 }
 
 bool SharedMemoryQueueWriter::is_empty() {
+    std::lock_guard<std::mutex> guard(m_mutex);
     return *write_pointer==*read_pointer;
 }
 
 bool SharedMemoryQueueWriter::write_element(unsigned char *element) {
+    std::lock_guard<std::mutex> guard(m_mutex);
     if(is_full()) {
         return false;
     }

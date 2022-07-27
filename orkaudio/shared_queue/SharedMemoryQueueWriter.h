@@ -8,6 +8,7 @@
 #include <sys/shm.h>
 #include <memory.h>
 #include <string>
+#include <mutex>
 
 using namespace std;
 class SharedMemoryQueueWriter {
@@ -20,6 +21,7 @@ private:
     int queue_size;
     int queue_identifier;
     unsigned char * shared_memory;
+    mutex m_mutex;
 
     inline int get_next_value(int value) {
         int new_value = value + 1;
