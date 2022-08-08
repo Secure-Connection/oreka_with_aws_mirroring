@@ -16,7 +16,6 @@
 
 #include "G722Codec.h"
 #include <cstring>
-
 G722ToPcmFilter::G722ToPcmFilter()
 {
 	// Initialize decoder
@@ -41,8 +40,6 @@ void G722ToPcmFilter::AudioChunkIn(AudioChunkRef& inputAudioChunk)
 	int out_samples = 0;
 	short pcmdata[8000];
 	CStdString logMsg;
-
-   printf("G722 To PCM - chunk in\n");
 
 	memset(pcmdata, 0, sizeof(pcmdata));
 	m_outputAudioChunk.reset();

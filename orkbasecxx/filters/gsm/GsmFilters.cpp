@@ -14,7 +14,6 @@
 
 #include "GsmFilters.h"
 
-
 GsmToPcmFilter::GsmToPcmFilter()
 {
 	CStdString logMsg;
@@ -41,8 +40,6 @@ FilterRef GsmToPcmFilter::Instanciate()
 void GsmToPcmFilter::AudioChunkIn(AudioChunkRef& inputAudioChunk)
 {
 	m_outputAudioChunk.reset();
-
-    printf("GSMToPcm To PCM - chunk In\n");
 
 	if(inputAudioChunk.get() == NULL)
 	{
@@ -72,7 +69,6 @@ void GsmToPcmFilter::AudioChunkIn(AudioChunkRef& inputAudioChunk)
 
 void GsmToPcmFilter::AudioChunkOut(AudioChunkRef& chunk)
 {
-    printf("GSMToPcm To PCM - chunk out\n");
 	chunk = m_outputAudioChunk;
 }
 

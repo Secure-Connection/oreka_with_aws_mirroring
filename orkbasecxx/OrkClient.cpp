@@ -91,12 +91,31 @@ bool OrkHttpClient::ExecuteSSLRequest(const std::string& request, std::string& r
 		request_stream << "Connection: keep-alive\r\n\r\n";
 
 		// Send the request.
+		if (m_log->isTraceEnabled())
+		{
+			boost::asio::streambuf::const_buffers_type bufs = request_buf.data();
+			std::string str(boost::asio::buffers_begin(bufs),
+			                boost::asio::buffers_begin(bufs) + request_buf.size());
+			logMsg.Format("send of %d bytes to %s:%d [%s]",
+					request_buf.size(), hostname, tcpPort, str);
+			LOG4CXX_TRACE(m_log,logMsg);
+		}
 		ssl_session->write(request_buf);
 
 		// Read the response
 		boost::asio::streambuf response;
 		if (!ssl_session->read_until(response, "\r\n", timeout))
 			return false; //error logged in read_until
+
+		if (m_log->isTraceEnabled())
+		{
+			boost::asio::streambuf::const_buffers_type bufs = response.data();
+			std::string str(boost::asio::buffers_begin(bufs),
+			                boost::asio::buffers_begin(bufs) + response.size());
+			logMsg.Format("recv of %d bytes from %s:%d [%s]",
+					response.size(), hostname, tcpPort, str);
+			LOG4CXX_TRACE(m_log,logMsg);
+		}
 
 		// Verify the response
 		std::istream response_stream(&response);
@@ -130,7 +149,7 @@ bool OrkHttpClient::ExecuteSSLRequest(const std::string& request, std::string& r
 		// until we have skipped past the response header (blank line). We then
 		// take the first line as a response. This works with OrkTrack, but
 		// technically we should parse "Content-Length" from the response header
-		// and read the stream for that precise bunber of bytes.
+		// and read the stream for that precise number of bytes.
 		while (!error)
 		{
 			bool response_received = false;
@@ -149,6 +168,15 @@ bool OrkHttpClient::ExecuteSSLRequest(const std::string& request, std::string& r
 			//response stream is empty -- refill it from underlying session
 			if (!ssl_session->read(response, error, timeout))
 				return false; //error logged in lower routine
+			if (m_log->isTraceEnabled())
+			{
+				boost::asio::streambuf::const_buffers_type bufs = response.data();
+				std::string str(boost::asio::buffers_begin(bufs),
+				                boost::asio::buffers_begin(bufs) + response.size());
+				logMsg.Format("recv of %d bytes from %s:%d [%s]",
+						response.size(), hostname, tcpPort, str);
+				LOG4CXX_TRACE(m_log,logMsg);
+			}
  			response_stream.seekg(0);
 		}
 		logMsg.Format("%s:%d response:%s",hostname, tcpPort, responseString);
@@ -300,13 +328,13 @@ bool OrkHttpClient::ExecuteUrl(const CStdString& request, CStdString& response, 
 	}
 	if(header.size() > 12 && header.GetAt(9) == '4' && header.GetAt(10) == '0' && header.GetAt(11) == '0')
 	{
-		logMsg.Format(".HTTP header:%s ** request:%s\nIgnore this message", header, requestDetails);
+		logMsg.Format("HTTP header:%s ** request:%s\nIgnore this message", header, requestDetails);
 		LOG4CXX_ERROR(m_log, logMsg);
 		return true;
 	}
 	if(header.size() < 12 || response.size() <= 0)
 	{
-		logMsg.Format(".HTTP header:%s ** request:%s ** response:%s ** header size:%d  response size:%d", header, requestDetails, response, header.size(), response.size());
+		logMsg.Format("HTTP header:%s ** request:%s ** response:%s ** header size:%d  response size:%d", header, requestDetails, response, header.size(), response.size());
 		LogError(logMsg);
 		return false;
 	}
@@ -314,7 +342,7 @@ bool OrkHttpClient::ExecuteUrl(const CStdString& request, CStdString& response, 
 		header.GetAt(10) != '0' ||
 		header.GetAt(11) != '0'	)
 	{
-		logMsg.Format(".HTTP header:%s ** request:%s", header, requestDetails);
+		logMsg.Format("HTTP header:%s ** request:%s", header, requestDetails);
 		LogError(logMsg);
 		return false;
 	}
@@ -324,8 +352,6 @@ bool OrkHttpClient::ExecuteUrl(const CStdString& request, CStdString& response, 
 bool OrkHttpSingleLineClient::Execute(SyncMessage& request, AsyncMessage& response, const CStdString& hostname,const int tcpPort, const CStdString& serviceName, const int timeout, const bool useHttps)
 {
 	CStdString requestString = "/" + serviceName + "/command?";
-
-    LOG4CXX_ERROR(m_log, "Calling URL:" + requestString);
 	requestString += request.SerializeUrl();
 	CStdString responseString;
 

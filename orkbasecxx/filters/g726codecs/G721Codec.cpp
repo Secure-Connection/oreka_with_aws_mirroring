@@ -16,9 +16,6 @@
 
 #include "G721Codec.h"
 #include <cstring>
-#include <log4cxx/logger.h>
-static log4cxx::LoggerPtr s_log = log4cxx::Logger::getLogger("codec.opus");
-
 G721CodecDecoder::G721CodecDecoder()
 {
 	// Initialize decoder
@@ -43,8 +40,6 @@ void G721CodecDecoder::AudioChunkIn(AudioChunkRef& inputAudioChunk)
 	short pcmdata[8000];
 	int input_size = 0;
 	CStdString logMsg;
-
-    LOG4CXX_INFO(s_log, "G721 To PCM - chunk in");
 
 	memset(pcmdata, 0, sizeof(pcmdata));
 	m_outputAudioChunk.reset();

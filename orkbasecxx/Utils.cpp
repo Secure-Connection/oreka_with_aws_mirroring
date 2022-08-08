@@ -9,6 +9,7 @@
 #include <grp.h>
 #include <netdb.h>
 #include <unistd.h>
+#include <sys/capability.h>
 #else
 #include <cctype>  //needed in WIN32 for std::toupper
 #endif
@@ -128,11 +129,11 @@ void OrkOpenSslSingleton::ConfigureServerCtx()
 	if(SSL_CTX_use_PrivateKey_file(m_serverCtx, CONFIG.m_tlsServerKeyPath, SSL_FILETYPE_PEM) <= 0 ) {
 		logMsg.Format("Error with key %s: %s",	CONFIG.m_tlsServerKeyPath, SSLErrorQ());
 		LOG4CXX_ERROR(s_log, logMsg);
-		throw (CStdString("Unable to find key.perm\n"));
+		throw (CStdString("Unable to find key.pem\n"));
 	}
 
 	/* Set to require peer (server) certificate verification */
-	SSL_CTX_set_verify(m_serverCtx,SSL_VERIFY_PEER,NULL);
+	SSL_CTX_set_verify(m_serverCtx,SSL_VERIFY_NONE,NULL);
 	SSL_CTX_set_verify_depth(m_serverCtx,1);
 	unsigned int currentPid = getpid();
 	CStdString ssl_session_ctx_id;
@@ -348,6 +349,35 @@ CStdString AprGetErrorMsg(apr_status_t ret)
 	apr_strerror(ret, errStr, 256);
 	errorMsg.Format("%s", errStr);
 	return errorMsg;
+}
+
+CStdString GetRevertedNormalizedPhoneNumber(CStdString input)
+{
+	CStdString output;
+	for(int i = input.length() -1; i >= 0; i--){
+		if(input.at(i) != '-' && input.at(i) != '+' && input.at(i) != '(' && input.at(i) != ')' && input.at(i) != ' '){
+			output += input.at(i);
+		}
+	}
+	return output;
+}
+
+bool CompareNormalizedPhoneNumbers(CStdString input1, CStdString input2)
+{
+	bool ret = false;
+	CStdString normalizedInput1, normalizedInput2;
+	normalizedInput1 = GetRevertedNormalizedPhoneNumber(input1);
+	normalizedInput2 = GetRevertedNormalizedPhoneNumber(input2);
+	int minLen = std::min<size_t>(normalizedInput1.length(), normalizedInput2.length());
+
+	if(minLen < 6){
+		return normalizedInput1.Equals(normalizedInput2);
+	}
+	else{
+		return memcmp(&normalizedInput1[0], &normalizedInput2[0], minLen) == 0;
+	}
+
+	return ret;
 }
 //========================================================
 // file related stuff
@@ -1275,3 +1305,34 @@ CStdString RtpPayloadTypeEnumToString(char pt)
 	return ptStr;
 
 }
+
+#ifndef WIN32
+void check_pcap_capabilities(log4cxx::LoggerPtr log)
+{
+	bool rc = true;
+
+	cap_t caps;
+	caps=cap_get_pid(getpid());
+
+	cap_flag_value_t cap_val;
+	int ret;
+
+	// Do we actually need to check effective AND permitted?
+	ret=cap_get_flag(caps, CAP_NET_RAW, CAP_EFFECTIVE, &cap_val);
+	if (ret || !cap_val) rc=false;
+	ret=cap_get_flag(caps, CAP_NET_RAW, CAP_PERMITTED, &cap_val);
+	if (ret || !cap_val) rc=false;
+	ret=cap_get_flag(caps, CAP_NET_ADMIN, CAP_EFFECTIVE, &cap_val);
+	if (ret || !cap_val) rc=false;
+	ret=cap_get_flag(caps, CAP_NET_ADMIN, CAP_PERMITTED, &cap_val);
+	if (ret || !cap_val) rc=false;
+
+	if (rc == false)
+	{
+		LOG4CXX_ERROR(log,"Do not have the necessary privileges to capture data. "
+				"Probable fix: use \"setcap\" to add necessary capabilities: "
+				"\"setcap cap_net_raw,cap_net_admin+ep /usr/sbin/orkaudio\""
+		);
+	}
+}
+#endif

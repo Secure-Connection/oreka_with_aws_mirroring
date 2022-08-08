@@ -17,7 +17,6 @@
 #include "StdString.h"
 #include "Object.h"
 #include "AudioCapture.h"
-#include <list>
 #include <log4cxx/logger.h>
 #include <map>
 
@@ -114,7 +113,7 @@
 #define LOOKBACK_RECORDING_PARAM "LookBackRecording"
 #define LOOKBACK_RECORDING_DEFAULT true
 #define ALLOW_AUTOMATIC_RECORDING_PARAM "AllowAutomaticRecording"
-#define ALLOW_AUTOMATIC_RECORDING_DEFAULT true
+#define ALLOW_AUTOMATIC_RECORDING_DEFAULT false
 #define CAPTURE_FILE_SIZE_LIMIT_KB_PARAM "CaptureFileSizeLimitKb"
 #define CAPTURE_FILE_SIZE_LIMIT_KB_DEFAULT 300000
 #define PARTY_FILTER_PARAM "PartyFilter"
@@ -160,6 +159,10 @@
 #define DYNAMIC_TAGS "DynamicTags"
 #define HOSTNAME_REPORT_FQDN "HostnameReportFqdn"
 #define HOSTNAME_REPORT_FQDN_DEFAULT false
+#define HOLD_RESUME_REPORT_EVENTS "HoldResumeReportEvents"
+#define HOLD_RESUME_REPORT_EVENTS_DEFAULT false
+#define HOLD_RESUME_REPORT_DURATION "HoldResumeReportDuration"
+#define HOLD_RESUME_REPORT_DURATION_DEFAULT false
 #ifdef SUPPORT_TLS_SERVER
 #define TLS_SERVER_CERTIFICATE_PATH_DEFAULT "/etc/orkaudio/certs/server_tls_cert.pem"
 #define TLS_SERVER_CERTIFICATE_PATH_PARAM "TlsServerCertificatePath"
@@ -167,6 +170,7 @@
 #define TLS_SERVER_CERTIFICATE_KEY_PARAM "TlsServerKeyPath"
 #define TLS_SERVER_PORT_PARAM "TlsServerPort"
 #define TLS_SERVER_PORT_DEFAULT 0
+#define HTTP_TLS_SERVER_PORT_PARAM "HttpTlsServerPort"
 #endif
 #ifdef SUPPORT_TLS_CLIENT
 #define TLS_CLIENT_KEYLOG_FILE	"TlsClientKeyLogFile"
@@ -282,8 +286,11 @@ public:
 	bool m_audioOutputEnable;
 	CStdString m_partyReplaceRegex;
 	CStdString m_partyReplaceBy;
+	bool m_holdResumeReportEvents;
+	bool m_holdResumeReportDuration;
 #ifdef SUPPORT_TLS_SERVER
-	int m_tlsServerPort;
+	int m_httpTlsServerPort;
+	int m_tlsServerPort; //deprecated, for backward compatibility
 	CStdString m_tlsServerCertPath;
 	CStdString m_tlsServerKeyPath;
 #endif

@@ -95,6 +95,8 @@ Config::Config()
 	m_hostnameReportFqdn = HOSTNAME_REPORT_FQDN_DEFAULT;
 	m_discardUnidirectionalCalls = false;
 	m_audioOutputEnable = true;
+	m_holdResumeReportEvents = HOLD_RESUME_REPORT_EVENTS_DEFAULT;
+	m_holdResumeReportDuration = HOLD_RESUME_REPORT_DURATION_DEFAULT;
 #ifdef SUPPORT_TLS_SERVER
 	m_tlsServerPort = TLS_SERVER_PORT_DEFAULT;
 	m_tlsServerCertPath = TLS_SERVER_CERTIFICATE_PATH_DEFAULT;
@@ -120,7 +122,6 @@ void Config::Define(Serializer* s)
 	s->StringValue(CAPTURE_PLUGIN_PATH_PARAM, m_capturePluginPath);
 	s->StringValue(PLUGINS_DIRECTORY_PARAM, m_pluginsDirectory);
 	s->EnumValue(STORAGE_AUDIO_FORMAT_PARAM, (int&)m_storageAudioFormat, FileFormatToEnum, FileFormatToString);
-	m_storageAudioFormat = FfPcmWav;
 	s->IntValue(NUM_BATCH_THREADS_PARAM, m_numBatchThreads);
 	s->IntValue(NUM_DIRECTIONSELECTOR_THREADS_PARAM, m_numDirectionSelectorThreads);
 	s->IntValue(NUM_COMMAND_THREADS_PARAM, m_numCommandThreads);
@@ -222,6 +223,8 @@ void Config::Define(Serializer* s)
 	s->BoolValue(HOSTNAME_REPORT_FQDN ,m_hostnameReportFqdn);
 	s->StringValue("PartyReplaceRegex", m_partyReplaceRegex);
 	s->StringValue("PartyReplaceBy", m_partyReplaceBy);
+	s->BoolValue(HOLD_RESUME_REPORT_EVENTS ,m_holdResumeReportEvents);
+	s->BoolValue(HOLD_RESUME_REPORT_DURATION ,m_holdResumeReportDuration);
 #ifdef SUPPORT_TLS_CLIENT
 	s->StringValue(TLS_CLIENT_KEYLOG_FILE, m_tlsClientKeylogFile);
 	s->StringValue(TLS_CLIENT_CERTFILE, m_tlsClientCertFile);
@@ -256,6 +259,7 @@ void Config::Define(Serializer* s)
 	s->BoolValue("AudioOutputEnable", m_audioOutputEnable);
 #ifdef SUPPORT_TLS_SERVER
 	s->IntValue(TLS_SERVER_PORT_PARAM, m_tlsServerPort);
+	s->IntValue(HTTP_TLS_SERVER_PORT_PARAM, m_httpTlsServerPort);
 	s->StringValue(TLS_SERVER_CERTIFICATE_PATH_PARAM, m_tlsServerCertPath);
 	s->StringValue(TLS_SERVER_CERTIFICATE_KEY_PARAM, m_tlsServerKeyPath);
 #endif

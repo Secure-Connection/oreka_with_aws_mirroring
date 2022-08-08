@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = foreign 1.4
 
 
 lib_LTLIBRARIES = liborkbase.la
-liborkbase_la_LDFLAGS =  -lapr-1 -lpthread -lssl @boost_lib@
+liborkbase_la_LDFLAGS =  -lapr-1 -lpthread -lssl @boost_lib@ -lcap
 liborkbase_la_SOURCES = Filter.cpp g711.c \
 			OrkBase.cpp Object.cpp ObjectFactory.cpp \
 			OrkClient.cpp AudioCapture.cpp Utils.cpp  \
@@ -14,7 +14,7 @@ liborkbase_la_SOURCES = Filter.cpp g711.c \
 			MemUtils.cpp BatchProcessing.cpp \
 			CapturePluginProxy.cpp CapturePort.cpp \
 			Daemon.cpp ImmediateProcessing.cpp \
-			Reporting.cpp SealedLocalConnector.cpp TapeFileNaming.cpp \
+			Reporting.cpp TapeFileNaming.cpp \
 			PartyFilter.cpp EventStreaming.cpp \
 			OrkTrack.cpp SocketStreamer.cpp	\
 			SizedBuffer.cpp DirectionSelector.cpp \

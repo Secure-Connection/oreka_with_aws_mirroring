@@ -6,15 +6,15 @@
     <display-name>orktrack</display-name>
     <context-param>
     	<param-name>ConfigDirectory</param-name>
-    	<param-value>/home/ubuntu/orektrack/</param-value>
+    	<param-value>c:/oreka/</param-value>
     </context-param>
     <context-param>
     	<param-name>Log4jConfigFile</param-name>
-    	<param-value>/home/ubuntu/logging.properties</param-value>
+    	<param-value>logging.properties</param-value>
     </context-param>
     <context-param>
     	<param-name>ConfigFile</param-name>
-    	<param-value>/home/ubuntu/orktrack.config.xml</param-value>
+    	<param-value>orktrack.config.xml</param-value>
     </context-param>
     <context-param>
     	<param-name>HibernateConfigFile</param-name>
@@ -22,7 +22,7 @@
     </context-param>
 	<context-param>
 		<param-name>TomcatHome</param-name>
-		<param-value>/opt/tomcat</param-value>
+		<param-value>C:/Program Files/Apache Software Foundation/Tomcat 7.0</param-value>
 	</context-param>
     <filter>
         <filter-name>redirect</filter-name>

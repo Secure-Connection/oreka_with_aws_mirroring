@@ -13,6 +13,7 @@
  
 
 #include "stdio.h"
+#include <iostream>
 
 #include "MultiThreadedServer.h"
 #include "OrkAudio.h"
@@ -23,7 +24,9 @@
 #include "messages/CaptureMsg.h"
 #include "messages/TestMsg.h"
 #include "messages/RecordMsg.h"
+#include "messages/OrkaudioVersionMsg.h"
 #include "messages/InitMsg.h"
+#include "messages/ReadLoggingPropertiesMsg.h"
 //#include "messages/CrashMessage.cpp"
 #include "Config.h"
 #include "LogManager.h"
@@ -53,8 +56,36 @@
 #include "OpusCodec.h"
 #include <thread>
 #include "apr_signal.h"
+#include <sys/prctl.h>
 
 static volatile bool serviceStop = false;
+struct orkaudio_version
+{
+	unsigned int magic;
+	int size;
+	const char version[256];
+};
+
+struct orkaudio_version orkaudioVersion  { 0x702a6f27, sizeof(struct orkaudio_version), ""};
+
+void MakeDumpable()
+{
+	// if run as not-root with capabilities, dumpable capability
+	// may be turned off. If so, restore it.
+	if (!prctl(PR_GET_DUMPABLE, 0, 0, 0, 0))
+	{
+		if (prctl(PR_SET_DUMPABLE, 1, 0, 0 ,0) != 0)
+		{
+			CStdString logMsg;
+			logMsg.Format("Unable to restore DUMPABLE capability: %d:%s", errno, strerror(errno));
+			LOG4CXX_WARN(LOG.rootLog,logMsg);
+		}
+		else
+		{
+			LOG4CXX_INFO(LOG.rootLog,"DUMPABLE capability is restored");
+		}
+	}
+}
 
 void StopHandler()
 {
@@ -214,7 +245,13 @@ void MainThread()
     apr_signal(SIGPIPE, SIG_IGN);
 #endif
 	OrkLogManager::Instance()->Initialize();
-	LOG4CXX_INFO(LOG.rootLog, CStdString("\n\nOrkAudio service starting\n"));
+	RegisterOrkaudioVersion(orkaudioVersion.version);
+	logMsg.Format("\n\nOrkAudio version %s: service starting\n", orkaudioVersion.version);
+	LOG4CXX_INFO(LOG.rootLog, logMsg);
+
+#ifndef WIN32
+	MakeDumpable();  //allow corefiles to be generated
+#endif
 
 	ConfigManager::Instance()->Initialize();
 
@@ -245,6 +282,12 @@ void MainThread()
 	objRef.reset(new StopMsg);
 	ObjectFactory::GetSingleton()->RegisterObject(objRef);
 	objRef.reset(new InitMsg);
+	ObjectFactory::GetSingleton()->RegisterObject(objRef);
+	objRef.reset(new ReadLoggingPropertiesMsg);
+	ObjectFactory::GetSingleton()->RegisterObject(objRef);
+	objRef.reset(new ListLoggingPropertiesMsg);
+	ObjectFactory::GetSingleton()->RegisterObject(objRef);
+	objRef.reset(new OrkaudioVersionMsg);
 	ObjectFactory::GetSingleton()->RegisterObject(objRef);
 	//objRef.reset(new CrashMsg);
 	//ObjectFactory::GetSingleton()->RegisterObject(objRef);
@@ -358,8 +401,14 @@ void MainThread()
 		handler.detach();
 	}
 #ifdef SUPPORT_TLS_SERVER
-	HttpsServer httpsServ(CONFIG.m_tlsServerPort);
-	if(httpsServ.Initialize())
+	HttpsServer httpsServ;
+	// TlsServePort is deprecated in favor of HttpTlsServerPort
+	// Either is accepted, but WARN if both are defined
+	if (CONFIG.m_httpTlsServerPort != 0 && CONFIG.m_tlsServerPort != 0)
+	{
+		LOG4CXX_WARN(LOG.rootLog,"TlsServerPort and HttpServerPort are both defined! TlsServerPort is ignored.");
+	}
+	if(httpsServ.Initialize(CONFIG.m_httpTlsServerPort ? CONFIG.m_httpTlsServerPort : CONFIG.m_tlsServerPort))
 	{
 		std::thread handler(&HttpsServer::Run, &httpsServ);
 		handler.detach();
@@ -417,7 +466,7 @@ int main(int argc, char* argv[])
 	CStdString argument = argv[1];
 	if (argc>1)
 	{
-		if (argument.CompareNoCase("debug") == 0)
+		if ((argument.CompareNoCase("debug") == 0) || (argument.CompareNoCase("fg") == 0))
 		{
 			MainThread();
 		}
@@ -442,12 +491,19 @@ int main(int argc, char* argv[])
 		{
 			Daemon::Singleton()->Uninstall();
 		}
+		else if  (argument.CompareNoCase("version") == 0)
+		{
+			std::cout << "orkaudio version: " << orkaudioVersion.version << std::endl;
+		}
+
 		else
 		{
 #ifdef WIN32
 	printf("Argument incorrect. Possibilies are:\ninstall: install NT service\nuninstall: uninstall NT service\ntranscode <file>: convert .mcf file to storage format specified in config.xml\n\n");
 #else
-	printf("Argument incorrect. Possibilies are:\ndebug: run attached to tty\ntranscode <file>: convert .mcf file to storage format specified in config.xml\n\n");
+	printf("Argument incorrect. Possibilies are:\ndebug or fg: run attached to tty\n"
+			"transcode <file>: convert .mcf file to storage format specified in config.xml\n"
+			"version: display orkaudio version\n\n");
 #endif
 		}
 	}

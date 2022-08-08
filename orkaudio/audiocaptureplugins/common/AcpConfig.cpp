@@ -1,5 +1,11 @@
 #include "AcpConfig.h"
 #include "ConfigManager.h"
+#include "log4cxx/logger.h"
+
+LoggerPtr getConfigLogger() {
+	static LoggerPtr s_log = Logger::getLogger("config");
+	return s_log;
+}
 
 AcpConfig::AcpConfig() {
 }
@@ -21,9 +27,13 @@ void AcpConfig::Reset() {
 	m_ctiDrivenEnable = false;
 	m_ctiDrivenMatchingTimeoutSec = 30;
 	m_ctiDrivenStopIgnore = true;
+	m_sipUcidFieldName = "User-To-User";
+	m_ctiDrivenEarlyStartReconsider = false;
+	m_ctiDrivenEarlyStartReconsiderTimeout = 2;
 
 	m_sipReportFullAddress = false;
 	m_sessionStartsOnS2ActivityDb = 0;
+	m_sipRemotePartyFrom200OKEnable = false;
 }
 
 void AcpConfig::Define(Serializer* s) {
@@ -43,10 +53,15 @@ void AcpConfig::Define(Serializer* s) {
 	s->IntValue("CtiDrivenMatchingTimeoutSec",m_ctiDrivenMatchingTimeoutSec);
 	s->CsvValue("CtiDrivenMatchingCriteria", m_ctiDrivenMatchingCriteria);
 	s->BoolValue("CtiDrivenStopIgnore", m_ctiDrivenStopIgnore);
+	s->CsvValue("CtiDrivenMatchingTapeMetadataTagPair", m_ctiDrivenMatchingTapeMetadataTagPair);
+	s->BoolValue("CtiDrivenEarlyStartReconsider", m_ctiDrivenEarlyStartReconsider);
+	s->IntValue("CtiDrivenEarlyStartReconsiderTimeout",m_ctiDrivenEarlyStartReconsiderTimeout);
 	s->BoolValue("SipReportFullAddress", m_sipReportFullAddress);
 	s->IntValue("RtpS1MinNumPacketsBeforeStart",m_rtpS1MinNumPacketsBeforeStart);
 	s->IntValue("RtpS2MinNumPacketsBeforeStart",m_rtpS2MinNumPacketsBeforeStart);
 	s->DoubleValue("SessionStartsOnS2ActivityDb", m_sessionStartsOnS2ActivityDb);
+	s->StringValue("SipUcidFieldName", m_sipUcidFieldName);
+	s->BoolValue("SipRemotePartyFrom200OKEnable", m_sipRemotePartyFrom200OKEnable);
 }
 
 void AcpConfig::Validate() {
@@ -81,6 +96,13 @@ void AcpConfig::Validate() {
 				else if((*it).CompareNoCase("x-refci") == 0){
 					criteria = MatchXrefci;
 				}
+				else if((*it).CompareNoCase("tag") == 0){					
+					if(m_ctiDrivenMatchingTapeMetadataTagPair.size() == 2){
+						criteria = MatchTag;
+						m_ctiDrivenMatchingTapeTag = m_ctiDrivenMatchingTapeMetadataTagPair.front();
+						m_ctiDrivenMatchingMetadataTag = m_ctiDrivenMatchingTapeMetadataTagPair.back();
+					}	
+				}
 
 				if(criteria != MatchNone){
 					m_ctiMatchingCriteriaList.push_back(criteria);
@@ -88,15 +110,28 @@ void AcpConfig::Validate() {
 			}
 			if(m_ctiMatchingCriteriaList.size() == 0){
 				m_ctiMatchingCriteriaList.push_back(MatchUcid);
+				m_ctiMatchingCriteriaList.push_back(MatchUcidTimestamp);
 			}
 		}
 		else
 		{
 			m_ctiMatchingCriteriaList.push_back(MatchUcid);
+			m_ctiMatchingCriteriaList.push_back(MatchUcidTimestamp);
 		}
 	}
+
+	m_onDemandViaDtmfDigitsString.Trim();
+	m_onDemandPauseViaDtmfDigitsString.Trim();
+	if (m_onDemandViaDtmfDigitsString.empty() && !m_onDemandPauseViaDtmfDigitsString.empty())
+	{
+		CStdString logMsg("OnDemandViaDtmfDigitsString not set while OnDemandPauseViaDtmfDigitsString is set to '");
+		logMsg += m_onDemandPauseViaDtmfDigitsString;
+		logMsg += "'";
+		LOG4CXX_ERROR(getConfigLogger(), logMsg);
+	}
+
 }
-#include <iostream>
+
 bool AcpConfig::IsMediaGateway(struct in_addr addr)
 {
 	bool rc = false;

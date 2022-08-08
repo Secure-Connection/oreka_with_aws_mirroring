@@ -69,11 +69,13 @@ private:
 };
 
 #ifdef SUPPORT_TLS_SERVER
+typedef void FN_HandleSslHttpMessage(log4cxx::LoggerPtr s_log, apr_socket_t* sock);
+
 class DLL_IMPORT_EXPORT_ORKBASE HttpsServer
 {
 public:
-	HttpsServer(int port);
-	bool Initialize();
+	HttpsServer();
+	bool Initialize(int port, FN_HandleSslHttpMessage msgThread=NULL);
 	void Run();
 	void RunHttpsServer();
 
@@ -82,9 +84,19 @@ private:
 	apr_socket_t* m_sslSocket;
 	int m_sslPort;
 	apr_sockaddr_t* m_sslSockAddr;
-	static SSL_CTX* m_ctx;
 	static log4cxx::LoggerPtr s_log;
-	static void HandleSslHttpMessage(apr_socket_t* sock);
+	FN_HandleSslHttpMessage* HandleSslHttpMessageThread;
+};
+
+class OrekaSslCtx
+{
+public:
+	OrekaSslCtx(SSL_CTX* ctx) { ssl = SSL_new(ctx); };
+	~OrekaSslCtx() { SSL_shutdown(ssl); SSL_free(ssl); };
+
+	SSL* SslCtx() { return ssl; };
+private:
+	SSL *ssl;
 };
 #endif //#ifndef CENTOS_6
 
@@ -107,11 +119,20 @@ private:
 	apr_pool_t* m_mp;
 	int m_port;
 	apr_socket_t* m_socket;
-    apr_sockaddr_t* m_sockAddr;
+	apr_sockaddr_t* m_sockAddr;
 	static log4cxx::LoggerPtr s_log;
 	static void StreamingSvc(apr_socket_t* sock, apr_pool_t* pool);
 };
 
+extern DLL_IMPORT_EXPORT_ORKBASE std::atomic<unsigned int> s_numHttpSessions;
+extern DLL_IMPORT_EXPORT_ORKBASE std::mutex s_HttpMutex;
+
+class HttpCounter
+{
+public:
+	HttpCounter() { std::lock_guard<std::mutex> lk(s_HttpMutex); s_numHttpSessions++; }
+	~HttpCounter() {std::lock_guard<std::mutex> lk(s_HttpMutex); s_numHttpSessions--; }
+};
 
 
 #endif
