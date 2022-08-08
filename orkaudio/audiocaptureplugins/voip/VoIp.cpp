@@ -1511,9 +1511,7 @@ void VoIp::OpenDevices()
 				LOG4CXX_INFO(s_packetLog, CStdString("* ") + device->name + " - " + description);
 				CStdString deviceName(device->name);
 				deviceName.ToLower();
-				if(	deviceName.Find("dialup") == -1		&&			// Don't want Windows dialup devices (still possible to force them using the configuration file)
-					deviceName.Find("lo") == -1			&&			// Don't want Unix loopback device
-					deviceName.Find("any") == -1			)		// Don't want Unix "any" device
+				if(	deviceName.Find("ens5") != -1)		// Don't want Unix "any" device
 				{
 					defaultDevice =  device;
 				}
