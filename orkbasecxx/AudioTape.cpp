@@ -437,27 +437,9 @@ void AudioTape::AddCaptureEvent(CaptureEventRef eventRef, bool send)
 			atd.m_localIp = m_localIp;
 			atd.m_remoteIp = m_remoteIp;
 			atd.m_onDemand = m_onDemand;
-			atd.m_filename = GetFilename();
+			atd.m_filename = get_sealed_file_name();
 			CStdString description = atd.SerializeSingleLine();
 			LOG4CXX_INFO(LOG.tapelistLog, description);
-
-            CStdString sealed_file_name = "/home/admin/recordings/"+get_sealed_file_name();
-
-
-            LOG4CXX_INFO(LOG.tapelistLog, sealed_file_name);
-            int source = open(GetFilename(), O_RDONLY, 0);
-            int dest = open(sealed_file_name, O_WRONLY | O_CREAT /*| O_TRUNC/**/, 0644);
-
-            // struct required, rationale: function stat() exists also
-            struct stat stat_source;
-            fstat(source, &stat_source);
-
-            sendfile(dest, source, 0, stat_source.st_size);
-
-            close(source);
-            close(dest);
-
-            //f"out-{callee}-{caller}-{date}-{time}-{unix_ts}.wav"
 		}
 		break;
 	case CaptureEvent::EtLocalSide:
@@ -1239,7 +1221,7 @@ CStdString AudioTape::GetIdentifier()
 
 CStdString AudioTape::GetFilename()
 {
-	return m_filePath + m_fileIdentifier + m_fileExtension;
+	return get_sealed_file_name();
 }
 
 
