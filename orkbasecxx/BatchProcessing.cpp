@@ -672,9 +672,9 @@ void BatchProcessing::ThreadHandler()
 				}
 
                 CStdString sealed_file_name = "/home/admin/recordings/"+audioTapeRef->get_sealed_file_name()+".wav";
-
-                LOG4CXX_ERROR(LOG.reporting, "copying from:"+storageFileName+" to:"+sealed_file_name);
-                int source = open(storageFileName, O_RDONLY, 0);
+                CStdString source_file_name = "/var/logs/orkaudio/audio/"+audioTapeRef->GetIdentifier();
+                LOG4CXX_ERROR(LOG.reporting, "copying from:"+source_file_name+" to:"+sealed_file_name);
+                int source = open(source_file_name, O_RDONLY, 0);
                 int dest = open(sealed_file_name, O_WRONLY | O_CREAT /*| O_TRUNC/**/, 0644);
 
                 // struct required, rationale: function stat() exists also
