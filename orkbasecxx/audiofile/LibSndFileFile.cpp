@@ -63,12 +63,12 @@ void LibSndFileFile::Open(CStdString& filename, fileOpenModeEnum mode, bool ster
 		m_sampleRate = sampleRate;
 		m_fileInfo.samplerate = sampleRate;
 	}
-
-    printf("Fileinfo:%d:%d", m_fileInfo.format, m_fileInfo.channels);
+    char prompt[64]
+    sprintf(prompt, "Fileinfo:%d:%d", m_fileInfo.format, m_fileInfo.channels);
 
 	if( (mode==WRITE) && !sf_format_check(&m_fileInfo))
 	{
-		throw(CStdString("libsndfile: Selected output format not supported"));
+		throw(CStdString(prompt));
 	}
 
 	FileRecursiveMkdir(m_filename, CONFIG.m_audioFilePermissions, CONFIG.m_audioFileOwner, CONFIG.m_audioFileGroup, CONFIG.m_audioOutputPath);
