@@ -248,6 +248,7 @@ void BatchProcessing::ThreadHandler()
 			{
 				if(Daemon::Singleton()->IsStopping())
 				{
+                    LOG4CXX_INFO(LOG.batchProcessingLog, "Stopping");
 					stop = true;
 				}
 				if(Daemon::Singleton()->GetShortLived())

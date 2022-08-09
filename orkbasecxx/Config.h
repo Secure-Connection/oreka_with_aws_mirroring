@@ -28,7 +28,7 @@
 #define CAPTURE_PLUGIN_PATH_DEFAULT "AudioCapturePlugins"
 #define PLUGINS_DIRECTORY_PARAM "PluginsDirectory"
 #define STORAGE_AUDIO_FORMAT_PARAM "StorageAudioFormat"
-#define STORAGE_AUDIO_FORMAT_DEFAULT FfGsm
+#define STORAGE_AUDIO_FORMAT_DEFAULT FfPcmWav
 #define NUM_BATCH_THREADS_PARAM "NumBatchThreads"
 #define NUM_COMMAND_THREADS_PARAM "NumCommandThreads"
 #define NUM_BATCH_THREADS_DEFAULT 1
