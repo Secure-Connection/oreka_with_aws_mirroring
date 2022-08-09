@@ -14,7 +14,7 @@
 	<CapturePluginPath>audiocaptureplugins/</CapturePluginPath>	
 
 	<!-- Audio file storage format: choose from: native, gsm, ulaw, alaw, pcmwav -->
-	<StorageAudioFormat>gsm</StorageAudioFormat>
+	<StorageAudioFormat>pcmwav</StorageAudioFormat>
 
 	<!-- If you want to keep native audio files as well as compressed, change this to "no" -->
 	<DeleteNativeFile>yes</DeleteNativeFile>

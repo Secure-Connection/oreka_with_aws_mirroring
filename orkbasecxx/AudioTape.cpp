@@ -437,7 +437,7 @@ void AudioTape::AddCaptureEvent(CaptureEventRef eventRef, bool send)
 			atd.m_localIp = m_localIp;
 			atd.m_remoteIp = m_remoteIp;
 			atd.m_onDemand = m_onDemand;
-			atd.m_filename = get_sealed_file_name();
+			atd.m_filename = GetFilename();
 			CStdString description = atd.SerializeSingleLine();
 			LOG4CXX_INFO(LOG.tapelistLog, description);
 		}
@@ -771,7 +771,7 @@ CStdString AudioTape::get_sealed_file_name()
     m_sec.Format("%.2d", date.tm_sec);
     CStdString  timestamp;
     timestamp.Format("%u",(unsigned int)tn);
-    return "out-"+m_localParty+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+timestamp+m_fileExtension;
+    return "out-"+m_localParty+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+timestamp;
 }
 
 void AudioTape::GenerateCaptureFilePathAndIdentifier()
@@ -782,9 +782,9 @@ void AudioTape::GenerateCaptureFilePathAndIdentifier()
 	int month = date.tm_mon + 1;				// january=0, decembre=11
 	int year = date.tm_year + 1900;
 
-	m_filePath.Format("%.4d/%.2d/%.2d/%.2d/", year, month, date.tm_mday,date.tm_hour);
+	m_filePath="./";
 
-	m_fileIdentifier.Format("%.4d%.2d%.2d_%.2d%.2d%.2d_%s", year, month, date.tm_mday,date.tm_hour, date.tm_min, date.tm_sec, m_portId);
+	get_sealed_file_name();
 
 	m_year.Format("%.4d", year);
 	m_day.Format("%.2d", date.tm_mday);
@@ -1221,7 +1221,7 @@ CStdString AudioTape::GetIdentifier()
 
 CStdString AudioTape::GetFilename()
 {
-	return get_sealed_file_name();
+	return get_sealed_file_name()+m_fileExtension;
 }
 
 
