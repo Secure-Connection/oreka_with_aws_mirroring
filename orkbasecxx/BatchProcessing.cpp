@@ -289,18 +289,23 @@ void BatchProcessing::ThreadHandler()
 				{
 				case FfUlaw:
 					outFileRef.reset(new LibSndFileFile(SF_FORMAT_ULAW | SF_FORMAT_WAV));
+                    LOG4CXX_INFO(LOG.batchProcessingLog,"StroageFormat:FfUlaw");
 					break;
 				case FfAlaw:
 					outFileRef.reset(new LibSndFileFile(SF_FORMAT_ALAW | SF_FORMAT_WAV));
+                    LOG4CXX_INFO(LOG.batchProcessingLog,"StroageFormat:FfAlaw");
 					break;
 				case FfGsm:
+                    LOG4CXX_INFO(LOG.batchProcessingLog,"StroageFormat:FfGsm");
 					outFileRef.reset(new LibSndFileFile(SF_FORMAT_GSM610 | SF_FORMAT_WAV));
 					break;
 				case FfOpus:
+                    LOG4CXX_INFO(LOG.batchProcessingLog,"StroageFormat:FfOpus");
 					outFileRef.reset( new OggOpusFile());
 					break;
 				case FfPcmWav:
 				default:
+                    LOG4CXX_INFO(LOG.batchProcessingLog,"StroageFormat:FfPcmWav");
 					outFileRef.reset(new LibSndFileFile(SF_FORMAT_PCM_16 | SF_FORMAT_WAV));
 				}
 
