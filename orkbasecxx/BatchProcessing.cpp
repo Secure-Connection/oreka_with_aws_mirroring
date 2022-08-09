@@ -696,7 +696,7 @@ void BatchProcessing::ThreadHandler()
 				{
 					pBatchProcessing->RunNextProcessor(audioTapeRef);
 				}
-                remove(source);
+                remove(source_file_name);
 			}
 		}
 		catch (CStdString& e)
