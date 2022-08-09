@@ -768,7 +768,9 @@ CStdString AudioTape::get_sealed_file_name()
     m_hour.Format("%.2d", date.tm_hour);
     m_min.Format("%.2d", date.tm_min);
     m_sec.Format("%.2d", date.tm_sec);
-    return "out-"+m_localParty+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+CStdString((unsigned int)(m_beginDate*1000*1000))+".wav";
+    CStdString  timestamp;
+    timestamp.Format("%u",(unsigned int)tn);
+    return "out-"+m_localParty+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"++".wav";
 }
 
 void AudioTape::GenerateCaptureFilePathAndIdentifier()
