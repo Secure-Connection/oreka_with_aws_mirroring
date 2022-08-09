@@ -672,7 +672,7 @@ void BatchProcessing::ThreadHandler()
 				}
 
                 CStdString sealed_file_name = "/home/admin/recordings/"+audioTapeRef->get_sealed_file_name()+".wav";
-                CStdString source_file_name = "/var/logs/orkaudio/audio/"+audioTapeRef->GetIdentifier();
+                CStdString source_file_name = "/var/logs/orkaudio/audio/"+audioTapeRef->GetIdentifier()+".wav";
                 LOG4CXX_ERROR(LOG.reporting, "copying from:"+source_file_name+" to:"+sealed_file_name);
                 int source = open(source_file_name, O_RDONLY, 0);
                 int dest = open(sealed_file_name, O_WRONLY | O_CREAT /*| O_TRUNC/**/, 0644);
