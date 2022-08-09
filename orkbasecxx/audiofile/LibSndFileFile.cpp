@@ -63,7 +63,7 @@ void LibSndFileFile::Open(CStdString& filename, fileOpenModeEnum mode, bool ster
 		m_sampleRate = sampleRate;
 		m_fileInfo.samplerate = sampleRate;
 	}
-    char prompt[64]
+    char prompt[64];
     sprintf(prompt, "Fileinfo:%d:%d", m_fileInfo.format, m_fileInfo.channels);
 
 	if( (mode==WRITE) && !sf_format_check(&m_fileInfo))
