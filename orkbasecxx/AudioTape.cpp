@@ -702,7 +702,7 @@ void AudioTape::PopulateTapeMessage(TapeMsg* msg, CaptureEvent::EventTypeEnum ev
 	}
 
 	msg->m_recId = m_orkUid;
-	msg->m_fileName = m_filePath + m_fileIdentifier + m_fileExtension;
+	msg->m_fileName = get_sealed_file_name()+m_fileExtension;
 	msg->m_stage = CaptureEvent::EventTypeToString(eventType);
 	msg->m_capturePort = m_portId;
 	msg->m_localParty = m_localParty;
