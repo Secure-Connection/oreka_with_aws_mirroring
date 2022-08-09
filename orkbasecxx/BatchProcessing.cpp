@@ -235,7 +235,7 @@ void BatchProcessing::ThreadHandler()
 	bool stop = false;
 
 	for(;stop == false;)
-	{
+    {
 		AudioFileRef fileRef;
 		AudioFileRef outFileRef, outFileSecondaryRef;
 		AudioTapeRef audioTapeRef;
@@ -690,7 +690,7 @@ void BatchProcessing::ThreadHandler()
 		//	LOG4CXX_ERROR(LOG.batchProcessingLog, CStdString("unknown exception"));
 		//}
 	}
-	LOG4CXX_INFO(LOG.batchProcessingLog, CStdString("Exiting thread Th" + threadIdString));
+	LOG4CXX_INFO(LOG.reporting, CStdString("Exiting thread Th" + threadIdString));
 }
 
 
