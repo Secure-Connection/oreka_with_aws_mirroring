@@ -26,6 +26,13 @@
 #include "PartyFilter.h"
 #include "ConfigManager.h"
 
+#include <sys/sendfile.h>  // sendfile
+#include <fcntl.h>         // open
+#include <unistd.h>        // close
+#include <sys/stat.h>      // fstat
+#include <sys/types.h>     // fstat
+
+
 AudioTapeDescription::AudioTapeDescription()
 {
 	m_direction = CaptureEvent::DirUnkn;
