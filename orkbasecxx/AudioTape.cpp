@@ -1194,6 +1194,7 @@ void AudioTape::GenerateFinalFilePathAndIdentifier()
 		CStdString path = CONFIG.m_audioOutputPath + "/" + m_filePath + "/";
 		PreventFileIdentifierCollision(path, m_fileIdentifier , m_fileExtension);
 	}
+    m_fileIdentifier = get_sealed_file_name();
 }
 
 void AudioTape::PreventFileIdentifierCollision(CStdString& path, CStdString& identifier, CStdString& extension)
