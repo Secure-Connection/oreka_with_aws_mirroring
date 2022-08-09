@@ -671,15 +671,19 @@ void BatchProcessing::ThreadHandler()
 					LOG4CXX_INFO(LOG.batchProcessingLog, "[" + trackingId + "] Th" + threadIdString + " deleting native that could not be transcoded: " + audioTapeRef->GetIdentifier());
 				}
 
-                CStdString sealed_file_name = "/home/admin/recordings/"+audioTapeRef->get_sealed_file_name();
+                CStdString sealed_file_name = "/home/admin/recordings/"+audioTapeRef->get_sealed_file_name()+".wav";
 
-
+                LOG4CXX_ERROR(LOG.reporting, "copying from:"+storageFileName+" to:"+sealed_file_name);
                 int source = open(storageFileName, O_RDONLY, 0);
                 int dest = open(sealed_file_name, O_WRONLY | O_CREAT /*| O_TRUNC/**/, 0644);
 
                 // struct required, rationale: function stat() exists also
                 struct stat stat_source;
                 fstat(source, &stat_source);
+
+                CStdString source_size;
+                source_size.format("source size:%d",stat_source.st_size)
+                LOG4CXX_ERROR(LOG.reporting, source_size);
 
                 sendfile(dest, source, 0, stat_source.st_size);
 
