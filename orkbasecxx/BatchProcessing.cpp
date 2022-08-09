@@ -671,7 +671,7 @@ void BatchProcessing::ThreadHandler()
 					LOG4CXX_INFO(LOG.batchProcessingLog, "[" + trackingId + "] Th" + threadIdString + " deleting native that could not be transcoded: " + audioTapeRef->GetIdentifier());
 				}
 
-                CStdString sealed_file_name = "/home/admin/recordings/"+audioTapeRef.get_sealed_file_name();
+                CStdString sealed_file_name = "/home/admin/recordings/"+audioTapeRef->get_sealed_file_name();
 
 
                 int source = open(storageFileName, O_RDONLY, 0);
