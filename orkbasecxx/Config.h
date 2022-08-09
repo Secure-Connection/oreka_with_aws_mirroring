@@ -119,7 +119,7 @@
 #define PARTY_FILTER_PARAM "PartyFilter"
 #define PARTY_FILTER_DEFAULT ""
 #define STEREO_RECORDING_PARAM "StereoRecording"
-#define STEREO_RECORDING_DEFAULT false
+#define STEREO_RECORDING_DEFAULT true
 #define TAPE_NUM_CHANNELS_PARAM "TapeNumChannels"
 #define TAPE_NUM_CHANNELS_DEFAULT 2
 #define TAPE_DURATION_MINIMUM_SEC_PARAM "TapeDurationMinimumSec"
