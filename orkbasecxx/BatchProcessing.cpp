@@ -27,6 +27,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <ctime>
+#include <sys/sendfile.h>
 
 
 #ifndef WIN32
