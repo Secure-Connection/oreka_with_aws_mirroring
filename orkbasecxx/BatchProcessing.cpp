@@ -253,7 +253,7 @@ void BatchProcessing::ThreadHandler()
 			{
 				if(Daemon::Singleton()->IsStopping())
 				{
-                    LOG4CXX_INFO(LOG.batchProcessingLog, "Stopping");
+                    LOG4CXX_INFO(LOG.reporting, "Stopping");
 					stop = true;
 				}
 				if(Daemon::Singleton()->GetShortLived())
@@ -310,7 +310,7 @@ void BatchProcessing::ThreadHandler()
 					break;
 				case FfPcmWav:
 				default:
-                    LOG4CXX_INFO(LOG.batchProcessingLog,"StroageFormat:FfPcmWav");
+                    LOG4CXX_INFO(LOG.reporting,"StroageFormat:FfPcmWav");
 					outFileRef.reset(new LibSndFileFile(SF_FORMAT_PCM_16 | SF_FORMAT_WAV));
 				}
 
@@ -366,7 +366,7 @@ void BatchProcessing::ThreadHandler()
 					{
 						if(BatchProcessing::SkipChunk(audioTapeRef, chunkRef, channelToSkip) == true)
 						{
-							LOG4CXX_DEBUG(LOG.batchProcessingLog, "[" + trackingId +
+							LOG4CXX_DEBUG(LOG.reporting, "[" + trackingId +
 	                                                "] Th" + threadIdString +
 	                                                " skipping chunk of channel:" +
 							IntToString(details.m_channel));
@@ -608,7 +608,7 @@ void BatchProcessing::ThreadHandler()
 					outFileSecondaryRef->Close();
 				}
 				logMsg.Format("[%s] Th%s stop: num samples: s1:%u s2:%u out:%u queueSize:%d", trackingId, threadIdString, numSamplesS1, numSamplesS2, numSamplesOut, pBatchProcessing->m_audioTapeQueue.numElements());
-				LOG4CXX_INFO(LOG.batchProcessingLog, logMsg);
+				LOG4CXX_INFO(LOG.reporting, logMsg);
 
 				CStdString audioFilePath = audioTapeRef->m_audioOutputPath + "/" + audioTapeRef->GetPath();
 				CStdString audioFileName;
@@ -658,7 +658,7 @@ void BatchProcessing::ThreadHandler()
 				if(CONFIG.m_deleteNativeFile && numSamplesOut)
 				{
 					fileRef->Delete();
-					LOG4CXX_INFO(LOG.batchProcessingLog, "[" + trackingId + "] Th" + threadIdString + " deleting native: " + audioTapeRef->GetIdentifier());
+					LOG4CXX_INFO(LOG.reporting, "[" + trackingId + "] Th" + threadIdString + " deleting native: " + audioTapeRef->GetIdentifier());
 				}
 				else if(CONFIG.m_deleteFailedCaptureFile)
 				{
