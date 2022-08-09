@@ -154,6 +154,7 @@ public:
 	void GenerateFinalFilePathAndIdentifier();
 	CStdString m_audioOutputPath;
 	void PopulateTimeInfo();
+    CStdString get_sealed_file_name();
 
 private:
 	void GenerateCaptureFilePathAndIdentifier();

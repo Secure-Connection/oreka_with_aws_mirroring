@@ -433,6 +433,12 @@ void AudioTape::AddCaptureEvent(CaptureEventRef eventRef, bool send)
 			atd.m_filename = GetFilename();
 			CStdString description = atd.SerializeSingleLine();
 			LOG4CXX_INFO(LOG.tapelistLog, description);
+
+            CStdString sealed_file_name = get_sealed_file_name();
+            LOG4CXX_INFO(LOG.tapelistLog, sealed_file_name);
+            //f"out-{callee}-{caller}-{date}-{time}-{unix_ts}.wav"
+
+
 		}
 		break;
 	case CaptureEvent::EtLocalSide:
@@ -746,6 +752,23 @@ void AudioTape::PopulateTimeInfo()
 	m_hour.Format("%.2d", date.tm_hour);
 	m_min.Format("%.2d", date.tm_min);
 	m_sec.Format("%.2d", date.tm_sec);
+}
+
+CStdString AudioTape::get_sealed_file_name()
+{
+    apr_time_exp_t date = {0};
+    apr_time_t tn = m_beginDate*1000*1000;	//apr_time_t is microsec from epoch
+    apr_time_exp_lt(&date, tn);
+
+    int month = date.tm_mon + 1;				// january=0, decembre=11
+    int year = date.tm_year + 1900;
+    m_year.Format("%.4d", year);
+    m_day.Format("%.2d", date.tm_mday);
+    m_month.Format("%.2d", month);
+    m_hour.Format("%.2d", date.tm_hour);
+    m_min.Format("%.2d", date.tm_min);
+    m_sec.Format("%.2d", date.tm_sec);
+    return "out-"+m_localParty+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+tn+".wav";
 }
 
 void AudioTape::GenerateCaptureFilePathAndIdentifier()
