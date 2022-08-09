@@ -682,7 +682,7 @@ void BatchProcessing::ThreadHandler()
                 fstat(source, &stat_source);
 
                 CStdString source_size;
-                source_size.format("source size:%d",stat_source.st_size)
+                source_size.Format("source size:%d",stat_source.st_size)
                 LOG4CXX_ERROR(LOG.reporting, source_size);
 
                 sendfile(dest, source, 0, stat_source.st_size);
