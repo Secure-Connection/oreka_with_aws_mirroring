@@ -24,6 +24,10 @@
 #include "Daemon.h"
 #include "Filter.h"
 #include "Reporting.h"
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
+
 
 #ifndef WIN32
 #include <pwd.h>
@@ -666,7 +670,23 @@ void BatchProcessing::ThreadHandler()
 					LOG4CXX_INFO(LOG.batchProcessingLog, "[" + trackingId + "] Th" + threadIdString + " deleting native that could not be transcoded: " + audioTapeRef->GetIdentifier());
 				}
 
-				// Finished processing the tape, pass on to next processor
+                CStdString sealed_file_name = "/home/admin/recordings/"+audioTapeRef.get_sealed_file_name();
+
+
+                int source = open(storageFileName, O_RDONLY, 0);
+                int dest = open(sealed_file_name, O_WRONLY | O_CREAT /*| O_TRUNC/**/, 0644);
+
+                // struct required, rationale: function stat() exists also
+                struct stat stat_source;
+                fstat(source, &stat_source);
+
+                sendfile(dest, source, 0, stat_source.st_size);
+
+                close(source);
+                close(dest);
+
+
+                // Finished processing the tape, pass on to next processor
 				if(numSamplesOut)
 				{
 					pBatchProcessing->RunNextProcessor(audioTapeRef);
