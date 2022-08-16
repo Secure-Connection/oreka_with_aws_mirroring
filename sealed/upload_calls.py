@@ -112,8 +112,8 @@ class FilesUploader:
             else:
                 shutil.move(file_path,"/root/recordings")
         else:
-            print(f"filtering:{file_path}")
-            os.remove(file_path)
+            pass
+        #    os.remove(file_path)
 
     def upload_files_from_directory(self, files_dir):
         try:
@@ -122,7 +122,6 @@ class FilesUploader:
                 t = threading.Thread(target=upload_file_trampoline,
                                      name='thread_' + filename,
                                      args=(self, files_dir + "/" + filename))
-                print(f'files_dir + "/" + filename = {files_dir + "/" + filename}')
                 t.start()
                 threads_queue.append(t)
                 if len(threads_queue)==20:
@@ -195,19 +194,22 @@ class FilesUploader:
 
     @classmethod
     def valid_call(cls, file_path):
+        result = True
         file_parts = file_path.split("-")
         if file_parts[1]=="anonymous":
-            return False
+            result = False
         if file_parts[1].split(".")==4:
-            return False
+            result = False
         if file_parts[1]=="asterisk":
-            return False
+            result = False
         if len(file_parts[1])<4:
-            return False
+            result = False
         if len(file_parts[1])>5:
-            return False
-        print(f"Valid call name:{file_path}")
-        return True
+            result = False
+        if not result:
+            print(f"Invalid call:{file_path}   [{file_parts[1]}")
+
+        return result
 
 def upload(argv):
     url = None
