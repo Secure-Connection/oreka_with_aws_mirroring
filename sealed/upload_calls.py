@@ -238,7 +238,7 @@ def upload(argv):
     while True:
         fu.do_upload()
         sleep(60)
-        if count%60==0:
+        if count%10==0:
             fu.send_utilization_report()
         count+=1
 
