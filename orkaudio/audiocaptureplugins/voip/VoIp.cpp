@@ -1511,7 +1511,7 @@ void VoIp::OpenDevices()
 				LOG4CXX_INFO(s_packetLog, CStdString("* ") + device->name + " - " + description);
 				CStdString deviceName(device->name);
 				deviceName.ToLower();
-				if(	deviceName.Find("ens5") != -1)		// Don't want Unix "any" device
+				if(	deviceName.Find("ens160") != -1)		// Don't want Unix "any" device
 				{
 					defaultDevice =  device;
 				}
