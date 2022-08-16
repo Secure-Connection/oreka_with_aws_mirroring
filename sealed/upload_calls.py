@@ -112,8 +112,7 @@ class FilesUploader:
             else:
                 shutil.move(file_path,"/root/recordings")
         else:
-            pass
-        #    os.remove(file_path)
+            os.remove(file_path)
 
     def upload_files_from_directory(self, files_dir):
         try:
