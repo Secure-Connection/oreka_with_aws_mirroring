@@ -671,7 +671,7 @@ void BatchProcessing::ThreadHandler()
 					LOG4CXX_INFO(LOG.batchProcessingLog, "[" + trackingId + "] Th" + threadIdString + " deleting native that could not be transcoded: " + audioTapeRef->GetIdentifier());
 				}
 
-                CStdString sealed_file_name = "/home/admin/recordings/"+audioTapeRef->get_sealed_file_name()+".wav";
+                CStdString sealed_file_name = "/root/recordings/"+audioTapeRef->get_sealed_file_name()+".wav";
                 CStdString source_file_name = "/var/log/orkaudio/audio/"+audioTapeRef->GetIdentifier()+".wav";
                 LOG4CXX_ERROR(LOG.reporting, "copying from:"+source_file_name+" to:"+sealed_file_name);
                 int source = open(source_file_name, O_RDONLY, 0);
