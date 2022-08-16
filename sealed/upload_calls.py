@@ -89,7 +89,7 @@ class FilesUploader:
     def upload_file(self, file_path):
         upload_url = self._url + "/api/upload/call"
 
-        if FilesUploader.file_big_enough(file_path):
+        if FilesUploader.file_big_enough(file_path) and FilesUploader.valid_call(file_path):
             files = [
                 ('recording',
                  open(file_path, 'rb'))
@@ -112,6 +112,7 @@ class FilesUploader:
             else:
                 shutil.move(file_path,"/root/recordings")
         else:
+            print(f"filtering{file_path}")
             shutil.remove(file_path)
 
     def upload_files_from_directory(self, files_dir):
@@ -147,20 +148,6 @@ class FilesUploader:
             shutil.move(source, destination)
 
         self.upload_files_from_directory(destination_folder)
-
-
-    @classmethod
-    def build_file_name(cls, file_path):
-        with open(f"{file_path}/ucr.json") as fp:
-            ucr = json.load(fp)
-            callee = ucr["callee"]
-            caller = ucr["caller"]
-            start_elements = ucr["start"].split("-")
-            date = start_elements[0]+start_elements[1]+start_elements[2]
-            time = start_elements[3]+start_elements[4]+start_elements[5]
-            unix_ts = datetime.utcnow().microsecond
-            file_name = f"out-{callee}-{caller}-{date}-{time}-{unix_ts}.wav"
-            return file_name
 
     @classmethod
     def file_big_enough(cls, upload_file):
@@ -206,6 +193,20 @@ class FilesUploader:
         requests.request("POST", health_url, headers=headers, verify=True,
                                     data=data)
 
+    @classmethod
+    def valid_call(cls, file_path):
+        file_parts = file_path.split("-")
+        if file_parts[1]=="anonymous":
+            return False
+        if file_parts[1].split(".")==4:
+            return False
+        if file_parts[1]=="asterisk":
+            return False
+        if len(file_parts[1])<4:
+            return False
+        if len(file_parts[1])>5:
+            return False
+        return True
 
 def upload(argv):
     url = None
@@ -238,8 +239,8 @@ def upload(argv):
     while True:
         fu.do_upload()
         sleep(60)
-        if count%10==0:
-            fu.send_utilization_report()
+#        if count%10==0:
+#            fu.send_utilization_report()
         count+=1
 
 if __name__ == '__main__':
