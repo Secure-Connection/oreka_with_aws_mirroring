@@ -169,6 +169,43 @@ class FilesUploader:
         duration = len(f) / f.samplerate
         return duration > 40
 
+    def send_utilization_report(self):
+        result = os.statvfs('/')
+        total_blocks = result.f_blocks
+        free_blocks = result.f_bfree
+        disk_utilization = int(100 * ((total_blocks - free_blocks) / total_blocks))
+
+        stream = os.popen('mpstat')
+        cpu_utilization_data = stream.read()
+        lines = cpu_utilization_data.split(sep='\n')
+        columns = lines[2].split()
+        row = lines[3].split()
+        cpu_utilization_dict = {}
+        for c, r in zip(columns, row):
+            if '%' in c and 'idle' not in c:
+                cpu_utilization_dict[c] = r
+        cpu_utilization = int(sum(float(v) for v in cpu_utilization_dict.values()))
+
+        data = {
+            "cpu_utilization" : cpu_utilization,
+            "disk_utilization": disk_utilization
+        }
+
+        self.login()
+
+        token = self._token
+
+        authorization = 'Bearer ' + token
+
+        headers = {
+            'Authorization': authorization
+        }
+
+        health_url = self._url + "/api/upload/sniffer_health_report"
+
+        requests.request("POST", health_url, headers=headers, verify=True,
+                                    data=data)
+
 
 def upload(argv):
     url = None
@@ -197,10 +234,13 @@ def upload(argv):
 
     fu = FilesUploader(server_url=url, username=username, password=password)
 
+    count = 0
     while True:
         fu.do_upload()
         sleep(60)
-
+        if count%60==0:
+            fu.send_utilization_report()
+        count+=1
 
 if __name__ == '__main__':
     upload(sys.argv[1:])
