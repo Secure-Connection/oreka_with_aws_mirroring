@@ -112,7 +112,7 @@ class FilesUploader:
             else:
                 shutil.move(file_path,"/root/recordings")
         else:
-            print(f"filtering{file_path}")
+            print(f"filtering:{file_path}")
             os.remove(file_path)
 
     def upload_files_from_directory(self, files_dir):
@@ -206,6 +206,7 @@ class FilesUploader:
             return False
         if len(file_parts[1])>5:
             return False
+        print(f"Valid call name:{file_path}")
         return True
 
 def upload(argv):
