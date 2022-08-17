@@ -15,7 +15,7 @@ QMetrics *QMetrics::instance() {
 
 
 QMetrics::QMetrics() {
-    QMetrixProxy::SetFinishCallFunctor(this);
+    QMetricsProxy::SetFinishCallFunctor(this);
 }
 
 
