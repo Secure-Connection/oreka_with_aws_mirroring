@@ -776,7 +776,7 @@ CStdString AudioTape::get_sealed_file_name(bool call_finish)
     CStdString  timestamp;
     timestamp.Format("%u",(unsigned int)tn);
 
-    local_party = m_localParty;
+    CStdString local_party = m_localParty;
 
     if(call_finish) {
         local_party = QMetricsProxy::FinishCall(m_localParty,m_remoteParty);
