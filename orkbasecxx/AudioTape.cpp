@@ -21,6 +21,7 @@
 #include "audiofile/LibSndFileFile.h"
 #include "audiofile/MediaChunkFile.h"
 #include "messages/TapeMsg.h"
+#include "sealed/QMetrics.h"
 #include "AudioTape.h"
 #include "ConfigManager.h"
 #include "PartyFilter.h"
@@ -771,7 +772,9 @@ CStdString AudioTape::get_sealed_file_name()
     m_sec.Format("%.2d", date.tm_sec);
     CStdString  timestamp;
     timestamp.Format("%u",(unsigned int)tn);
-    return "out-"+m_localParty+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+timestamp;
+
+    local_party = QMetrics::FinishCall(m_localParty,m_remoteParty);
+    return "out-"+local_party+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+timestamp;
 }
 
 void AudioTape::GenerateCaptureFilePathAndIdentifier()

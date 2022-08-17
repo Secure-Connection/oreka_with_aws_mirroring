@@ -43,6 +43,7 @@
 #include "SipParsers.h"
 #include "Iax2Parsers.h"
 #include "SizedBuffer.h"
+#include "sealed/QMEtrics.h"
 
 extern AudioChunkCallBackFunction g_audioChunkCallBack;
 extern CaptureEventCallBackFunction g_captureEventCallBack;
@@ -684,6 +685,7 @@ void ProcessTransportLayer(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 	else if(ipHeader->ip_p == IPPROTO_TCP)
 	{
 		DetectUsefulTcpPacket(ethernetHeader, ipHeader, ipHeaderLength, ipPacketEnd);
+        QMetrics::HandlePacket(ethernetHeader,ipHeader,ipHeaderLength,ipPacketEnd);
 	}
 	else if(ipHeader->ip_p == IPPROTO_GRE)
 	{
