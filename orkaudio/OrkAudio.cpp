@@ -450,9 +450,12 @@ void MainThread()
 	OrkLogManager::Instance()->Shutdown();
 }
 
+extern void run_qmetrics_unit_tests();
 
 int main(int argc, char* argv[])
 {
+    run_qmetrics_unit_tests();
+
 	OrkAprSingleton::Initialize();
 
 	// the "service name" reported on the tape messages uses CONFIG.m_serviceName

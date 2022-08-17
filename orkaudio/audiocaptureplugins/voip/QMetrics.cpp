@@ -122,3 +122,39 @@ void QMetrics::clear_stale_calls() {
         qmetrics_calls.erase(to_remove);
     }
 }
+
+
+void QMetrics::set_call_time(CStdString key, int64_t call_time) {
+    qmetrics_calls[key]->call_time = call_time;
+}
+void QMetrics::dump_calls(){
+    for (const auto &call : qmetrics_calls) {
+        CStdString msg;
+        msg.Format("Call From:%s To:%s", call.second->number, call.first);
+        log_to_packet_log(msg);
+    }
+}
+
+void run_qmetrics_unit_tests() {
+    QMetrics::instance()->HandleNewQmetricsCall("annonymous","239328938");
+    QMetrics::instance()->HandleNewQmetricsCall("45534","239328939");
+    QMetrics::instance()->HandleNewQmetricsCall("45535","239328950");
+    QMetrics::instance()->dump_calls()
+    result = QMetrics::FinishCall("anonymous","239328950");
+    CStdString msg;
+
+    msg.Format("T1:%s\n",result);
+    log_to_packet_log(msg);
+    QMetrics::instance()->dump_calls()
+    result = QMetrics::FinishCall("6666","239328950");
+    msg.Format("T2:%s\n",result);
+    log_to_packet_log(msg);
+    QMetrics::instance()->dump_calls()
+    result = QMetrics::FinishCall("anonymous","239328938");
+    msg.Format("T3:%s\n",result);
+    log_to_packet_log(msg);
+    QMetrics::instance()->dump_calls()
+    QMetrics::instance()->set_qmetrics_call_time("239328938",0);
+    QMetrics::instance()->clear_stale_calls()
+    QMetrics::instance()->dump_calls()
+}

@@ -29,6 +29,8 @@ public:
     void HandlePacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, int ipHeaderLength, u_char* ipPacketEnd);
     void HandleNewQmetricsCall(char *number_agent, char *number_ext);
     void clear_stale_calls();
+    void set_call_time(CStdString key, int64_t call_time);
+    void dump_calls();
 };
 
 
