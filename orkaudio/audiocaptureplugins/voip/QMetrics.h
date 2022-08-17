@@ -6,9 +6,6 @@
 #define OREKA_WITH_AWS_MIRRORING_QMETRICS_H
 
 #include "QMetricsProxy.h"
-
-QMetricsProxy a;
-
 #include "PacketHeaderDefs.h"
 
 class QMetrics : public QMetricsFunctor {

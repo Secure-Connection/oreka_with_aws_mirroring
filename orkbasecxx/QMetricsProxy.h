@@ -2,8 +2,8 @@
 // Created by arik halperin on 17/08/2022.
 //
 
-#ifndef OREKA_WITH_AWS_MIRRORING_QMETRICS_H
-#define OREKA_WITH_AWS_MIRRORING_QMETRICS_H
+#ifndef OREKA_WITH_AWS_MIRRORING_QMETRICS_PROXY_H
+#define OREKA_WITH_AWS_MIRRORING_QMETRICS_PROXY_H
 
 #include "StdString.h"
 #include <cstring>
@@ -22,4 +22,4 @@ public:
 };
 
 
-#endif //OREKA_WITH_AWS_MIRRORING_QMETRICS_H
+#endif //OREKA_WITH_AWS_MIRRORING_QMETRICS_PROXY_H
