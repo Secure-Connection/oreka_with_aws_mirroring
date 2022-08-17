@@ -145,15 +145,15 @@ void run_qmetrics_unit_tests() {
 
     msg.Format("T1:%s\n",result);
     log_to_packet_log(msg);
-    QMetrics::instance()->dump_calls()
+    QMetrics::instance()->dump_calls();
     result = QMetrics::FinishCall("6666","239328950");
     msg.Format("T2:%s\n",result);
     log_to_packet_log(msg);
-    QMetrics::instance()->dump_calls()
+    QMetrics::instance()->dump_calls();
     result = QMetrics::FinishCall("anonymous","239328938");
     msg.Format("T3:%s\n",result);
     log_to_packet_log(msg);
-    QMetrics::instance()->dump_calls()
+    QMetrics::instance()->dump_calls();
     QMetrics::instance()->set_qmetrics_call_time("239328938",0);
     QMetrics::instance()->clear_stale_calls();
     QMetrics::instance()->dump_calls();
