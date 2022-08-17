@@ -5,7 +5,7 @@
 #ifndef OREKA_WITH_AWS_MIRRORING_QMETRICS_H
 #define OREKA_WITH_AWS_MIRRORING_QMETRICS_H
 
-typedef  CStdString (*QmetricsFinishCallPtr)(CStdString &, CStdString);
+typedef  CStdString (*QMetricsFinishCallPtr)(CStdString &, CStdString);
 
 class QMetricsProxy {
     static QMetricsFinshCallPtr finishCallPtr;
