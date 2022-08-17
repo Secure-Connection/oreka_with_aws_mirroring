@@ -125,9 +125,14 @@ void QMetrics::clear_stale_calls() {
 
 
 void QMetrics::set_call_time(CStdString key, int64_t call_time) {
-    qmetrics_calls[key]->call_time = call_time;
+    const auto &it = qmetrics_calls.find(key);
+    if (it != qmetrics_calls.end()) {
+        qmetrics_calls[key]->call_time = call_time;
+    }
 }
 void QMetrics::dump_calls(){
+    log_to_packet_log("Calls_DUMP:");
+    log_to_packet_log("-----------");
     for (const auto &call : qmetrics_calls) {
         CStdString msg;
         msg.Format("Call From:%s To:%s", call.second->number, call.first);
@@ -135,9 +140,9 @@ void QMetrics::dump_calls(){
     }
 }
 
-void run_qmetrics_unit_tests() {
+extern "C" void run_qmetrics_unit_tests() {
     log_to_packet_log("Starting tests");
-    QMetrics::instance()->HandleNewQmetricsCall("annonymous","239328938");
+    QMetrics::instance()->HandleNewQmetricsCall("anonymous","239328938");
     QMetrics::instance()->HandleNewQmetricsCall("45534","239328939");
     QMetrics::instance()->HandleNewQmetricsCall("45535","239328950");
     QMetrics::instance()->dump_calls();
@@ -152,8 +157,12 @@ void run_qmetrics_unit_tests() {
     QMetrics::instance()->dump_calls();
     result = QMetrics::instance()->FinishCall(CStdString("anonymous"),CStdString("239328938"));
     msg.Format("T3:%s\n",result);
+    QMetrics::instance()->dump_calls();
+    result = QMetrics::instance()->FinishCall(CStdString("anonymous"),CStdString("239328938"));
+    msg.Format("T4:%s\n",result);
     log_to_packet_log(msg);
     QMetrics::instance()->dump_calls();
+    QMetrics::instance()->HandleNewQmetricsCall("anonymous","239328938");
     QMetrics::instance()->set_call_time(CStdString("239328938"),0);
     QMetrics::instance()->clear_stale_calls();
     QMetrics::instance()->dump_calls();
