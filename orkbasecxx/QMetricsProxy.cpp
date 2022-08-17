@@ -2,7 +2,7 @@
 // Created by arik halperin on 17/08/2022.
 //
 
-#include "QMetrics.h"
+#include "QMetricsProxy.h"
 
 
 QMetricsFunctor * QMetricsProxy::finishCallPtr=NULL;
