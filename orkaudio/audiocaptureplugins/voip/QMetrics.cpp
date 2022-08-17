@@ -140,20 +140,20 @@ void run_qmetrics_unit_tests() {
     QMetrics::instance()->HandleNewQmetricsCall("45534","239328939");
     QMetrics::instance()->HandleNewQmetricsCall("45535","239328950");
     QMetrics::instance()->dump_calls();
-    CStdString result = QMetrics::FinishCall("anonymous","239328950");
+    CStdString result = QMetrics::FinishCall(CStdString("anonymous"),CStdString("239328950"));
     CStdString msg;
     msg.Format("T1:%s\n",result);
     log_to_packet_log(msg);
     QMetrics::instance()->dump_calls();
-    result = QMetrics::FinishCall("6666","239328950");
+    result = QMetrics::FinishCall(CStdString("6666"),CStdString("239328950"));
     msg.Format("T2:%s\n",result);
     log_to_packet_log(msg);
     QMetrics::instance()->dump_calls();
-    result = QMetrics::FinishCall("anonymous","239328938");
+    result = QMetrics::FinishCall(CStdString("anonymous"),CStdString("239328938"));
     msg.Format("T3:%s\n",result);
     log_to_packet_log(msg);
     QMetrics::instance()->dump_calls();
-    QMetrics::instance()->set_qmetrics_call_time("239328938",0);
+    QMetrics::instance()->set_qmetrics_call_time(CStdString("239328938"),0);
     QMetrics::instance()->clear_stale_calls();
     QMetrics::instance()->dump_calls();
 }
