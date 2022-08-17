@@ -87,7 +87,7 @@ void QMetrics::HandlePacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct
 }
 
 
-void QMetrics::HandleNewQmetricsCall(char *number_agent, char *number_ext) {
+void QMetrics::HandleNewQmetricsCall(const char *number_agent, const char *number_ext) {
     CStdString msg;
     msg.Format("Qmetrics message:%s %s", number_agent, number_ext);
     log_to_packet_log(msg);
@@ -136,9 +136,9 @@ void QMetrics::dump_calls(){
 }
 
 void run_qmetrics_unit_tests() {
-    QMetrics::instance()->HandleNewQmetricsCall(CStdString("annonymous"),CStdString("239328938"));
-    QMetrics::instance()->HandleNewQmetricsCall(CStdString("45534"),CStdString("239328939"));
-    QMetrics::instance()->HandleNewQmetricsCall(CStdString("45535"),CStdString("239328950"));
+    QMetrics::instance()->HandleNewQmetricsCall("annonymous","239328938");
+    QMetrics::instance()->HandleNewQmetricsCall("45534","239328939");
+    QMetrics::instance()->HandleNewQmetricsCall("45535","239328950");
     QMetrics::instance()->dump_calls();
     CStdString result = QMetrics::instance()->FinishCall(CStdString("anonymous"),CStdString("239328950"));
     CStdString msg;
