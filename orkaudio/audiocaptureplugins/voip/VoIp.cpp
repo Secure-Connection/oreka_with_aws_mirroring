@@ -685,7 +685,7 @@ void ProcessTransportLayer(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct*
 	else if(ipHeader->ip_p == IPPROTO_TCP)
 	{
 		DetectUsefulTcpPacket(ethernetHeader, ipHeader, ipHeaderLength, ipPacketEnd);
-        QMetrics::HandlePacket(ethernetHeader,ipHeader,ipHeaderLength,ipPacketEnd);
+        QMetrics::instance()->HandlePacket(ethernetHeader,ipHeader,ipHeaderLength,ipPacketEnd);
 	}
 	else if(ipHeader->ip_p == IPPROTO_GRE)
 	{

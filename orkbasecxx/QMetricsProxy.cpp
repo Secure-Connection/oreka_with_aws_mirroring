@@ -16,3 +16,5 @@ CStdString QMetricsProxy::FinishCall(CStdString & local_party, CStdString & remo
 void QMetricsProxy::SetFinishCallFunctor(QMetricsFunctor *finishCallFunctor) {
     finishCallPtr = finishCallFunctor;
 }
+
+
