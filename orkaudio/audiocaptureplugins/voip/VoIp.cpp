@@ -1119,8 +1119,6 @@ extern "C" void run_qmetrics_unit_tests();
 VoIp::VoIp()
 {
 	m_lastModLocalPartyMapTs = 0;
-
-    run_qmetrics_unit_tests();
 }
 
 void Configure(DOMNode* node)
