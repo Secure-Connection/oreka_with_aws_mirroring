@@ -5,7 +5,7 @@
 #include "QMetrics.h"
 
 
-static QmetricsFinishCallPtr QMetricsProxy::finishCallPtr=NULL;
+static QMetricsFinishCallPtr QMetricsProxy::finishCallPtr=NULL;
 
 CStdString QMetricsProxy::FinishCall(CStdString & local_party, CStdString & remote_party) {
     if(finishCallPtr) {
