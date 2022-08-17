@@ -450,7 +450,7 @@ void MainThread()
 	OrkLogManager::Instance()->Shutdown();
 }
 
-extern void run_qmetrics_unit_tests();
+extern "C" void run_qmetrics_unit_tests();
 
 int main(int argc, char* argv[])
 {
