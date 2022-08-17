@@ -1785,6 +1785,10 @@ void VoIp::LoadSkinnyGlobalNumbers()
 	return;
 }
 
+void log_to_packet_log(CStdString msg) {
+    LOG4CXX_INFO(s_packetLog, msg);
+}
+
 void VoIp::Initialize()
 {
 	m_pcapDeviceMap.clear();

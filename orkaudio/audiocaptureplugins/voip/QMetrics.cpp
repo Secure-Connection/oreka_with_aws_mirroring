@@ -19,10 +19,12 @@ QMetrics::QMetrics() {
 }
 
 
+extern void log_to_packet_log(CStdString msg);
+
 CStdString QMetrics::FinishCall(CStdString local_party, CStdString remote_party) {
     CStdString msg;
     msg.Format("Finished Call:%s %s", local_party, remote_party);
-    printf(msg);
+    log_to_packet_log(msg);
     return local_party;
 }
 
