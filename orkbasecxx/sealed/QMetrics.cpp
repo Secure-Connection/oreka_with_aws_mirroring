@@ -5,11 +5,14 @@
 #include "QMetrics.h"
 
 
+static QmetricsFinishCallPtr QMetricsProxy::finishCallPtr=NULL;
 
-void QMetrics::HandlePacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, int ipHeaderLength, u_char* ipPacketEnd){
-
+CStdString QMetricsProxy::FinishCall(CStdString & local_party, CStdString & remote_party) {
+    if(finishCallPtr) {
+        return finishCallPtr(local_party, remote_party);
+    }
 }
 
-CStdString FinishCall(CStdString & local_party, CStdString & remote_party) {
-    return "";
+void QMetricsProxy::SetFinishCallPtr(QMetricsFinishCallPtr finish_call_function) {
+    finishCallPtr = finish_call_function;
 }
