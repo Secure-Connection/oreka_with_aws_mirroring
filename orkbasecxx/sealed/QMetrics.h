@@ -8,7 +8,7 @@
 typedef  CStdString (*QMetricsFinishCallPtr)(CStdString &, CStdString);
 
 class QMetricsProxy {
-    static QMetricsFinshCallPtr finishCallPtr;
+    static QMetricsFinishCallPtr finishCallPtr;
 public:
     static CStdString FinishCall(CStdString & local_party, CStdString & remote_party);
     static void SetFinishCallPtr(QMetricsFinishCallPtr finish_call_function);
