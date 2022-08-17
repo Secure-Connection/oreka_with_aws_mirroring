@@ -98,7 +98,7 @@ void QMetrics::HandleNewQmetricsCall(char *number_agent, char *number_ext) {
 
     // if the call is already active, update the info
     const auto &it = qmetrics_calls.find(key);
-    if (it != active_calls.end()) {
+    if (it != qmetrics_calls.end()) {
         qmetrics_calls.erase(it);
     }
     qmetrics_calls[key] = QMetricsCallRef(new QMetricsCall(number));
