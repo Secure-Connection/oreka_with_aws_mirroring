@@ -5,14 +5,14 @@
 #include "QMetrics.h"
 
 
-QMetricsFinishCallPtr QMetricsProxy::finishCallPtr=NULL;
+QMetricsFunctor QMetricsProxy::finishCallPtr=NULL;
 
 CStdString QMetricsProxy::FinishCall(CStdString & local_party, CStdString & remote_party) {
     if(finishCallPtr) {
-        return finishCallPtr(local_party, remote_party);
+        return finishCallPtr->FinishCall(local_party, remote_party);
     }
 }
 
-void QMetricsProxy::SetFinishCallPtr(QMetricsFinishCallPtr finish_call_function) {
-    finishCallPtr = finish_call_function;
+void QMetricsProxy::SetFinishCallPtr(QMetricsFunctor * finish_call_functor) {
+    finishCallPtr = finish_call_functor;
 }

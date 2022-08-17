@@ -8,13 +8,16 @@
 #include "StdString.h"
 #include <cstring>
 
-typedef extern CStdString (*QMetricsFinishCallPtr)(CStdString &, CStdString);
+class QMetricsFunctor {
+    virtual CStdString FinishCall(CStdString local, CStdString remote)=0;
+};
+
 
 class QMetricsProxy {
-    static QMetricsFinishCallPtr * finishCallPtr;
+    static QMetricsFunctor * finishCallPtr;
 public:
     static CStdString FinishCall(CStdString & local_party, CStdString & remote_party);
-    static void SetFinishCallPtr(QMetricsFinishCallPtr finish_call_function);
+    static void SetFinishCallFunctor(QMetricsFunctor * finishCallFunctor);
 };
 
 
