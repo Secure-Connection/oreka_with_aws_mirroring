@@ -5,7 +5,7 @@
 #include "QMetrics.h"
 
 
-QMetricsFunctor QMetricsProxy::finishCallPtr=NULL;
+QMetricsFunctor * QMetricsProxy::finishCallPtr=NULL;
 
 CStdString QMetricsProxy::FinishCall(CStdString & local_party, CStdString & remote_party) {
     if(finishCallPtr) {
@@ -13,6 +13,6 @@ CStdString QMetricsProxy::FinishCall(CStdString & local_party, CStdString & remo
     }
 }
 
-void QMetricsProxy::SetFinishCallPtr(QMetricsFunctor * finish_call_functor) {
-    finishCallPtr = finish_call_functor;
+void QMetricsProxy::SetFinishCallFunctor(QMetricsFunctor *finishCallFunctor) {
+    finishCallPtr = finishCallFunctor;
 }
