@@ -155,6 +155,6 @@ void run_qmetrics_unit_tests() {
     log_to_packet_log(msg);
     QMetrics::instance()->dump_calls()
     QMetrics::instance()->set_qmetrics_call_time("239328938",0);
-    QMetrics::instance()->clear_stale_calls()
-    QMetrics::instance()->dump_calls()
+    QMetrics::instance()->clear_stale_calls();
+    QMetrics::instance()->dump_calls();
 }
