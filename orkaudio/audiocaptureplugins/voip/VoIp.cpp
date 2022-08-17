@@ -43,7 +43,7 @@
 #include "SipParsers.h"
 #include "Iax2Parsers.h"
 #include "SizedBuffer.h"
-#include "sealed/QMEtrics.h"
+#include "QMetrics.h"
 
 extern AudioChunkCallBackFunction g_audioChunkCallBack;
 extern CaptureEventCallBackFunction g_captureEventCallBack;
