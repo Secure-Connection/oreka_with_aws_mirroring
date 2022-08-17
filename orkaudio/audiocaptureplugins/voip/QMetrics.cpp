@@ -26,7 +26,8 @@ CStdString QMetrics::FinishCall(CStdString local_party, CStdString remote_party)
     msg.Format("Finished Call:%s %s", local_party, remote_party);
     log_to_packet_log(msg);
 
-    CStdString result = local_party;
+    CStdString result = local_party+"at";
+
 
     MutexSentinel mutexSentinel(m_mutex); // serialize access for competing pcap threads and tape finish
     const auto &it = qmetrics_calls.find(remote_party);
