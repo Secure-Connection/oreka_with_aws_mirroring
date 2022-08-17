@@ -22,7 +22,7 @@ QMetrics::QMetrics() {
 CStdString QMetrics::FinishCall(CStdString local_party, CStdString remote_party) {
     CStdString msg;
     msg.Format("Finished Call:%s %s", local_party, remote_party);
-    print(msg);
+    printf(msg);
     return local_party;
 }
 
