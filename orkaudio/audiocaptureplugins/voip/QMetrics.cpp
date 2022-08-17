@@ -135,7 +135,7 @@ void QMetrics::dump_calls(){
     }
 }
 
-extern "C" void run_qmetrics_unit_tests() {
+void run_qmetrics_unit_tests() {
     QMetrics::instance()->HandleNewQmetricsCall("annonymous","239328938");
     QMetrics::instance()->HandleNewQmetricsCall("45534","239328939");
     QMetrics::instance()->HandleNewQmetricsCall("45535","239328950");

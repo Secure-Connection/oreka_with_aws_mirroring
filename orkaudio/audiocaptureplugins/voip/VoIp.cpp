@@ -1113,11 +1113,14 @@ PcapHandleData::PcapHandleData(pcap_t* pcaphandle ,const char *name): ifName(nam
 	m_numIfDropped = 0;
 	m_numIfDropped10s = 0;
 }
+
+extern "C" void run_qmetrics_unit_tests();
 //=======================================================
 VoIp::VoIp()
 {
 	m_lastModLocalPartyMapTs = 0;
 
+    run_qmetrics_unit_tests();
 }
 
 void Configure(DOMNode* node)
