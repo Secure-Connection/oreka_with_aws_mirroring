@@ -773,7 +773,7 @@ CStdString AudioTape::get_sealed_file_name()
     CStdString  timestamp;
     timestamp.Format("%u",(unsigned int)tn);
 
-    local_party = QMetrics::FinishCall(m_localParty,m_remoteParty);
+    CStdString local_party = QMetrics::FinishCall(m_localParty,m_remoteParty);
     return "out-"+local_party+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+timestamp;
 }
 
