@@ -7,15 +7,29 @@
 
 #include "QMetricsProxy.h"
 #include "PacketHeaderDefs.h"
+#include "utils.h"
+
+#define QMETRICS_CALL_TIMEOUT 60 * 120
+
+struct QMetricsCall {
+    int64_t call_time;
+    CStdString number;
+    QMetricsCall(CStdStrong &number) : call_time(time(NULL)), number(number) {}
+};
+
+typedef oreka::shared_ptr<QMetricsCall> QMetricsCallRef;
 
 class QMetrics : public QMetricsFunctor {
     static QMetrics * s_instance;
-
+    std::mutex m_mutex;
+    std::map<CStdString, QMetricsCallRef> qmetrics_calls;
 public:
     QMetrics();
     static QMetrics * instance();
     virtual CStdString FinishCall(CStdString local_party, CStdString remote_party);
     void HandlePacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, int ipHeaderLength, u_char* ipPacketEnd);
+    void HandleNewQmetricsCall(char *number_agent, char *number_ext);
+    void clear_stale_calls();
 };
 
 
