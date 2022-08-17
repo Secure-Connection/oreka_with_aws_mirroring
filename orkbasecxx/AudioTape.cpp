@@ -759,7 +759,7 @@ void AudioTape::PopulateTimeInfo()
 	m_sec.Format("%.2d", date.tm_sec);
 }
 
-CStdString AudioTape::get_sealed_file_name(call_finish)
+CStdString AudioTape::get_sealed_file_name(bool call_finish)
 {
     apr_time_exp_t date = {0};
     apr_time_t tn = m_beginDate*1000*1000;	//apr_time_t is microsec from epoch
