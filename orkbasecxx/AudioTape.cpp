@@ -21,7 +21,7 @@
 #include "audiofile/LibSndFileFile.h"
 #include "audiofile/MediaChunkFile.h"
 #include "messages/TapeMsg.h"
-#include "sealed/QMetrics.h"
+#include "QMetrics.h"
 #include "AudioTape.h"
 #include "ConfigManager.h"
 #include "PartyFilter.h"
