@@ -32,10 +32,11 @@ CStdString QMetrics::FinishCall(CStdString local_party, CStdString remote_party)
     const auto &it = qmetrics_calls.find(remote_party);
     if (it != qmetrics_calls.end()) {
         log_to_packet_log("Found QMetrics Call");
-        if local_party=="anonymous":
-            msg.Format("Replacing anonymous with %s",it->second->number);
+        if (local_party=="anonymous") {
+            msg.Format("Replacing anonymous with %s", it->second->number);
             log_to_packet_log(msg);
             result = it->second->number;
+        }
         qmetrics_calls.erase(it);
     }
     return result;
