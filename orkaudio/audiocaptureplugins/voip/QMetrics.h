@@ -7,7 +7,7 @@
 
 #include "QMetricsProxy.h"
 
-QMetricsFunctor a;
+QMetricsProxy a;
 
 #include "PacketHeaderDefs.h"
 
