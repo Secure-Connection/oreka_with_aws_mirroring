@@ -438,9 +438,13 @@ void AudioTape::AddCaptureEvent(CaptureEventRef eventRef, bool send)
 			atd.m_localIp = m_localIp;
 			atd.m_remoteIp = m_remoteIp;
 			atd.m_onDemand = m_onDemand;
+            atd.m_localParty = QMetricsProxy::FinishCall(m_localParty,m_remoteParty);
 			atd.m_filename = GetFilename();
 			CStdString description = atd.SerializeSingleLine();
 			LOG4CXX_INFO(LOG.tapelistLog, description);
+
+
+
 		}
 		break;
 	case CaptureEvent::EtLocalSide:
@@ -772,9 +776,7 @@ CStdString AudioTape::get_sealed_file_name()
     m_sec.Format("%.2d", date.tm_sec);
     CStdString  timestamp;
     timestamp.Format("%u",(unsigned int)tn);
-
-    CStdString local_party = QMetricsProxy::FinishCall(m_localParty,m_remoteParty);
-    return "out-"+local_party+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+timestamp;
+    return "out-"+m_localParty+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+timestamp;
 }
 
 void AudioTape::GenerateCaptureFilePathAndIdentifier()
