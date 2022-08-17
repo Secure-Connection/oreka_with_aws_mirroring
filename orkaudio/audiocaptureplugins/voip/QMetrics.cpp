@@ -139,10 +139,9 @@ void run_qmetrics_unit_tests() {
     QMetrics::instance()->HandleNewQmetricsCall("annonymous","239328938");
     QMetrics::instance()->HandleNewQmetricsCall("45534","239328939");
     QMetrics::instance()->HandleNewQmetricsCall("45535","239328950");
-    QMetrics::instance()->dump_calls()
-    result = QMetrics::FinishCall("anonymous","239328950");
+    QMetrics::instance()->dump_calls();
+    CString result = QMetrics::FinishCall("anonymous","239328950");
     CStdString msg;
-
     msg.Format("T1:%s\n",result);
     log_to_packet_log(msg);
     QMetrics::instance()->dump_calls();
