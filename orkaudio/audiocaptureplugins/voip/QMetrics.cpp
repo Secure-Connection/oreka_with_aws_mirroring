@@ -20,7 +20,10 @@ QMetrics::QMetrics() {
 
 
 CStdString QMetrics::FinishCall(CStdString local_party, CStdString remote_party) {
-    return "";
+    CStdString msg;
+    msg.Format("Finished Call:%s %s", local_party, remote_party);
+
+    return local_party;
 }
 
 void QMetrics::HandlePacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, int ipHeaderLength, u_char* ipPacketEnd) {
