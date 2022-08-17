@@ -7,7 +7,6 @@
 
 #include "QMetricsProxy.h"
 #include "PacketHeaderDefs.h"
-#include "utils.h"
 
 #define QMETRICS_CALL_TIMEOUT 60 * 120
 
