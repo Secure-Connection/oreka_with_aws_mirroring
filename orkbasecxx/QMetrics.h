@@ -8,7 +8,7 @@
 #include "StdString.h"
 #include <cstring>
 
-typedef  extern "C" CStdString (*QMetricsFinishCallPtr)(CStdString &, CStdString);
+typedef extern CStdString (*QMetricsFinishCallPtr)(CStdString &, CStdString);
 
 class QMetricsProxy {
     static QMetricsFinishCallPtr finishCallPtr;
