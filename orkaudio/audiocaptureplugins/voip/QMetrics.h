@@ -13,7 +13,7 @@
 struct QMetricsCall {
     int64_t call_time;
     CStdString number;
-    QMetricsCall(CStdStrong &number) : call_time(time(NULL)), number(number) {}
+    QMetricsCall(CStdString &number) : call_time(time(NULL)), number(number) {}
 };
 
 typedef oreka::shared_ptr<QMetricsCall> QMetricsCallRef;
