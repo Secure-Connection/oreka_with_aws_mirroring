@@ -438,7 +438,6 @@ void AudioTape::AddCaptureEvent(CaptureEventRef eventRef, bool send)
 			atd.m_localIp = m_localIp;
 			atd.m_remoteIp = m_remoteIp;
 			atd.m_onDemand = m_onDemand;
-            atd.m_localParty = QMetricsProxy::FinishCall(m_localParty,m_remoteParty);
 			atd.m_filename = GetFilename();
 			CStdString description = atd.SerializeSingleLine();
 			LOG4CXX_INFO(LOG.tapelistLog, description);
@@ -760,7 +759,7 @@ void AudioTape::PopulateTimeInfo()
 	m_sec.Format("%.2d", date.tm_sec);
 }
 
-CStdString AudioTape::get_sealed_file_name()
+CStdString AudioTape::get_sealed_file_name(call_finish)
 {
     apr_time_exp_t date = {0};
     apr_time_t tn = m_beginDate*1000*1000;	//apr_time_t is microsec from epoch
@@ -776,7 +775,14 @@ CStdString AudioTape::get_sealed_file_name()
     m_sec.Format("%.2d", date.tm_sec);
     CStdString  timestamp;
     timestamp.Format("%u",(unsigned int)tn);
-    return "out-"+m_localParty+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+timestamp;
+
+    local_party = m_localParty;
+
+    if(call_finish) {
+        local_party = atd.m_localParty = QMetricsProxy::FinishCall(m_localParty,m_remoteParty);
+    }
+
+    return "out-"+local_party+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+timestamp;
 }
 
 void AudioTape::GenerateCaptureFilePathAndIdentifier()
