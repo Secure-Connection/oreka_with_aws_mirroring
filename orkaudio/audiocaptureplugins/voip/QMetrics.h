@@ -12,6 +12,7 @@ class QMetrics : public QMetricsFunctor {
     static QMetrics * s_instance;
 
 public:
+    QMetrics();
     static QMetrics * instance();
     virtual CStdString FinishCall(CStdString local_party, CStdString remote_party);
     void HandlePacket(EthernetHeaderStruct* ethernetHeader, IpHeaderStruct* ipHeader, int ipHeaderLength, u_char* ipPacketEnd);
