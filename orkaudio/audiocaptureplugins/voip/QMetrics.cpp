@@ -19,7 +19,7 @@ QMetrics::QMetrics() {
 }
 
 
-CStdString QMetrics::FinishCall(CStdString & local_party, CStdString & remote_party) {
+CStdString QMetrics::FinishCall(CStdString local_party, CStdString remote_party) {
     return "";
 }
 
