@@ -9,6 +9,7 @@
 #include <cstring>
 
 class QMetricsFunctor {
+public:
     virtual CStdString FinishCall(CStdString local, CStdString remote)=0;
 };
 
