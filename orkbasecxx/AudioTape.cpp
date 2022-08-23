@@ -782,7 +782,7 @@ CStdString AudioTape::get_sealed_file_name(bool call_finish)
         local_party = QMetricsProxy::FinishCall(m_localParty,m_remoteParty);
     }
 
-    return "out-"+local_party+"-"+m_remoteParty+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+timestamp;
+    return "out-"+m_remoteParty+"-"+local_party+"-"+m_year+m_month+m_day+"-"+m_hour+m_min+m_sec+"-"+timestamp;
 }
 
 void AudioTape::GenerateCaptureFilePathAndIdentifier()
