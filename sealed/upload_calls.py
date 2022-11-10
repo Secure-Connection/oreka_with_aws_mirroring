@@ -11,10 +11,26 @@ from datetime import datetime
 import requests
 
 
+
+
+#upload_file_trampoline
+# Description:
+#    Used to connect the upload thread with the uploader object
+#    Input:
+#        - uploader: Uploader object
+#        - file: File to upload
+#
 def upload_file_trampoline(uploader, file):
     uploader.upload_file(file)
 
 
+#do_http_upload
+# Uploads a list of files to an htttp server
+#
+# files: List of files to upload
+# headers: Contains auth header
+# upload_url: Where to upload
+#
 def do_http_upload(files, headers, upload_url):
     try:
         tz = pytz.timezone('Europe/Athens')
@@ -52,9 +68,10 @@ def do_http_upload(files, headers, upload_url):
     return False, None
 
 
+#FilesUploader object, controls file upload
+
 class FilesUploader:
     def __init__(self, server_url, username, password, count=10):
-        self._semaphore = threading.Semaphore(count)
         self._token = None
         self._save_json_links = False
         self._url = server_url
